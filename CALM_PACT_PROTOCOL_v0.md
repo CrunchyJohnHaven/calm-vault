@@ -219,8 +219,8 @@ We are also explicitly inviting **adversarial review**. If there's a way to brea
 - **John Bradley** — principal of Creativity Machine LLC. Approved publication. Available at john.b@credexai.xyz.
 - **Koushik Gavini** — author of CredexAI (the verifiable-credential SDK this protocol composes with). Notified at the time of publication; not a guarantor of the protocol's claims.
 
-Repository: `https://github.com/CrunchyJohnHaven/calm-vault` (Apache 2.0, publishing tonight)
-Web canonical: `https://vault.thecreativitymachine.ai/calmpact` (publishing tonight)
+Repository: `https://github.com/CrunchyJohnHaven/calm-vault` (Apache 2.0, published 2026-05-11)
+Web canonical: `https://sameasyou.ai` (published 2026-05-11)
 Contact: `calm@thecreativitymachine.ai` for technical, `john.b@credexai.xyz` for editorial.
 
 ---
