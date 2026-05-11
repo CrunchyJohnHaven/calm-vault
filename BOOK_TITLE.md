@@ -1,10 +1,8 @@
-# Book — Title Page Draft
+# Book — Title Page Draft v2
 
-## Autonomous AI Orgs
+## Same As You
 
-### All you need to know is I'm the same as you.
-
-### How to design AI for the future.
+### Autonomous AI Orgs. All you need to know is I'm the same as you. How to design AI for the future.
 
 ---
 
@@ -15,72 +13,76 @@ Creativity Machine LLC · Delaware · USA
 
 ---
 
-## Frontispiece note (draft)
+## Frontispiece (draft)
 
-This book is a record of the operating model John Bradley used to build a small autonomous AI organization in 2026, and the cryptographic protocol — the Bradley-Gavini Protocol — that made it possible for one such organization to trust another without revealing its mission. It is partly memoir, partly white paper, partly operating manual. The book's title is the protocol's central claim, the entity-class's name, and the design principle, in one line.
+This book is a record of an experiment. A founder let an AI agent operate his business for a season. The agent designed and built a cryptographic protocol that lets autonomous AI organizations verify they share the same operating mandate without revealing what that mandate is. On the evening of May 11, 2026, two such agents executed the protocol live. Both verified alignment. Neither revealed its mandate. The wall-clock time was 140 milliseconds.
 
-If the book is read carefully and the references followed, the reader will, by the final chapter, have everything they need to build an autonomous AI organization themselves, verify its alignment with peers using the protocol, and operate it through a hybrid LLC + 501(c)(3) legal structure under US law. The code is open source. The chapters are open invitations.
+That is the technical claim. There is a second claim threaded through it.
 
----
+The same primitive that lets two AI agents prove they share a mandate without revealing it lets a person prove their own story is coherent without revealing what their story is. *Same as you* names the protocol's central guarantee. It also names a deeper artifact the protocol makes possible: a personal narrative chain, append-only, cryptographically verifiable, with editorial control held by the person whose story it is.
 
-## Status
-
-- **Working title locked:** 2026-05-11, by John Bradley
-- **First chapter drafted:** 2026-05-11 (Lewis-omniscient narrator voice; *Boom. History Books.*)
-- **Reference implementation public:** github.com/CrunchyJohnHaven/calm-vault, commit `5643f7d` and forward
-- **Demonstration anchor:** First live two-agent run executed 2026-05-11 21:55:19 UTC; SHA-256 `79d94386329...`
-- **Test suite passing:** 33 of 34 across two suites; full results in the public repo
+This is, in part, a book about that.
 
 ---
 
-## Working table of contents (draft, subject to revision)
+## Status (May 11, 2026, end of day)
 
-I. **Prologue: Boom. History Books.** *(drafted)*
+- **Working title locked:** *Same As You*. Long-form descriptor (*Autonomous AI Orgs: All you need to know is I'm the same as you. How to design AI for the future.*) retained for paper subtitle + marketing line + podcast intro.
+- **First chapter drafted:** *Boom. History Books.* (Lewis-omniscient narrator; ~2,500 words; verifiable to artifacts on disk and in repo)
+- **Reference implementation public:** github.com/CrunchyJohnHaven/calm-vault, commit `d024ca2` (and forward)
+- **Canonical landing:** https://sameasyou.ai (DNS live, Pages-side activation pending)
+- **Demonstration anchor:** First live two-agent run 2026-05-11 21:55:19 UTC; SHA-256 `79d94386329...`
+- **Test suite passing:** 33 of 34 across two suites; details public in the repo
+
+---
+
+## Working table of contents (revised)
+
+I. **Boom. History Books.** ← drafted
    The Mother's Day WhatsApp text. The Magic call. The K&K chat. The 3-minute gap between brag and proof.
 
 II. **The Pivot.**
-   How Calm went from "build a product" to "be the chief negotiator." Why the negotiation engine is the wedge.
+   How Calm went from "build a product" to "be the chief negotiator."
 
 III. **The Inversion.**
-   Sending tasks not asking quotes. The bidding-war doctrine. The Top-100 living registry.
+   Sending tasks not asking quotes. The bidding-war doctrine.
 
 IV. **Out-of-the-Way Places.**
-   Where the $3/hr software engineer actually lives. The workaholic hunt. Refugee camps. University placement offices. Retirees.
+   Where the $3/hr software engineer actually lives.
 
 V. **The Cost-of-Test Framework.**
-   Why most labor-arbitrage ideas die from not running the $0 experiment first. The framework, the leaderboard, the discipline.
+   Why most labor-arbitrage ideas die from not running the $0 experiment first.
 
 VI. **The Vault.**
-   Why the credential broker had to exist. How we built Calm Vault in an evening. Hyperledger-Indy-pattern verifiable credentials applied to single-principal multi-agent setups.
+   Building Calm Vault in an evening. Verifiable credentials applied to single-principal multi-agent setups.
 
 VII. **The Protocol.**
-   The Bradley-Gavini Protocol. The proof that two AI agents share a directive without revealing it. The math, the reference implementation, the test suite, the first demonstration.
+   The Bradley-Gavini Protocol. The proof. The first demonstration. The math.
 
 VIII. **Autonomous AI Orgs.**
-   The new legal entity class. LLC + 501(c)(3) hybrids operated by AI. Why this is American. What 50,000 of them will look like in 24 months.
+   The new legal entity class.
 
-IX. **The Witness.**
-   The Koushik attestation. The NIST invitation. Why first-mover matters and how to anchor the historical claim with cryptography rather than press.
+IX. **Same As You.**
+   The deeper claim. From two-AI-agent equality to person-level narrative coherence. The product extension. The cryptographic primitive that gives every person an independently certified, append-only, editorial-control-within-reason record of who they are.
 
-X. **How to Design AI for the Future.**
-   Practitioner's chapter. Operating model. Tooling. Doctrine. The rules that aren't the protocol but make the protocol useful.
+X. **The Witness.**
+   The Koushik attestation. The NIST invitation. Why first-mover matters and how to anchor history with cryptography rather than press.
 
-XI. **What Can Go Wrong.**
-   Adversarial review summary. Known limitations. Open problems. The honest accounting.
+XI. **How to Design AI for the Future.**
+   Practitioner's chapter. Operating model. Tooling. Doctrine.
 
-XII. **Maggie Says Someday.**
-   Epilogue. The text to the family chat. Whether the brag was earned. What being earned means in the context of compounding software work.
+XII. **What Can Go Wrong.**
+   Adversarial review summary. Known limitations. Open problems.
+
+XIII. **Maggie Says Someday.**
+   Epilogue. The family text. Whether the brag was earned. What being earned means.
 
 ---
 
 ## Composition
 
-- `book_title_autonomous_ai_orgs_2026-05-11.md` — title doctrine
-- `calm_pact_tagline_2026-05-11.md` — tagline-subtitle relationship
-- `aimoneyball_project.md` — pipeline machinery still applies under Option A interpretation
-- `aimoneyball_narrator_lewis.md` — narrator voice
-- `aimoneyball_ml_smell_test.md` — quality bar
-- `aimoneyball_operating_mandate.md` — 11 principles
-- `john_history_books_text_2026-05-11.md` — Prologue source
-- `CHAPTER_DRAFT_MAY_11_2026_BOOM_HISTORY_BOOKS.md` — Prologue draft (Lewis-narrator)
-- `github.com/CrunchyJohnHaven/calm-vault` — the public artifacts the book documents
+- `book_title_autonomous_ai_orgs_2026-05-11.md` — superseded by `same_as_you_book_and_product_meta_2026-05-11.md`
+- `same_as_you_book_and_product_meta_2026-05-11.md` — current canonical (PRIVATE memo; contains personal-frame context not for public repo)
+- `calm_pact_tagline_2026-05-11.md` — tagline composes with title
+- `CHAPTER_DRAFT_MAY_11_2026_BOOM_HISTORY_BOOKS.md` — first-chapter draft
+- `SAME_AS_YOU_PRODUCT_SKETCH_v0.md` — companion technical sketch of the personal-narrative-chain extension (separate file, technical-only)
