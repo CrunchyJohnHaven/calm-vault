@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0b0d10" />
+
+    <title>Reviewer pass — submitted</title>
+    <meta name="description" content="Your reviewer edit was turned into a pull request. A human will merge or close it." />
+    <link rel="canonical" href="https://sameasyou.ai/reviewer/thanks" />
+    <meta name="robots" content="noindex,follow" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" />
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0d10'/%3E%3Cpath d='M20 28v-6a12 12 0 0 1 24 0v6' fill='none' stroke='%23a4f3c4' stroke-width='4' stroke-linecap='round'/%3E%3Crect x='16' y='28' width='32' height='24' rx='4' fill='%23a4f3c4'/%3E%3Ccircle cx='32' cy='40' r='3' fill='%230b0d10'/%3E%3C/svg%3E" />
+
+    <style>
+      :root {
+        --bg: #0b0d10;
+        --bg-elev: #11151a;
+        --bg-card: #141a21;
+        --fg: #e7eef5;
+        --fg-dim: #8a98a8;
+        --fg-muted: #5b6778;
+        --accent: #a4f3c4;
+        --accent-dim: #6fc99c;
+        --border: #1f2730;
+        --max-w: 760px;
+        --radius: 14px;
+      }
+      *,*::before,*::after { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(1200px 600px at 20% -10%, #16201a 0%, transparent 60%),
+          radial-gradient(900px 500px at 90% 10%, #1a1620 0%, transparent 55%),
+          var(--bg);
+        color: var(--fg);
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        font-size: 16px;
+        line-height: 1.55;
+      }
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      code, .mono { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+      .wrap { max-width: var(--max-w); margin: 0 auto; padding: 28px 24px 96px; }
+      header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 40px; }
+      .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; }
+      .brand-mark {
+        width: 32px; height: 32px; border-radius: 8px;
+        background: var(--accent); color: var(--bg);
+        display: grid; place-items: center; font-weight: 800; font-size: 18px;
+      }
+      .nav-links a { color: var(--fg-dim); font-size: 14px; }
+      .nav-links a:hover { color: var(--fg); }
+
+      .pill {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 6px 12px; border-radius: 999px;
+        background: rgba(164,243,196,0.08);
+        color: var(--accent);
+        font-size: 13px; font-weight: 500;
+        border: 1px solid rgba(164,243,196,0.18);
+      }
+      .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+      h1 {
+        font-size: clamp(28px, 4.5vw, 44px);
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+        margin: 12px 0 18px;
+        font-weight: 700;
+      }
+      h1 .grad {
+        background: linear-gradient(120deg, #a4f3c4 0%, #7fb8f2 50%, #c79df0 100%);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+      }
+      .lede { color: var(--fg-dim); font-size: 17px; }
+
+      .card {
+        margin-top: 28px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 22px;
+      }
+      .card h2 { margin: 0 0 8px; font-size: 18px; letter-spacing: -0.01em; }
+      .pr-link {
+        display: inline-block;
+        word-break: break-all;
+        margin-top: 6px;
+      }
+      .cta-row { margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap; }
+      .btn {
+        display: inline-flex; align-items: center; gap: 10px;
+        padding: 12px 18px; border-radius: 10px;
+        font-weight: 600; font-size: 15px;
+        border: 1px solid transparent;
+      }
+      .btn-primary { background: var(--accent); color: var(--bg); }
+      .btn-primary:hover { background: #b8f7d2; text-decoration: none; }
+      .btn-ghost { background: transparent; color: var(--fg); border-color: var(--border); }
+      .btn-ghost:hover { border-color: var(--fg-dim); text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <a class="brand" href="/" aria-label="sameasyou.ai home">
+          <span class="brand-mark">∷</span>
+          <span>sameasyou.ai</span>
+        </a>
+        <nav class="nav-links" aria-label="primary">
+          <a href="/">Home</a>
+          <a href="/reviewer/submit">Submit another</a>
+        </nav>
+      </header>
+
+      <p class="pill"><span class="dot"></span> PR opened</p>
+      <h1>Thank <span class="grad">you</span>.</h1>
+      <p class="lede">
+        Your edit is now a pull request. A human merges or closes it after a
+        quick read. Nothing auto-merges, ever.
+      </p>
+
+      <div class="card">
+        <h2>Your PR</h2>
+        <p id="pr-line" class="mono">Loading…</p>
+        <p id="pr-link-wrap" style="margin: 0;">
+          <a id="pr-link" class="pr-link" target="_blank" rel="noopener"></a>
+        </p>
+      </div>
+
+      <div class="cta-row">
+        <a class="btn btn-primary" href="/reviewer/submit">Submit another edit</a>
+        <a class="btn btn-ghost" href="/">Back to sameasyou.ai</a>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var pr = params.get('pr');
+        var line = document.getElementById('pr-line');
+        var link = document.getElementById('pr-link');
+        if (pr && /^https:\/\/github\.com\//.test(pr)) {
+          line.textContent = pr;
+          link.textContent = 'Open PR on GitHub →';
+          link.setAttribute('href', pr);
+        } else {
+          line.textContent = '(PR URL not provided — check the GitHub pulls tab.)';
+          link.textContent = 'Browse open PRs →';
+          link.setAttribute('href', 'https://github.com/CrunchyJohnHaven/calm-vault/pulls');
+        }
+      })();
+    </script>
+  </body>
+</html>

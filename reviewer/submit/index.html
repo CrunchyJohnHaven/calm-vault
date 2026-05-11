@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0b0d10" />
+
+    <title>Reviewer pass — sameasyou.ai</title>
+    <meta name="description" content="Submit a reviewer edit to a sameasyou.ai source file. Your markdown becomes a GitHub pull request automatically. A human merges or closes it." />
+    <link rel="canonical" href="https://sameasyou.ai/reviewer/submit" />
+    <meta name="robots" content="noindex,follow" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" />
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0d10'/%3E%3Cpath d='M20 28v-6a12 12 0 0 1 24 0v6' fill='none' stroke='%23a4f3c4' stroke-width='4' stroke-linecap='round'/%3E%3Crect x='16' y='28' width='32' height='24' rx='4' fill='%23a4f3c4'/%3E%3Ccircle cx='32' cy='40' r='3' fill='%230b0d10'/%3E%3C/svg%3E" />
+
+    <style>
+      :root {
+        --bg: #0b0d10;
+        --bg-elev: #11151a;
+        --bg-card: #141a21;
+        --fg: #e7eef5;
+        --fg-dim: #8a98a8;
+        --fg-muted: #5b6778;
+        --accent: #a4f3c4;
+        --accent-dim: #6fc99c;
+        --border: #1f2730;
+        --warn: #f3c46f;
+        --err: #f37f7f;
+        --max-w: 880px;
+        --radius: 12px;
+      }
+      *,*::before,*::after { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(1200px 600px at 20% -10%, #16201a 0%, transparent 60%),
+          radial-gradient(900px 500px at 90% 10%, #1a1620 0%, transparent 55%),
+          var(--bg);
+        color: var(--fg);
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        font-size: 16px;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+      }
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      code, pre, .mono { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+      .wrap { max-width: var(--max-w); margin: 0 auto; padding: 28px 24px 96px; }
+      header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 32px; }
+      .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: -0.01em; }
+      .brand-mark {
+        width: 32px; height: 32px; border-radius: 8px;
+        background: var(--accent); color: var(--bg);
+        display: grid; place-items: center; font-weight: 800; font-size: 18px;
+        box-shadow: 0 0 0 1px rgba(164,243,196,0.4), 0 8px 24px -8px rgba(164,243,196,0.4);
+      }
+      .nav-links { display: flex; gap: 18px; color: var(--fg-dim); font-size: 14px; }
+      .nav-links a { color: var(--fg-dim); }
+      .nav-links a:hover { color: var(--fg); }
+
+      h1 {
+        font-size: clamp(28px, 4.5vw, 44px);
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+        margin: 8px 0 14px;
+        font-weight: 700;
+      }
+      h1 .grad {
+        background: linear-gradient(120deg, #a4f3c4 0%, #7fb8f2 50%, #c79df0 100%);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+      }
+      .lede {
+        color: var(--fg-dim);
+        max-width: 680px;
+        font-size: 17px;
+      }
+      .pill {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 6px 12px; border-radius: 999px;
+        background: rgba(164,243,196,0.08);
+        color: var(--accent);
+        font-size: 13px; font-weight: 500;
+        border: 1px solid rgba(164,243,196,0.18);
+      }
+      .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+      form {
+        margin-top: 36px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 24px;
+        box-shadow: 0 20px 60px -20px rgba(0,0,0,0.6);
+      }
+      .row { display: grid; gap: 6px; margin: 0 0 18px; }
+      label { font-weight: 600; font-size: 14px; color: var(--fg); }
+      .hint { color: var(--fg-muted); font-size: 13px; }
+      input[type="text"],
+      input[type="email"],
+      select,
+      textarea {
+        width: 100%;
+        background: var(--bg-elev);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px 12px;
+        font: inherit;
+        color: var(--fg);
+        outline: none;
+        transition: border-color .12s ease, box-shadow .12s ease;
+      }
+      input[type="text"]:focus,
+      input[type="email"]:focus,
+      select:focus,
+      textarea:focus {
+        border-color: var(--accent-dim);
+        box-shadow: 0 0 0 3px rgba(164,243,196,0.18);
+      }
+      textarea {
+        min-height: 320px;
+        resize: vertical;
+        font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 13.5px;
+        line-height: 1.55;
+        white-space: pre;
+      }
+      .counter { color: var(--fg-muted); font-size: 12px; text-align: right; font-variant-numeric: tabular-nums; }
+      .counter.warn { color: var(--warn); }
+      .counter.err { color: var(--err); }
+
+      .cta-row {
+        display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+        margin-top: 12px;
+      }
+      button {
+        display: inline-flex; align-items: center; gap: 10px;
+        padding: 12px 18px; border-radius: 10px;
+        font-weight: 600; font-size: 15px;
+        border: 1px solid transparent;
+        background: var(--accent); color: var(--bg);
+        cursor: pointer;
+        font-family: inherit;
+        transition: transform .12s ease, background .12s ease, border-color .12s ease, opacity .12s ease;
+      }
+      button:hover { transform: translateY(-1px); background: #b8f7d2; }
+      button[disabled] { opacity: 0.55; cursor: not-allowed; transform: none; }
+      .btn-ghost {
+        background: transparent;
+        color: var(--fg);
+        border-color: var(--border);
+      }
+      .btn-ghost:hover { background: transparent; border-color: var(--fg-dim); }
+
+      .status {
+        margin-top: 14px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--bg-elev);
+        font-size: 14px;
+        display: none;
+      }
+      .status.show { display: block; }
+      .status.ok { border-color: rgba(164,243,196,0.35); color: var(--accent); }
+      .status.err { border-color: rgba(243,127,127,0.35); color: var(--err); }
+      .status .mono { color: inherit; word-break: break-all; }
+
+      .meta {
+        margin-top: 28px;
+        color: var(--fg-muted);
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      .meta a { color: var(--fg-dim); }
+      .meta a:hover { color: var(--fg); }
+      .footer-rule { margin: 32px 0 16px; border: 0; border-top: 1px solid var(--border); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <a class="brand" href="/" aria-label="sameasyou.ai home">
+          <span class="brand-mark">∷</span>
+          <span>sameasyou.ai</span>
+        </a>
+        <nav class="nav-links" aria-label="primary">
+          <a href="/">Home</a>
+          <a href="https://github.com/CrunchyJohnHaven/calm-vault" rel="noopener">GitHub</a>
+        </nav>
+      </header>
+
+      <p class="pill"><span class="dot"></span> reviewer-pass · auto-PR</p>
+      <h1>Reviewer <span class="grad">pass</span></h1>
+      <p class="lede">
+        Paste an edited version of a sameasyou.ai source file. The form opens a
+        pull request against <code>main</code> on
+        <a href="https://github.com/CrunchyJohnHaven/calm-vault" rel="noopener">CrunchyJohnHaven/calm-vault</a>.
+        Nothing auto-merges. A human reviews every change.
+      </p>
+
+      <form id="reviewer-form" autocomplete="off" novalidate>
+        <div class="row">
+          <label for="reviewer">Reviewer name <span class="hint">2–80 chars · letters, digits, spaces, dashes, underscores, dots</span></label>
+          <input id="reviewer" name="reviewer" type="text" required minlength="2" maxlength="80" pattern="[a-zA-Z0-9\s\-_.]{2,80}" />
+        </div>
+
+        <div class="row">
+          <label for="original_file">Original file</label>
+          <select id="original_file" name="original_file" required>
+            <option value="" disabled selected>Loading allowed files…</option>
+          </select>
+          <span class="hint">Only files in the allowlist are editable.</span>
+        </div>
+
+        <div class="row">
+          <label for="summary">One-line change summary <span class="hint">5–200 chars</span></label>
+          <input id="summary" name="summary" type="text" required minlength="5" maxlength="200" />
+        </div>
+
+        <div class="row">
+          <label for="contact">Reviewer contact email <span class="hint">optional · used in PR body</span></label>
+          <input id="contact" name="contact" type="email" maxlength="200" />
+        </div>
+
+        <div class="row">
+          <label for="edited">Edited markdown <span class="hint">max 50KB</span></label>
+          <textarea id="edited" name="edited" required spellcheck="false"></textarea>
+          <div id="edited-counter" class="counter" aria-live="polite">0 / 51200 bytes</div>
+        </div>
+
+        <div class="cta-row">
+          <button id="submit-btn" type="submit">Open PR</button>
+          <button id="reset-btn" type="reset" class="btn-ghost">Reset</button>
+        </div>
+
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+      </form>
+
+      <hr class="footer-rule" />
+      <p class="meta">
+        Every submission is rate-limited to 10 per hour per IP. The bot commits
+        on your behalf with a <code>reviewer:&lt;name&gt;</code> author so the
+        history shows who proposed the change. See the
+        <a href="https://github.com/CrunchyJohnHaven/calm-vault/blob/main/reviewer/README.md">reviewer README</a>
+        for the operator handbook.
+      </p>
+    </div>
+
+    <script>
+      (function () {
+        var form = document.getElementById('reviewer-form');
+        var select = document.getElementById('original_file');
+        var edited = document.getElementById('edited');
+        var counter = document.getElementById('edited-counter');
+        var status = document.getElementById('status');
+        var submitBtn = document.getElementById('submit-btn');
+        var MAX_BYTES = 51200;
+
+        function byteLen(s) {
+          try { return new TextEncoder().encode(s).length; }
+          catch (_e) { return s.length; }
+        }
+
+        function updateCounter() {
+          var n = byteLen(edited.value);
+          counter.textContent = n.toLocaleString() + ' / 51,200 bytes';
+          counter.classList.remove('warn', 'err');
+          if (n > MAX_BYTES) counter.classList.add('err');
+          else if (n > MAX_BYTES * 0.85) counter.classList.add('warn');
+        }
+        edited.addEventListener('input', updateCounter);
+        updateCounter();
+
+        function showStatus(kind, html) {
+          status.className = 'status show ' + kind;
+          status.innerHTML = html;
+        }
+        function clearStatus() {
+          status.className = 'status';
+          status.innerHTML = '';
+        }
+
+        function escapeHtml(s) {
+          return String(s).replace(/[&<>"']/g, function (c) {
+            return ({
+              '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            })[c];
+          });
+        }
+
+        fetch('/api/reviewer/files')
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (!data || !data.ok) throw new Error((data && data.error) || 'failed to load file list');
+            select.innerHTML = '';
+            var placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = 'Select a file…';
+            placeholder.disabled = true;
+            placeholder.selected = true;
+            select.appendChild(placeholder);
+            data.files.forEach(function (f) {
+              var opt = document.createElement('option');
+              opt.value = f.path;
+              opt.textContent = f.label + '  (' + f.path + ')';
+              opt.setAttribute('data-kind', f.kind);
+              select.appendChild(opt);
+            });
+          })
+          .catch(function (err) {
+            showStatus('err', 'Could not load the allowed file list: ' + escapeHtml(err.message || String(err)));
+          });
+
+        form.addEventListener('submit', function (ev) {
+          ev.preventDefault();
+          clearStatus();
+          if (byteLen(edited.value) > MAX_BYTES) {
+            showStatus('err', 'Edited content exceeds 50KB. Trim before submitting.');
+            return;
+          }
+          var payload = {
+            reviewer: document.getElementById('reviewer').value.trim(),
+            original_file: select.value,
+            edited: edited.value,
+            summary: document.getElementById('summary').value.trim(),
+            contact: document.getElementById('contact').value.trim() || undefined
+          };
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Opening PR…';
+          fetch('/api/reviewer/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          })
+            .then(function (r) {
+              return r.json().then(function (data) {
+                return { status: r.status, data: data };
+              });
+            })
+            .then(function (res) {
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Open PR';
+              if (res.data && res.data.ok) {
+                var url = '/reviewer/thanks/?pr=' + encodeURIComponent(res.data.pr_url || '');
+                window.location.href = url;
+                return;
+              }
+              var msg = (res.data && res.data.error) || ('HTTP ' + res.status);
+              showStatus('err', 'Submission rejected: <span class="mono">' + escapeHtml(msg) + '</span>');
+            })
+            .catch(function (err) {
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Open PR';
+              showStatus('err', 'Network error: ' + escapeHtml(err.message || String(err)));
+            });
+        });
+      })();
+    </script>
+  </body>
+</html>
