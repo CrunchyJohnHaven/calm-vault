@@ -5,6 +5,12 @@
 // The public key is exposed at /verify/keys so any peer agent can verify
 // signed metadata returned from /verify/{org_id}.
 
+// SECURITY NOTE: The private key is currently stored base64-PKCS#8 in D1. This
+// is acceptable for the v0 platform (the D1 row sits behind the Worker auth
+// boundary), but the long-term plan is to either (a) store an envelope-encrypted
+// blob whose KEK lives in a Cloudflare Secret, or (b) move signing to an
+// external KMS and only persist a key reference here. Tracked as a follow-up.
+
 import type { Env } from "../env";
 import { base64ToBytes, bytesToBase64 } from "./hex";
 
@@ -66,14 +72,19 @@ export async function getSigningKey(
   )
     .bind(KEY_ID)
     .first<KeyRow>();
+  if (!winner) {
+    throw new Error(
+      "signing_keys row missing immediately after INSERT OR IGNORE; D1 inconsistency",
+    );
+  }
   const winnerPriv = await crypto.subtle.importKey(
     "pkcs8",
-    base64ToBytes(winner!.private_key_b64),
+    base64ToBytes(winner.private_key_b64),
     { name: "Ed25519" },
     false,
     ["sign"],
   );
-  _cached = { priv: winnerPriv, pubB64: winner!.public_key_b64 };
+  _cached = { priv: winnerPriv, pubB64: winner.public_key_b64 };
   return _cached;
 }
 

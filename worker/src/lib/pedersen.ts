@@ -110,18 +110,17 @@ export async function maximToScalar(maxim: string): Promise<bigint> {
   return scalar;
 }
 
-// Cryptographically-random integer in [1, Q-1].
+// Cryptographically-random integer in [1, Q-1], sampled uniformly via
+// rejection on the 2048-bit space. We treat the 256-byte draw as a uniform
+// element of [0, 2^2048) and reject anything outside [1, Q).
 function randomBelowQ(): bigint {
-  // Q has ceil(log2(Q)) ≈ 2047 bits; sample 256 random bytes and reduce.
-  // Bias is negligible since 2^2048 ≈ Q * 2 (Q is prime ~2^2047), so we
-  // resample until we land inside [1, Q-1].
   while (true) {
     const buf = new Uint8Array(256);
     crypto.getRandomValues(buf);
     let n = 0n;
     for (const b of buf) n = (n << 8n) | BigInt(b);
-    n = n % (Q - 1n);
-    if (n >= 1n) return n;
+    if (n === 0n || n >= Q) continue;
+    return n;
   }
 }
 

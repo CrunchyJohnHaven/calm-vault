@@ -19,8 +19,8 @@ export async function sendWelcomeEmail(
 ): Promise<{ sent: boolean; provider_id?: string; error?: string }> {
   if (!env.RESEND_API_KEY) {
     console.warn(
-      "[email] RESEND_API_KEY not configured; skipping welcome email to",
-      params.to,
+      "[email] RESEND_API_KEY not configured; skipping welcome email",
+      redactEmail(params.to),
     );
     return { sent: false, error: "RESEND_API_KEY not configured" };
   }
@@ -29,20 +29,36 @@ export async function sendWelcomeEmail(
   const text = renderText(params);
   const html = renderHtml(params);
 
-  const resp = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${env.RESEND_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from,
-      to: [params.to],
-      subject,
-      text,
-      html,
-    }),
-  });
+  // Guard the fetch so a network/TLS/timeout error returns { sent: false, ... }
+  // instead of bubbling up as a 500 from /signup.
+  let resp: Response;
+  try {
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), 10_000);
+    try {
+      resp = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${env.RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from,
+          to: [params.to],
+          subject,
+          text,
+          html,
+        }),
+        signal: ctl.signal,
+      });
+    } finally {
+      clearTimeout(timer);
+    }
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("[email] resend request failed", msg);
+    return { sent: false, error: `resend network error: ${msg}` };
+  }
   if (!resp.ok) {
     const body = await resp.text();
     console.error("[email] resend send failed", resp.status, body);
@@ -50,6 +66,13 @@ export async function sendWelcomeEmail(
   }
   const json = (await resp.json()) as { id?: string };
   return { sent: true, provider_id: json.id };
+}
+
+// Avoid logging a raw address; keep enough context to debug without exposing PII.
+function redactEmail(addr: string): string {
+  const at = addr.lastIndexOf("@");
+  if (at <= 0) return "<redacted>";
+  return `<redacted>@${addr.slice(at + 1)}`;
 }
 
 function renderText(p: WelcomeEmailParams): string {

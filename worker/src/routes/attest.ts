@@ -125,8 +125,10 @@ export async function handleAttest(
   const id = newAttestationId();
 
   // Append the attestation and advance the target's chain head atomically.
-  // D1 batch is transactional within a single batch() call.
-  await env.DB.batch([
+  // D1 batch() is transactional within a single call; the UPDATE's WHERE clause
+  // also gives us optimistic concurrency in case two attestations race against
+  // the same head_block_hash.
+  const batchResult = await env.DB.batch([
     env.DB.prepare(
       `INSERT INTO attestations
          (id, attester_org_id, target_org_id, attestation_kind, signature, prev_hash, block_hash, created_at)
@@ -145,6 +147,21 @@ export async function handleAttest(
       `UPDATE orgs SET head_block_hash = ? WHERE id = ? AND head_block_hash = ?`,
     ).bind(hash, targetOrgId, target.head_block_hash),
   ]);
+  // Defend against the racy case where the UPDATE matched zero rows because
+  // another attestation slipped in between our SELECT and the batch. Callers
+  // can safely retry.
+  const updateMeta = batchResult[1]?.meta as
+    | { changes?: number; rows_written?: number }
+    | undefined;
+  const updateChanges =
+    updateMeta?.changes ?? updateMeta?.rows_written ?? undefined;
+  if (updateChanges === 0) {
+    throw new HttpError(
+      409,
+      "chain_head_advanced",
+      "Target chain advanced concurrently; retry the attestation.",
+    );
+  }
 
   return jsonResponse(
     {

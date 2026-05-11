@@ -11,6 +11,13 @@ import { canonicalJsonStringify } from "../lib/hex";
 import { errorResponse, jsonResponse } from "../lib/http";
 import { getPublicKeyB64, signCanonical } from "../lib/signing";
 
+// Cap how many attestation blocks we sign per /verify call. The signed payload
+// is over canonical JSON, so an unbounded attestation history would let any
+// public caller force an arbitrarily expensive request. 200 covers reasonable
+// orgs; callers that need the full chain should paginate against /verify or
+// the (future) /verify/<id>/attestations endpoint.
+const VERIFY_ATTESTATION_LIMIT = 200;
+
 interface OrgRow {
   id: string;
   customer_id: string;
@@ -65,10 +72,13 @@ export async function handleVerify(
             prev_hash, block_hash, created_at
        FROM attestations
       WHERE target_org_id = ?
-      ORDER BY created_at ASC, id ASC`,
+      ORDER BY created_at ASC, id ASC
+      LIMIT ?`,
   )
-    .bind(orgId)
+    .bind(orgId, VERIFY_ATTESTATION_LIMIT)
     .all<AttestationRow>();
+  const attestationRows = attestations.results ?? [];
+  const truncated = attestationRows.length >= VERIFY_ATTESTATION_LIMIT;
 
   const metadata = {
     org_id: org.id,
@@ -86,7 +96,7 @@ export async function handleVerify(
       reference:
         "https://github.com/CrunchyJohnHaven/calm-vault/blob/main/calm_pact/protocol.py",
     },
-    attestations: (attestations.results ?? []).map((a) => ({
+    attestations: attestationRows.map((a) => ({
       id: a.id,
       attester_org_id: a.attester_org_id,
       attestation_kind: a.attestation_kind,
@@ -95,6 +105,8 @@ export async function handleVerify(
       block_hash: a.block_hash,
       created_at: a.created_at,
     })),
+    attestation_limit: VERIFY_ATTESTATION_LIMIT,
+    attestations_truncated: truncated,
   };
   const canonical = canonicalJsonStringify(metadata);
   const signature = await signCanonical(env, canonical);

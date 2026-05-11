@@ -35,31 +35,35 @@ export async function handleSignup(
     { maxLen: 4096 },
   );
 
-  const existing = await env.DB.prepare(
-    "SELECT id FROM customers WHERE email = ?",
+  const apiKey = generateApiKey();
+  const hash = await apiKeyHash(apiKey);
+  const id = newCustomerId();
+  const createdAt = Math.floor(Date.now() / 1000);
+
+  // ON CONFLICT(email) DO NOTHING makes the duplicate-signup check atomic. Two
+  // concurrent requests for the same email both reach INSERT, exactly one wins,
+  // and the loser is told email_taken without surfacing as a 500.
+  const inserted = await env.DB.prepare(
+    `INSERT INTO customers
+       (id, email, org_name, primary_mandate_commitment, api_key_hash, tier, created_at)
+     VALUES (?, ?, ?, ?, ?, 'free', ?)
+     ON CONFLICT(email) DO NOTHING`,
   )
-    .bind(email)
-    .first<{ id: string }>();
-  if (existing) {
+    .bind(id, email, orgName, commitment, hash, createdAt)
+    .run();
+  const changes =
+    (inserted.meta as { changes?: number; rows_written?: number } | undefined)
+      ?.changes ??
+    (inserted.meta as { changes?: number; rows_written?: number } | undefined)
+      ?.rows_written ??
+    0;
+  if (changes === 0) {
     throw new HttpError(
       409,
       "email_taken",
       "An account already exists for this email.",
     );
   }
-
-  const apiKey = generateApiKey();
-  const hash = await apiKeyHash(apiKey);
-  const id = newCustomerId();
-  const createdAt = Math.floor(Date.now() / 1000);
-
-  await env.DB.prepare(
-    `INSERT INTO customers
-       (id, email, org_name, primary_mandate_commitment, api_key_hash, tier, created_at)
-     VALUES (?, ?, ?, ?, ?, 'free', ?)`,
-  )
-    .bind(id, email, orgName, commitment, hash, createdAt)
-    .run();
 
   const emailResult = await sendWelcomeEmail(env, {
     to: email,

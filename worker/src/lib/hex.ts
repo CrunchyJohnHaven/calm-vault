@@ -9,10 +9,14 @@ export function bytesToHex(b: Uint8Array): string {
 }
 
 export function hexToBytes(hex: string): Uint8Array {
-  if (hex.length % 2 !== 0) throw new Error("hex string has odd length");
-  const out = new Uint8Array(hex.length / 2);
+  const normalized = hex.startsWith("0x") ? hex.slice(2) : hex;
+  if (normalized.length % 2 !== 0) throw new Error("hex string has odd length");
+  if (!/^[0-9a-fA-F]*$/.test(normalized)) {
+    throw new Error("hex string contains non-hex characters");
+  }
+  const out = new Uint8Array(normalized.length / 2);
   for (let i = 0; i < out.length; i++) {
-    out[i] = parseInt(hex.substr(i * 2, 2), 16);
+    out[i] = Number.parseInt(normalized.slice(i * 2, i * 2 + 2), 16);
   }
   return out;
 }
