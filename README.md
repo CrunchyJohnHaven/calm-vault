@@ -207,8 +207,9 @@ Calm Vault is intentionally small. Issues, design discussions, and pull requests
 
 ## For reviewers
 
-We are actively soliciting human review of every public page in this repository. Three short documents describe what we're asking for:
+We are actively soliciting human review of every public page in this repository. Four short documents describe what we're asking for:
 
+- **Start here:** [`docs/REVIEWER_QUICKSTART.md`](docs/REVIEWER_QUICKSTART.md) — 10-minute onboarding for first-time reviewers.
 - [`REVIEW_RUBRIC.md`](REVIEW_RUBRIC.md) — the 10-axis scorecard reviewers use, one page at a time.
 - [`REVIEW_PAGES.md`](REVIEW_PAGES.md) — the master list of every public page, with paths and URLs.
 - [`REVIEW_OUTPUT_TEMPLATE.md`](REVIEW_OUTPUT_TEMPLATE.md) — the form reviewers fill in per page.

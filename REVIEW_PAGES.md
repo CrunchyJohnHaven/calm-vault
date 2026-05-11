@@ -17,14 +17,18 @@ This is the master checklist for the human review of every page on `sameasyou.ai
 - [Top-level pages (README + governance + protocol spec)](#top-level-pages-readme--governance--protocol-spec)
 - [Docs (getting-started + primary sources + working library)](#docs-getting-started--primary-sources--working-library)
 - [Calm Pact protocol artifacts (tests + transcripts)](#calm-pact-protocol-artifacts-tests--transcripts)
+- [Paper (long-form write-up)](#paper-long-form-write-up)
+- [Autonomous AI Labs (AAL) Components](#autonomous-ai-labs-aal-components)
 - [Source-tree position pieces](#source-tree-position-pieces)
-- [Review artifacts (these three files)](#review-artifacts-these-three-files)
+- [Review artifacts (these four files)](#review-artifacts-these-four-files)
 - [Out of scope](#out-of-scope)
 - [Feedback](#feedback)
 
 ---
 
 ## How to use this list
+
+**First-time reviewers, start here:** [`docs/REVIEWER_QUICKSTART.md`](docs/REVIEWER_QUICKSTART.md). It's a 10-minute walkthrough that takes you from "I've never seen this repo" to "I have submitted my first review."
 
 1. Pick one or more pages from the tables below. Reviewers are encouraged to **claim** pages by commenting on issue `#review-claim` (open a new issue with that title if it doesn't exist) so we don't double up.
 2. Read the page on both desktop and mobile.
@@ -70,6 +74,7 @@ Canonical site root: `https://sameasyou.ai/`
 | 12 | [`docs/BOOK_TITLE_LOCKED.md`](docs/BOOK_TITLE_LOCKED.md) | [`docs/BOOK_TITLE_LOCKED.md`](https://github.com/CrunchyJohnHaven/calm-vault/blob/main/docs/BOOK_TITLE_LOCKED.md) | Title-lock doctrine. Cross-reference accuracy. |
 | 13 | [`docs/HACKATHON_RESULTS.md`](docs/HACKATHON_RESULTS.md) | [`docs/HACKATHON_RESULTS.md`](https://github.com/CrunchyJohnHaven/calm-vault/blob/main/docs/HACKATHON_RESULTS.md) | Design tournament writeup. Honest comparison vs. existing products. |
 | 14 | [`docs/TIMESTAMP_ANCHORS.md`](docs/TIMESTAMP_ANCHORS.md) | [`docs/TIMESTAMP_ANCHORS.md`](https://github.com/CrunchyJohnHaven/calm-vault/blob/main/docs/TIMESTAMP_ANCHORS.md) | The witness anchors. Every link should resolve. |
+| 14a | [`docs/REVIEWER_QUICKSTART.md`](docs/REVIEWER_QUICKSTART.md) | [`docs/REVIEWER_QUICKSTART.md`](https://github.com/CrunchyJohnHaven/calm-vault/blob/main/docs/REVIEWER_QUICKSTART.md) | The 10-minute reviewer onboarding. If a first-time reviewer can't follow it, the whole review pack fails. |
 
 ---
 
@@ -83,6 +88,31 @@ Canonical site root: `https://sameasyou.ai/`
 
 ---
 
+## Paper (long-form write-up)
+
+This row is **provisional** — the linked file is landing overnight from a parallel session. If the URL 404s when you click it, skip the row and pick something else; we'll mark it green once it commits.
+
+| # | Path | GitHub URL | Status | Reviewer focus |
+|---|---|---|---|---|
+| 17a | [`paper/bradley-gavini-protocol-v0.html`](paper/bradley-gavini-protocol-v0.html) | [`paper/bradley-gavini-protocol-v0.html`](https://github.com/CrunchyJohnHaven/calm-vault/blob/main/paper/bradley-gavini-protocol-v0.html) | **Landing overnight** | Long-form HTML write-up of the protocol. Same accuracy + brand-consistency checks as `CALM_PACT_PROTOCOL_v0.md`. |
+
+---
+
+## Autonomous AI Labs (AAL) Components
+
+These rows are **provisional** — the linked files are landing overnight from parallel Devin sessions. If a URL 404s when you click it, skip that row and pick another; we'll mark each one green once its commit lands. The five-component series describes the Autonomous AI Labs program; Component 1 is already represented inside this repo, Components 2–5 land overnight.
+
+| # | Path | GitHub URL | Status | Reviewer focus |
+|---|---|---|---|---|
+| 17b | `aal/component-2/README.md` | [`aal/component-2/README.md`](https://github.com/CrunchyJohnHaven/calm-vault/blob/main/aal/component-2/README.md) | **Landing overnight** | AAL Component 2 entry point. Clarity for a non-AAL-specialist reviewer. |
+| 17c | `aal/component-3/README.md` | [`aal/component-3/README.md`](https://github.com/CrunchyJohnHaven/calm-vault/blob/main/aal/component-3/README.md) | **Landing overnight** | AAL Component 3 entry point. |
+| 17d | `aal/component-4/README.md` | [`aal/component-4/README.md`](https://github.com/CrunchyJohnHaven/calm-vault/blob/main/aal/component-4/README.md) | **Landing overnight** | AAL Component 4 entry point. |
+| 17e | `aal/component-5/README.md` | [`aal/component-5/README.md`](https://github.com/CrunchyJohnHaven/calm-vault/blob/main/aal/component-5/README.md) | **Landing overnight** | AAL Component 5 entry point. |
+
+If by the time you read this the parallel sessions have used a different layout (e.g. `components/aal-2/`, `docs/aal/component-2.md`, etc.), the actual path will be discoverable from a fresh `ls` of the repo root and/or the next commit on `main`. Update the row in your review submission to match the path you actually reviewed.
+
+---
+
 ## Source-tree position pieces
 
 | # | Path | GitHub URL | Reviewer focus |
@@ -91,13 +121,14 @@ Canonical site root: `https://sameasyou.ai/`
 
 ---
 
-## Review artifacts (these three files)
+## Review artifacts (these four files)
 
 | # | Path | GitHub URL | Reviewer focus |
 |---|---|---|---|
 | 19 | [`REVIEW_RUBRIC.md`](REVIEW_RUBRIC.md) | [`REVIEW_RUBRIC.md`](https://github.com/CrunchyJohnHaven/calm-vault/blob/main/REVIEW_RUBRIC.md) | The rubric itself. Are the 10 axes the right ones? |
 | 20 | [`REVIEW_PAGES.md`](REVIEW_PAGES.md) | [`REVIEW_PAGES.md`](https://github.com/CrunchyJohnHaven/calm-vault/blob/main/REVIEW_PAGES.md) | This file. Are any public pages missing? |
 | 21 | [`REVIEW_OUTPUT_TEMPLATE.md`](REVIEW_OUTPUT_TEMPLATE.md) | [`REVIEW_OUTPUT_TEMPLATE.md`](https://github.com/CrunchyJohnHaven/calm-vault/blob/main/REVIEW_OUTPUT_TEMPLATE.md) | The reviewer form. Is it the right amount of work to fill in? |
+| 22 | [`docs/REVIEWER_QUICKSTART.md`](docs/REVIEWER_QUICKSTART.md) | [`docs/REVIEWER_QUICKSTART.md`](https://github.com/CrunchyJohnHaven/calm-vault/blob/main/docs/REVIEWER_QUICKSTART.md) | The reviewer onboarding guide. Test by following it yourself, cold. |
 
 ---
 
