@@ -6,7 +6,9 @@
  * prints it.
  */
 
-const REVIEWER_NAME_RE = /^[a-zA-Z0-9\s\-_.]{2,80}$/;
+// Literal space only (not \s) — keeps tabs/newlines out of reviewer-attributed
+// metadata that flows into commit authors, log lines, and PR bodies.
+const REVIEWER_NAME_RE = /^[a-zA-Z0-9 ._-]{2,80}$/;
 const PATH_TRAVERSAL_RE = /(^\/)|(\.\.)|(^~)|(\\)/;
 
 export const MAX_EDITED_BYTES = 50 * 1024;
@@ -19,7 +21,7 @@ export function validateReviewerName(name: unknown): string {
   const trimmed = name.trim();
   if (!REVIEWER_NAME_RE.test(trimmed)) {
     throw badInput(
-      "reviewer name must be 2-80 chars and only contain letters, digits, spaces, dashes, underscores, dots",
+      "reviewer name must be 2-80 chars and only contain letters, digits, spaces, dashes, underscores, dots (no tabs/newlines)",
     );
   }
   return trimmed;
@@ -118,6 +120,13 @@ export function checkRateLimit(ip: string, limit = RATE_LIMIT_PER_HOUR): {
 } {
   const now = Date.now();
   const hour = 60 * 60 * 1000;
+  // Evict stale entries when the bucket grows large so unique-IP traffic can't
+  // grow memory unbounded on a warm Vercel instance.
+  if (bucket.size > 5000) {
+    for (const [k, v] of bucket) {
+      if (v.resetAt <= now) bucket.delete(k);
+    }
+  }
   const existing = bucket.get(ip);
   if (!existing || existing.resetAt <= now) {
     const fresh = { count: 1, resetAt: now + hour };

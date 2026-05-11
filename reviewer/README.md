@@ -17,9 +17,10 @@ and rate-limits to 10 submissions per hour per IP.
 
 ## What the server does (`api/reviewer/submit.ts`)
 
-1. Validates input. Reviewer name `[a-zA-Z0-9\s\-_.]{2,80}`. Path must be in the
-   allowlist and free of `..`, `~`, leading `/`. Edited content ≤ 50KB. Summary
-   5–200 chars. Email optional but RFC-ish.
+1. Validates input. Reviewer name `[a-zA-Z0-9 ._-]{2,80}` (literal space only —
+   tabs and newlines are rejected). Path must be in the allowlist and free of
+   `..`, `~`, leading `/`, and backslashes (`\`). Edited content ≤ 50KB.
+   Summary 5–200 chars. Email optional but RFC-ish.
 2. Loads `GITHUB_PR_BOT_TOKEN` and logs only `[token loaded]` /
    `[token missing]` — never the value.
 3. Fetches the original file from `main` via `repos.getContent` to get the

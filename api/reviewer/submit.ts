@@ -133,8 +133,11 @@ export default async function handler(
       ref: `heads/${base}`,
     });
     const baseSha = baseRef.data.object.sha;
-    const ts = Math.floor(Date.now() / 1000);
-    const branch = `reviewer/${slugifyReviewer(reviewer)}/${basenameNoExt(originalFile)}-${ts}`;
+    // Millisecond timestamp + 6-char nonce so two submissions in the same
+    // second from the same reviewer to the same file can't collide on createRef.
+    const ts = Date.now();
+    const nonce = Math.random().toString(36).slice(2, 8);
+    const branch = `reviewer/${slugifyReviewer(reviewer)}/${basenameNoExt(originalFile)}-${ts}-${nonce}`;
     await octokit.git.createRef({
       owner,
       repo,
@@ -215,13 +218,22 @@ export default async function handler(
       console.warn(
         `[reviewer/submit] WARNING auto_merge is set on PR #${pr.data.number}; disabling`,
       );
+      // No REST endpoint exists for disabling auto-merge — GitHub only exposes
+      // the GraphQL `disablePullRequestAutoMerge` mutation.
       try {
-        await octokit.request(
-          "DELETE /repos/{owner}/{repo}/pulls/{pull_number}/auto_merge",
-          { owner, repo, pull_number: pr.data.number },
+        await octokit.graphql(
+          `mutation DisableAutoMerge($pullRequestId: ID!) {
+            disablePullRequestAutoMerge(input: { pullRequestId: $pullRequestId }) {
+              pullRequest { number }
+            }
+          }`,
+          { pullRequestId: verify.data.node_id },
         );
-      } catch {
-        /* best-effort; the PR still requires a human merge anyway */
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        console.warn(
+          `[reviewer/submit] could not disable auto_merge on PR #${pr.data.number}: ${msg}`,
+        );
       }
     }
 
