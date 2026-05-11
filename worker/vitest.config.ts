@@ -11,6 +11,7 @@ export default defineWorkersConfig({
             PUBLIC_ORIGIN: "https://test.sameasyou.ai",
             FROM_EMAIL: "Calm Vault <test@sameasyou.ai>",
             STRIPE_PRO_PAYMENT_LINK: "https://buy.stripe.com/test_link",
+            STRIPE_WEBHOOK_SECRET: "whsec_test_secret",
           },
         },
       },

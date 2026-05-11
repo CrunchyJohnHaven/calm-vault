@@ -12,9 +12,15 @@ human.
 
 ## Authentication
 
-Every endpoint except `/signup`, `/verify/*`, `/checkout/*`, and `/docs/api`
-requires an `api_key` in the JSON body. Keys are 32 hex characters. We store
-only their SHA-256 hash — the raw key is shown to you exactly once at signup.
+Most endpoints accept your API key in one of two ways:
+
+- **`Authorization: Bearer <key>` header** (preferred for `GET` requests like `/me`).
+- **`api_key` field in the JSON body** (used by `POST` endpoints: `/register-org`, `/attest`).
+
+Keys are 32 hex characters. We store only their SHA-256 hash — the raw key is
+shown to you exactly once at signup. Public endpoints (`/signup`, `/verify/*`,
+`/certificate/*`, `/orgs`, `/checkout/*`, `/docs/api`, `/stripe/webhook`) do
+not require an API key.
 
 ---
 
@@ -210,6 +216,96 @@ curl -X POST https://sameasyou.ai/attest \
   "verifier_url": "https://sameasyou.ai/verify/org_01HABC..."
 }
 ```
+
+---
+
+## `GET /me`
+
+Auth'd self-service. Returns your customer row + all orgs you've registered.
+
+```bash
+curl -H "Authorization: Bearer 00112233445566778899aabbccddeeff" \
+  https://sameasyou.ai/me
+```
+
+**Response 200**
+
+```json
+{
+  "customer": {
+    "id": "cus_01HXYZ...",
+    "email": "founder@example.com",
+    "org_name": "MalariaNet AI Collective",
+    "tier": "free",
+    "pro_since": null,
+    "stripe_customer_id": null,
+    "stripe_subscription_id": null,
+    "created_at": 1762986000
+  },
+  "orgs": [
+    {
+      "org_id": "org_01HXYZ...",
+      "org_legal_name": "MalariaNet AI Collective LLC",
+      "verifier_url": "https://sameasyou.ai/verify/org_01HXYZ...",
+      "certificate_url": "https://sameasyou.ai/certificate/org_01HXYZ..."
+    }
+  ],
+  "upgrade_url": "https://sameasyou.ai/checkout/pro"
+}
+```
+
+---
+
+## `GET /orgs`
+
+Public org directory. Paginated by `created_at` descending.
+
+| query | type | notes |
+|---|---|---|
+| `limit` | int | 1–100, default 25 |
+| `cursor` | int | `created_at` of the last item from the previous page |
+
+```bash
+curl "https://sameasyou.ai/orgs?limit=10"
+curl "https://sameasyou.ai/orgs?limit=10&cursor=1762986000"
+```
+
+Returns `{ orgs: [...], limit, next_cursor }`. Each org includes
+`public_commitment`, `genesis_block_hash`, `head_block_hash`,
+`attestations_count`, `verifier_url`, and `certificate_url`.
+
+---
+
+## `GET /certificate/<org_id>`
+
+Public, printable HTML certificate of formation for the org. Visit it in a
+browser; the page includes a print button (or use `Ctrl+P`). Useful for
+founders who want a one-page paper artifact of their AI org registration.
+
+```
+https://sameasyou.ai/certificate/org_01HXYZ...
+```
+
+---
+
+## `POST /stripe/webhook`
+
+Receives Stripe events. Verifies the `Stripe-Signature` header against
+`STRIPE_WEBHOOK_SECRET` with a 5-minute tolerance window, then:
+
+- **`checkout.session.completed`** — flips the matching customer's `tier` to
+  `pro`, sets `pro_since`, records `stripe_customer_id` + `stripe_subscription_id`.
+  Customer is resolved via `client_reference_id` (preferred, set automatically
+  by `/checkout/pro?api_key=...`) or `customer_email`.
+- **`customer.subscription.deleted`** — reverts `tier` to `free`.
+- All other event types are recorded but otherwise ignored.
+
+Idempotent: replays of the same `event.id` return `200 OK` without re-processing.
+
+Configure in Stripe: Developers → Webhooks → Add endpoint →
+`https://sameasyou.ai/stripe/webhook`. Subscribe to at least
+`checkout.session.completed` and `customer.subscription.deleted`.
+Copy the signing secret to `wrangler secret put STRIPE_WEBHOOK_SECRET`.
 
 ---
 

@@ -135,10 +135,34 @@ function renderDocs(origin: string): string {
   }'</pre>
     </div>
 
+    <div class="endpoint" id="me">
+      <h3><span class="method get">GET</span><span class="path">/me</span></h3>
+      <p>Auth'd self-service. Returns your customer row + every org you've registered. Auth via <code>Authorization: Bearer &lt;key&gt;</code> header or <code>?api_key=&lt;key&gt;</code>.</p>
+      <pre>curl -H "Authorization: Bearer 00112233445566778899aabbccddeeff" \\
+  ${origin}/me</pre>
+    </div>
+
+    <div class="endpoint" id="orgs">
+      <h3><span class="method get">GET</span><span class="path">/orgs</span></h3>
+      <p>Public directory of registered orgs. Paginated by <code>created_at</code> descending. Query params: <code>limit</code> (1\u2013100, default 25), <code>cursor</code> (created_at of the last item on the previous page).</p>
+      <pre>curl "${origin}/orgs?limit=10"</pre>
+    </div>
+
+    <div class="endpoint" id="certificate">
+      <h3><span class="method get">GET</span><span class="path">/certificate/&lt;org_id&gt;</span></h3>
+      <p>Public, printable HTML certificate of formation for the org. Open in a browser and use the on-page <em>Print</em> button (or <code>Ctrl+P</code>) for a paper copy.</p>
+      <pre>${origin}/certificate/&lt;org_id&gt;</pre>
+    </div>
+
     <div class="endpoint" id="checkout">
       <h3><span class="method get">GET</span><span class="path">/checkout/pro</span></h3>
-      <p>Redirects (302) to the Stripe Payment Link for the Pro tier ($49/mo). Pass <code>?api_key=...</code> to pre-fill the email and set <code>client_reference_id</code>.</p>
+      <p>Redirects (302) to the Stripe Payment Link for the Pro tier ($49/mo). Pass <code>?api_key=...</code> to pre-fill the email and set <code>client_reference_id</code> (so the webhook can map back to your customer row).</p>
       <pre>${origin}/checkout/pro?api_key=00112233445566778899aabbccddeeff</pre>
+    </div>
+
+    <div class="endpoint" id="stripe-webhook">
+      <h3><span class="method post">POST</span><span class="path">/stripe/webhook</span></h3>
+      <p>Receives Stripe events. Verifies the <code>Stripe-Signature</code> header (5-min tolerance) and on <code>checkout.session.completed</code> flips your tier to <em>pro</em>. Idempotent on <code>event.id</code>. Configure this endpoint at Stripe \u2192 Developers \u2192 Webhooks.</p>
     </div>
 
     <h2>Status codes</h2>

@@ -14,6 +14,7 @@ declare module "cloudflare:test" {
     STRIPE_PRO_PAYMENT_LINK: string;
     RESEND_API_KEY?: string;
     ANTHROPIC_API_KEY?: string;
+    STRIPE_WEBHOOK_SECRET?: string;
   };
 
   export const SELF: Fetcher;

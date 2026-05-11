@@ -9,4 +9,5 @@ export interface Env {
   // Secrets (wrangler secret put ...).
   RESEND_API_KEY?: string;
   ANTHROPIC_API_KEY?: string;
+  STRIPE_WEBHOOK_SECRET?: string;
 }

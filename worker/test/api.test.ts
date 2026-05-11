@@ -15,7 +15,9 @@ async function migrate(): Promise<void> {
       api_key_hash TEXT NOT NULL UNIQUE,
       tier TEXT NOT NULL DEFAULT 'free',
       stripe_customer_id TEXT,
-      created_at INTEGER NOT NULL
+      created_at INTEGER NOT NULL,
+      pro_since INTEGER,
+      stripe_subscription_id TEXT
     );
     CREATE INDEX IF NOT EXISTS idx_customers_api_key_hash ON customers(api_key_hash);
     CREATE TABLE IF NOT EXISTS orgs (
@@ -50,6 +52,14 @@ async function migrate(): Promise<void> {
       public_key_b64 TEXT NOT NULL,
       created_at INTEGER NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS stripe_events (
+      id TEXT PRIMARY KEY,
+      event_type TEXT NOT NULL,
+      customer_id TEXT,
+      payload TEXT NOT NULL,
+      received_at INTEGER NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_orgs_created_at ON orgs(created_at);
   `;
   // env.DB is the D1 binding declared in vitest.config.ts.
   // Run each statement individually since D1 batches don't accept multi-stmt strings.
