@@ -88,7 +88,7 @@ To verify that DIFFERENT mandates correctly fail, change one to anything else an
 
 ## Test suite validation
 
-The protocol implementation was independently validated against a 25-test suite spanning 6 categories (correctness, cryptographic properties, adversarial resistance, edge cases, performance, statistical soundness). 24 of 25 tests passed. The one failure was a performance-target calibration (median verify time 35ms vs. 30ms target on pure-Python modexp), not a protocol correctness issue. Full test results: see `TEST_RESULTS_v0.md` in the same directory as this file.
+The protocol implementation was independently validated against a 25-test foundational suite spanning 6 categories (correctness, cryptographic properties, adversarial resistance, edge cases, performance, statistical soundness) plus a 9-test extended adversarial suite at 1000-trial scale. 32 of 34 tests pass across the two suites (Suite 2: 9/9; Suite 1: 23/25). The two failures are performance-target calibrations on pure-Python modexp (median commit time and median verify time, t24 and t25), not protocol-correctness issues. Full test results: see `TEST_RESULTS_v0.md` and `COMBINED_TEST_VERDICT_v0.md` in the same directory as this file.
 
 ## Witnesses + provenance
 

@@ -34,7 +34,7 @@ This is, in part, a book about that.
 - **Reference implementation public:** github.com/CrunchyJohnHaven/calm-vault, commit `5643f7d` and forward
 - **Canonical landing:** https://sameasyou.ai (DNS live + HTTP serving 2026-05-11 ~10:30pm UTC; HTTPS cert provisioning; pivot to *Same As You* primary brand staged for deploy)
 - **Demonstration anchor:** First live two-agent run 2026-05-11 21:55:19 UTC; SHA-256 `79d94386329...`
-- **Test suite passing:** 33 of 34 across two suites; details public in the repo
+- **Test suite passing:** 32 of 34 across two suites (Suite 2: 9/9; Suite 1: 23/25, with 2 performance-target misses on pure-Python modexp on commodity hardware); details public in the repo
 
 ---
 
