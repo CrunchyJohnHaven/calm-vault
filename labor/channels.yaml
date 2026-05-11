@@ -1,0 +1,113 @@
+# labor/channels.yaml
+# The 10 offshore-labor channels we cast nets into.
+#
+# Schema (per channel):
+#   typical_speed_to_applicant:  wall-clock from posting to first credible applicant
+#   payment_method:              how we actually pay the worker
+#   escrow:                      true | false  (platform-provided escrow)
+#   posting_cost:                free | $X-Y per post | gig-listing fee | etc.
+#   max_concurrent_posts:        soft ceiling per John's account
+#   our_known_friction:          things that bite us specifically on this channel
+
+onlinejobs_ph:
+  region: "Philippines"
+  rate_band_usd_per_hr: [3, 5]
+  typical_speed_to_applicant: "12-48 hr (post + 48 hr moderation queue)"
+  payment_method: "Wise, PayPal, or direct bank — John pays out-of-band"
+  escrow: false
+  posting_cost: "free tier: 2 active posts/month; paid: $99/mo for 10 posts"
+  max_concurrent_posts: 2
+  our_known_friction: "48 hr moderation; applicants often need direct messaging via the platform; no built-in time tracking"
+
+upwork:
+  region: "global"
+  rate_band_usd_per_hr: [5, 20]
+  typical_speed_to_applicant: "1-4 hr (instant)"
+  payment_method: "Upwork escrow + auto-payout via Upwork (Wise/ACH/PayPal)"
+  escrow: true
+  posting_cost: "free to post; 10% platform fee on freelancer earnings; optional Boosted Job ~$10-30 to surface"
+  max_concurrent_posts: 10
+  our_known_friction: "race-to-the-bottom on hourly; fixed-price <$50 attracts less serious applicants; KYC must be done once per freelancer"
+
+fiverr:
+  region: "global, India/Bangladesh/Pakistan heavy"
+  rate_band_usd_per_hr: [5, 50]
+  typical_speed_to_applicant: "buyer-finds-seller model: 0-2 hr to identify a gig; then seller has to accept"
+  payment_method: "Fiverr escrow + card or PayPal at checkout"
+  escrow: true
+  posting_cost: "buyer pays gig price + ~5.5% service fee + $2.50 small-order fee under $50"
+  max_concurrent_posts: "n/a (we order gigs, we don't post jobs)"
+  our_known_friction: "seller-picks-buyer means we have to message sellers cold for custom work; revisions limit is per-gig; no hourly model"
+
+freelancer_com:
+  region: "India / Pakistan / SE Asia heavy"
+  rate_band_usd_per_hr: [3, 8]
+  typical_speed_to_applicant: "1-6 hr (many bids fast, quality variance high)"
+  payment_method: "Freelancer.com escrow / Milestones, payout via PayPal / Skrill / Wise"
+  escrow: true
+  posting_cost: "free basic posts; ~10% fee on awarded amount; optional 'featured' upsells $10-30"
+  max_concurrent_posts: 10
+  our_known_friction: "high bid volume but high spam ratio; need to screen hard; many copy-paste cover letters"
+
+peopleperhour:
+  region: "UK / EU heavy"
+  rate_band_usd_per_hr: [10, 25]
+  typical_speed_to_applicant: "2-8 hr"
+  payment_method: "PPH escrow, card / bank transfer"
+  escrow: true
+  posting_cost: "free to post; 5-20% service fee tiered on lifetime spend with each freelancer"
+  max_concurrent_posts: 10
+  our_known_friction: "smaller pool than Upwork; higher floor on rate; better written-English baseline"
+
+reddit_forhire:
+  region: "global, US/UK/PH/IN typical"
+  rate_band_usd_per_hr: [5, 25]
+  typical_speed_to_applicant: "0-12 hr if posted in /r/forhire peak window (Mon-Wed)"
+  payment_method: "direct: PayPal, Wise, Venmo (US only), crypto if mutually agreed"
+  escrow: false
+  posting_cost: "free"
+  max_concurrent_posts: "soft 1/day per subreddit; karma + account-age rules apply"
+  our_known_friction: "NO escrow — payment-dispute risk is on us; [Hiring] tag mandatory; subs ban repeat posts within 7 days"
+
+mechanical_turk:
+  region: "global (US workers dominate)"
+  rate_band_usd_per_hr: [4, 12]
+  typical_unit_rate_usd: [0.01, 1.00]
+  typical_speed_to_applicant: "minutes (instant marketplace)"
+  payment_method: "AWS-billed; workers paid via Amazon Payments / gift card"
+  escrow: true
+  posting_cost: "20% requester fee + per-HIT fee; min $0.01/HIT"
+  max_concurrent_posts: "many"
+  our_known_friction: "mechanical-only — no judgment work; requires HIT design + qualification tests; not for our judgment-heavy tasks"
+
+clickworker:
+  region: "global, EU-managed"
+  rate_band_usd_per_hr: [5, 15]
+  typical_speed_to_applicant: "hours (managed)"
+  payment_method: "Clickworker pays workers; we are invoiced by Clickworker"
+  escrow: true
+  posting_cost: "varies by project size; min $100-500 project setup"
+  max_concurrent_posts: "managed by account rep"
+  our_known_friction: "project-manager-mediated; slower setup than self-serve; QA is built in but generic"
+
+rev_com:
+  region: "global, US heavy"
+  rate_band_usd_per_hr: "n/a (unit-priced)"
+  typical_unit_rate_usd: "$0.50/audio-min for transcription"
+  typical_speed_to_applicant: "minutes (managed marketplace)"
+  payment_method: "card at order"
+  escrow: true
+  posting_cost: "no posting; we just submit audio"
+  max_concurrent_posts: "n/a"
+  our_known_friction: "transcription-only; speaker labeling is +$0.25/min upsell; >12hr turnaround tiers cost more"
+
+reedsy:
+  region: "global, US/UK editors heavy"
+  rate_band_usd_per_hr: [25, 60]
+  typical_unit_rate_usd: "$0.02-0.05/word for copy-edit; $0.01-0.02/word proofread"
+  typical_speed_to_applicant: "1-3 business days to first quote"
+  payment_method: "Reedsy invoices, card/bank"
+  escrow: true
+  posting_cost: "free; ~10% Reedsy fee built into editor's quote"
+  max_concurrent_posts: 1
+  our_known_friction: "specialist book-editing pool — overkill for short docs; quote process is slow but quality is high"

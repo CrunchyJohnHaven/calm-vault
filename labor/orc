@@ -1,0 +1,783 @@
+#!/usr/bin/env python3
+"""orc -- labor-orchestrator-v2 CLI.
+
+John casts offshore-labor nets across 5-10 channels in parallel, measures
+throughput per (channel x task_type), and scales the winners.
+
+State lives in plain JSONL under labor/state/ so it stays greppable.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import sys
+import time
+import uuid
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Iterable
+
+import scripts.compute_leaderboard as leaderboard_mod
+
+# --------------------------------------------------------------------------- #
+# paths
+# --------------------------------------------------------------------------- #
+
+LABOR_DIR = Path(__file__).resolve().parent
+STATE_DIR = LABOR_DIR / "state"
+POSTINGS_DIR = LABOR_DIR / "postings"
+TESTS_DIR = LABOR_DIR / "tests"
+
+TASK_TYPES_FILE = LABOR_DIR / "task_types.yaml"
+CHANNELS_FILE = LABOR_DIR / "channels.yaml"
+
+POSTINGS_LOG = STATE_DIR / "postings.jsonl"
+APPLICATIONS_LOG = STATE_DIR / "applications.jsonl"
+WORK_LOG = STATE_DIR / "work.jsonl"
+PAYMENTS_LOG = STATE_DIR / "payments.jsonl"
+
+LEADERBOARD_MD = LABOR_DIR / "leaderboard.md"
+DASHBOARD_MD = LABOR_DIR / "DASHBOARD.md"
+
+DEFAULT_INBOX = Path(os.path.expanduser("~/AllData/inbox/listener.jsonl"))
+
+# --------------------------------------------------------------------------- #
+# small helpers
+# --------------------------------------------------------------------------- #
+
+
+def now_iso() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def short_id(prefix: str) -> str:
+    return f"{prefix}_{uuid.uuid4().hex[:8]}"
+
+
+def ensure_state_dir() -> None:
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    for p in (POSTINGS_LOG, APPLICATIONS_LOG, WORK_LOG, PAYMENTS_LOG):
+        if not p.exists():
+            p.touch()
+
+
+def append_jsonl(path: Path, row: dict) -> None:
+    ensure_state_dir()
+    with path.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+
+
+def read_jsonl(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    out: list[dict] = []
+    with path.open("r", encoding="utf-8") as fh:
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                out.append(json.loads(line))
+            except json.JSONDecodeError as exc:
+                print(f"[orc] WARN: bad jsonl line in {path}: {exc}",
+                      file=sys.stderr)
+    return out
+
+
+def load_yaml(path: Path) -> dict:
+    try:
+        import yaml  # type: ignore
+    except ImportError:
+        sys.exit(
+            "[orc] PyYAML missing. Run:  pip install -r labor/requirements.txt"
+        )
+    with path.open("r", encoding="utf-8") as fh:
+        data = yaml.safe_load(fh)
+    if not isinstance(data, dict):
+        sys.exit(f"[orc] expected mapping at top of {path}")
+    return data
+
+
+def load_task_types() -> dict:
+    return load_yaml(TASK_TYPES_FILE)
+
+
+def load_channels() -> dict:
+    return load_yaml(CHANNELS_FILE)
+
+
+def require_known_task(task: str, task_types: dict) -> None:
+    if task not in task_types:
+        sys.exit(
+            f"[orc] unknown task type '{task}'.\n"
+            f"      known: {', '.join(sorted(task_types))}"
+        )
+
+
+def require_known_channels(channels: Iterable[str], channels_cfg: dict) -> None:
+    unknown = [c for c in channels if c not in channels_cfg]
+    if unknown:
+        sys.exit(
+            f"[orc] unknown channel(s): {', '.join(unknown)}.\n"
+            f"      known: {', '.join(sorted(channels_cfg))}"
+        )
+
+
+def posting_template_path(task: str, channel: str) -> Path:
+    return POSTINGS_DIR / task / f"{channel}.md"
+
+
+# --------------------------------------------------------------------------- #
+# `orc post`
+# --------------------------------------------------------------------------- #
+
+
+def cmd_post(args: argparse.Namespace) -> int:
+    task_types = load_task_types()
+    channels_cfg = load_channels()
+
+    require_known_task(args.task, task_types)
+    channels = [c.strip() for c in args.channels.split(",") if c.strip()]
+    if not channels:
+        sys.exit("[orc] --channels is required, comma-separated")
+    require_known_channels(channels, channels_cfg)
+
+    if args.per_channel:
+        per_channel = float(args.budget)
+        total = per_channel * len(channels)
+    else:
+        total = float(args.budget)
+        per_channel = round(total / len(channels), 2)
+
+    test_id = args.test_id or short_id("test")
+    print(f"# orc post  task={args.task}  channels={','.join(channels)}")
+    print(f"# test_id={test_id}  per_channel=${per_channel:.2f}"
+          f"  total=${total:.2f}")
+    print()
+
+    missing: list[str] = []
+    for ch in channels:
+        tpl = posting_template_path(args.task, ch)
+        if not tpl.exists():
+            missing.append(str(tpl.relative_to(LABOR_DIR)))
+            continue
+        body = tpl.read_text(encoding="utf-8")
+        print(f"========== PASTE INTO {ch.upper()} ==========")
+        print(body.rstrip())
+        print()
+
+        posting_id = short_id("post")
+        append_jsonl(
+            POSTINGS_LOG,
+            {
+                "ts": now_iso(),
+                "posting_id": posting_id,
+                "test_id": test_id,
+                "task_type": args.task,
+                "channel": ch,
+                "budget_usd": per_channel,
+                "status": "drafted",
+                "template_path": str(tpl.relative_to(LABOR_DIR.parent)),
+                "platform_url": None,
+                "notes": args.notes or "",
+            },
+        )
+        print(f"# logged posting_id={posting_id}  channel={ch}"
+              f"  budget=${per_channel:.2f}")
+        print()
+
+    if missing:
+        print("[orc] WARN: missing templates (write them next):",
+              file=sys.stderr)
+        for m in missing:
+            print(f"  - {m}", file=sys.stderr)
+
+    print(f"# test_id={test_id} -- use this when scoring deliveries:"
+          f"  orc score <worker_id> --test {test_id} ...")
+    return 0
+
+
+# --------------------------------------------------------------------------- #
+# `orc inbox`
+# --------------------------------------------------------------------------- #
+
+# very lightweight signal-keyword classifier; precision over recall here
+TASK_KEYWORDS: dict[str, list[str]] = {
+    "qa_read_through":          ["qa ", "defect", "salted", "line ", "severity"],
+    "copy_edit":                ["copy edit", "copy-edit", "tracked changes"],
+    "proofread":                ["proofread", "typo"],
+    "translate":                ["translat", "back-translation"],
+    "transcribe":               ["transcrib", "audio min", "srt"],
+    "data_entry":               ["data entry", "csv", "rows"],
+    "prospect_research":        ["prospect", "lead", "verified-email"],
+    "inbox_triage":             ["inbox triage", "support ticket"],
+    "manual_ux_qa":             ["ux qa", "click-through", "screen recording"],
+    "bounty_submission_triage": ["bounty", "submission triage", "dedupe"],
+    "social_media_management":  ["social media", "scheduling", "reply log"],
+}
+
+CHANNEL_KEYWORDS: dict[str, list[str]] = {
+    "onlinejobs_ph":  ["onlinejobs", "onlinejobs.ph"],
+    "upwork":         ["upwork"],
+    "fiverr":         ["fiverr"],
+    "freelancer_com": ["freelancer.com"],
+    "peopleperhour":  ["peopleperhour", "pph"],
+    "reddit_forhire": ["reddit", "r/forhire", "[hiring]"],
+    "mechanical_turk":["mturk", "mechanical turk"],
+    "clickworker":    ["clickworker"],
+    "rev_com":        ["rev.com"],
+    "reedsy":         ["reedsy"],
+}
+
+
+def _guess(text: str, table: dict[str, list[str]]) -> str | None:
+    t = text.lower()
+    best: tuple[int, str] | None = None
+    for label, kws in table.items():
+        score = sum(1 for kw in kws if kw in t)
+        if score and (best is None or score > best[0]):
+            best = (score, label)
+    return best[1] if best else None
+
+
+RATE_REGEX = re.compile(
+    r"\$\s?(?P<lo>\d{1,3}(?:[.,]\d{1,2})?)\s?(?:-|to|\u2013)\s?\$?\s?"
+    r"(?P<hi>\d{1,3}(?:[.,]\d{1,2})?)\s?(?:/?\s?(?:hr|hour))?"
+    r"|\$\s?(?P<flat>\d{1,3}(?:[.,]\d{1,2})?)\s?(?:/?\s?(?:hr|hour))",
+    re.I,
+)
+
+
+def _extract_rate(text: str) -> str | None:
+    m = RATE_REGEX.search(text)
+    if not m:
+        return None
+    if m.group("flat"):
+        return f"${m.group('flat')}/hr"
+    return f"${m.group('lo')}-${m.group('hi')}/hr"
+
+
+def _pull_quote(text: str, n: int = 140) -> str:
+    snippet = " ".join(text.split())
+    return snippet[:n] + ("..." if len(snippet) > n else "")
+
+
+def _recommend(applicant: dict) -> str:
+    body = (applicant.get("body") or applicant.get("raw_text") or "").lower()
+    if not body:
+        return "maybe"
+    # cheap heuristic: explicit pull-quote acknowledgement => shortlist
+    if "salted bugs" in body or "fixed-price 48-hour qa test" in body:
+        return "shortlist"
+    # template/no-signal => reject
+    template_markers = [
+        "i am the best", "i am very interested", "kindly consider me",
+        "please consider", "i can do this job",
+    ]
+    if any(m in body for m in template_markers) and len(body.split()) < 60:
+        return "reject"
+    return "maybe"
+
+
+def cmd_inbox(args: argparse.Namespace) -> int:
+    src = Path(args.source).expanduser() if args.source else DEFAULT_INBOX
+    if not src.exists():
+        print(f"[orc] inbox source not found: {src}", file=sys.stderr)
+        print("[orc] expected ~/AllData/inbox/listener.jsonl with rows like:",
+              file=sys.stderr)
+        print('  {"ts": "...", "channel": "upwork", "from": "...",'
+              ' "body": "..."}', file=sys.stderr)
+        return 1
+
+    raw = read_jsonl(src)
+    if args.since:
+        raw = [r for r in raw if r.get("ts", "") >= args.since]
+
+    classified: list[dict] = []
+    for r in raw:
+        body = r.get("body") or r.get("raw_text") or ""
+        channel = r.get("channel") or _guess(body, CHANNEL_KEYWORDS) or "unknown"
+        task    = r.get("task_type") or _guess(body, TASK_KEYWORDS) or "unknown"
+        rate    = r.get("rate_quoted") or _extract_rate(body)
+        name    = r.get("from") or r.get("applicant_name") or "anon"
+        record = {
+            "ts":                  r.get("ts") or now_iso(),
+            "channel":             channel,
+            "posting_id":          r.get("posting_id"),
+            "applicant_name":      name,
+            "applicant_signal":    task,
+            "rate_quoted":         rate,
+            "sample_pull_quote":   _pull_quote(body),
+            "recommended_action":  _recommend({"body": body}),
+        }
+        classified.append(record)
+        if not args.dry_run:
+            append_jsonl(APPLICATIONS_LOG, record)
+
+    # surface
+    if not classified:
+        print("[orc] inbox: 0 new messages")
+        return 0
+
+    counts: dict[str, int] = {}
+    actions: dict[str, int] = {}
+    for r in classified:
+        counts[r["channel"]] = counts.get(r["channel"], 0) + 1
+        actions[r["recommended_action"]] = \
+            actions.get(r["recommended_action"], 0) + 1
+
+    print(f"# orc inbox  -- classified {len(classified)} applicant(s)")
+    print(f"# by channel: " +
+          ", ".join(f"{k}={v}" for k, v in sorted(counts.items())))
+    print(f"# action:     " +
+          ", ".join(f"{k}={v}" for k, v in sorted(actions.items())))
+    print()
+    for r in classified[: args.limit]:
+        print(f"- [{r['recommended_action'].upper():9}] "
+              f"{r['channel']:14}  {r['applicant_signal']:22}  "
+              f"{r['rate_quoted'] or '?':12}  {r['applicant_name']}")
+        print(f"  '{r['sample_pull_quote']}'")
+    if args.dry_run:
+        print("\n[orc] --dry-run: nothing written to applications.jsonl",
+              file=sys.stderr)
+    return 0
+
+
+# --------------------------------------------------------------------------- #
+# `orc score`
+# --------------------------------------------------------------------------- #
+
+
+def _resolve_posting(test_id: str | None, task: str | None, channel: str | None) -> dict | None:
+    postings = read_jsonl(POSTINGS_LOG)
+    if test_id:
+        cands = [p for p in postings if p.get("test_id") == test_id]
+        if channel:
+            cands = [p for p in cands if p.get("channel") == channel]
+        return cands[-1] if cands else None
+    if task and channel:
+        cands = [p for p in postings
+                 if p.get("task_type") == task and p.get("channel") == channel]
+        return cands[-1] if cands else None
+    return None
+
+
+def cmd_score(args: argparse.Namespace) -> int:
+    posting = _resolve_posting(args.test, args.task, args.channel)
+    if not posting:
+        if not (args.task and args.channel):
+            sys.exit("[orc] could not resolve posting. Pass --test TEST_ID "
+                     "or both --task and --channel.")
+        # no prior posting: still allow recording (e.g. one-off jobs)
+        posting = {
+            "posting_id": short_id("post"),
+            "task_type":  args.task,
+            "channel":    args.channel,
+            "test_id":    args.test,
+        }
+        print(f"[orc] note: no matching posting; recording an ad-hoc work row "
+              f"for {args.channel}/{args.task}", file=sys.stderr)
+
+    if args.hours <= 0:
+        sys.exit("[orc] --hours must be > 0")
+    if not (0 <= args.quality <= 10):
+        sys.exit("[orc] --quality must be 0..10")
+    if args.paid < 0:
+        sys.exit("[orc] --paid must be >= 0")
+
+    row = {
+        "ts":              now_iso(),
+        "work_id":         short_id("work"),
+        "worker_id":       args.worker_id,
+        "task_type":       posting["task_type"],
+        "channel":         posting["channel"],
+        "posting_id":      posting.get("posting_id"),
+        "test_id":         posting.get("test_id"),
+        "brief_url":       args.brief or None,
+        "accepted_at":     args.accepted_at or None,
+        "delivered_at":    args.delivered_at or now_iso(),
+        "hours_worked":    args.hours,
+        "total_paid_usd":  args.paid,
+        "quality_score_0_to_10": args.quality,
+        "defect_notes":    args.notes or "",
+    }
+    append_jsonl(WORK_LOG, row)
+
+    eff_rate = (args.paid / args.hours) if args.hours else 0.0
+    print(f"# logged work_id={row['work_id']}")
+    print(f"# {args.worker_id}  task={row['task_type']}  channel={row['channel']}"
+          f"  hrs={args.hours}  $/hr={eff_rate:.2f}  quality={args.quality}/10")
+    if args.payment_status:
+        append_jsonl(PAYMENTS_LOG, {
+            "ts": now_iso(),
+            "work_id": row["work_id"],
+            "worker_id": args.worker_id,
+            "amount_usd": args.paid,
+            "status": args.payment_status,
+        })
+    return 0
+
+
+# --------------------------------------------------------------------------- #
+# `orc leaderboard`
+# --------------------------------------------------------------------------- #
+
+
+def cmd_leaderboard(args: argparse.Namespace) -> int:
+    work_rows = read_jsonl(WORK_LOG)
+    task_types = load_task_types()
+    channels_cfg = load_channels()
+    rendered = leaderboard_mod.render_markdown(
+        work_rows=work_rows,
+        task_types=task_types,
+        channels=channels_cfg,
+    )
+    if args.write:
+        LEADERBOARD_MD.write_text(rendered, encoding="utf-8")
+        print(f"[orc] wrote {LEADERBOARD_MD.relative_to(LABOR_DIR.parent)}",
+              file=sys.stderr)
+    sys.stdout.write(rendered)
+    return 0
+
+
+# --------------------------------------------------------------------------- #
+# `orc recommend`
+# --------------------------------------------------------------------------- #
+
+
+def cmd_recommend(args: argparse.Namespace) -> int:
+    work_rows = read_jsonl(WORK_LOG)
+    task_types = load_task_types()
+    require_known_task(args.task, task_types)
+    rec = leaderboard_mod.recommend(work_rows, args.task)
+    if not rec:
+        print(f"[orc] no scored work yet for {args.task}.\n"
+              f"      recommendation: cast the 4-channel test posting"
+              f" (`orc post --task {args.task} ...`)")
+        return 0
+    print(f"# best channel for {args.task}:  {rec['channel']}")
+    print(f"  samples         : {rec['n']}")
+    print(f"  mean $/hr       : ${rec['mean_cost_per_hr']:.2f}")
+    print(f"  mean quality    : {rec['mean_quality']:.2f}/10")
+    print(f"  mean delivery   : {rec['mean_delivery_hrs']:.1f} hr"
+          if rec['mean_delivery_hrs'] is not None else "  mean delivery   : n/a")
+    print(f"  $/quality       : ${rec['cost_per_quality']:.2f}")
+    print(f"  why             : {rec['why']}")
+    return 0
+
+
+# --------------------------------------------------------------------------- #
+# `orc dashboard`
+# --------------------------------------------------------------------------- #
+
+
+def cmd_dashboard(args: argparse.Namespace) -> int:
+    postings = read_jsonl(POSTINGS_LOG)
+    apps     = read_jsonl(APPLICATIONS_LOG)
+    work     = read_jsonl(WORK_LOG)
+    payments = read_jsonl(PAYMENTS_LOG)
+    task_types = load_task_types()
+    channels_cfg = load_channels()
+
+    md = _render_dashboard(postings, apps, work, payments,
+                            task_types, channels_cfg)
+    if args.write:
+        DASHBOARD_MD.write_text(md, encoding="utf-8")
+        print(f"[orc] wrote {DASHBOARD_MD.relative_to(LABOR_DIR.parent)}",
+              file=sys.stderr)
+    sys.stdout.write(md)
+    return 0
+
+
+def _days_since(ts: str) -> float | None:
+    try:
+        t = datetime.strptime(ts, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    except Exception:
+        return None
+    return (datetime.now(timezone.utc) - t).total_seconds() / 86400.0
+
+
+def _render_dashboard(postings, apps, work, payments, task_types, channels):
+    now = now_iso()
+    active_postings = [p for p in postings
+                       if p.get("status") not in ("closed", "filled")]
+    apps_by_channel: dict[str, int] = {}
+    for a in apps:
+        apps_by_channel[a.get("channel", "?")] = \
+            apps_by_channel.get(a.get("channel", "?"), 0) + 1
+
+    in_progress_by_task: dict[str, int] = {}
+    for p in active_postings:
+        in_progress_by_task[p.get("task_type", "?")] = \
+            in_progress_by_task.get(p.get("task_type", "?"), 0) + 1
+
+    pending_payments = [pmt for pmt in payments if pmt.get("status") != "paid"]
+    burn_week = 0.0
+    burn_month = 0.0
+    for w in work:
+        d = _days_since(w.get("delivered_at") or w.get("ts", ""))
+        if d is None:
+            continue
+        paid = float(w.get("total_paid_usd") or 0)
+        if d <= 7:
+            burn_week += paid
+        if d <= 30:
+            burn_month += paid
+    projected_month = burn_week * (30 / 7) if burn_week else 0.0
+
+    # current best channel per task type
+    best_by_task: dict[str, dict | None] = {}
+    for t in task_types:
+        best_by_task[t] = leaderboard_mod.recommend(work, t)
+
+    # single "what to do next" line
+    next_step = _next_step(active_postings, apps, work, best_by_task)
+
+    out: list[str] = []
+    out.append("# John's labor-orchestrator dashboard")
+    out.append(f"_generated {now} by `labor/orc dashboard`_\n")
+
+    out.append("## Single recommendation")
+    out.append(f"**{next_step}**\n")
+
+    out.append("## Active postings")
+    if active_postings:
+        out.append("| channel | task_type | budget | status | days "
+                   "since posted | posting_id |")
+        out.append("|---|---|---|---|---|---|")
+        for p in active_postings:
+            d = _days_since(p.get("ts", ""))
+            d_str = f"{d:.1f}" if d is not None else "?"
+            out.append(f"| {p.get('channel')} | {p.get('task_type')} | "
+                       f"${float(p.get('budget_usd') or 0):.2f} | "
+                       f"{p.get('status')} | {d_str} | "
+                       f"`{p.get('posting_id')}` |")
+    else:
+        out.append("_(none)_")
+    out.append("")
+
+    out.append("## Open applications by channel")
+    if apps_by_channel:
+        out.append("| channel | count |")
+        out.append("|---|---|")
+        for ch, n in sorted(apps_by_channel.items(),
+                            key=lambda kv: -kv[1]):
+            out.append(f"| {ch} | {n} |")
+    else:
+        out.append("_(none — run `orc inbox` once listener.jsonl has rows)_")
+    out.append("")
+
+    out.append("## In-progress work by task_type")
+    if in_progress_by_task:
+        out.append("| task_type | active postings |")
+        out.append("|---|---|")
+        for t, n in sorted(in_progress_by_task.items(),
+                           key=lambda kv: -kv[1]):
+            out.append(f"| {t} | {n} |")
+    else:
+        out.append("_(none)_")
+    out.append("")
+
+    out.append("## Pending payments John needs to authorize")
+    if pending_payments:
+        out.append("| worker | amount | status | work_id |")
+        out.append("|---|---|---|---|")
+        for pmt in pending_payments:
+            out.append(f"| {pmt.get('worker_id')} | "
+                       f"${float(pmt.get('amount_usd') or 0):.2f} | "
+                       f"{pmt.get('status') or '?'} | "
+                       f"`{pmt.get('work_id')}` |")
+    else:
+        out.append("_(none)_")
+    out.append("")
+
+    out.append("## Current best channel per task_type")
+    out.append("| task_type | best channel | n | $/hr | quality | $/quality |")
+    out.append("|---|---|---|---|---|---|")
+    for t in sorted(task_types):
+        rec = best_by_task.get(t)
+        if rec:
+            out.append(f"| {t} | **{rec['channel']}** | {rec['n']} | "
+                       f"${rec['mean_cost_per_hr']:.2f} | "
+                       f"{rec['mean_quality']:.2f}/10 | "
+                       f"${rec['cost_per_quality']:.2f} |")
+        else:
+            out.append(f"| {t} | _untested_ | 0 | - | - | - |")
+    out.append("")
+
+    out.append("## Burn")
+    out.append(f"- this week (rolling 7d):   **${burn_week:.2f}**")
+    out.append(f"- this month (rolling 30d): **${burn_month:.2f}**")
+    out.append(f"- projected month (extrapolated from week 1): "
+               f"**${projected_month:.2f}**")
+    out.append("")
+
+    out.append("---")
+    out.append(f"_state files: "
+               f"`labor/state/postings.jsonl` ({len(postings)} rows), "
+               f"`applications.jsonl` ({len(apps)}), "
+               f"`work.jsonl` ({len(work)}), "
+               f"`payments.jsonl` ({len(payments)})_")
+    return "\n".join(out) + "\n"
+
+
+def _next_step(active_postings, apps, work, best_by_task) -> str:
+    """Single recommendation line. Rules, in priority order."""
+    # 1. unscored deliveries (delivered but no quality recorded) -- score them
+    delivered_unscored = [w for w in work
+                          if w.get("delivered_at") and
+                             w.get("quality_score_0_to_10") in (None, "")]
+    if delivered_unscored:
+        w = delivered_unscored[0]
+        return (f"Score {len(delivered_unscored)} delivered-but-unscored "
+                f"work item(s). Start with "
+                f"{w.get('worker_id')} ({w.get('channel')}/{w.get('task_type')}).")
+
+    # 2. open applications waiting on John's hire decision
+    shortlist = [a for a in apps if a.get("recommended_action") == "shortlist"]
+    if shortlist:
+        return (f"Review {len(shortlist)} shortlisted applicant(s) and award "
+                f"contracts. Start with {shortlist[0].get('applicant_name')}.")
+
+    # 3. mid-test fan-out: a task has 1 channel posted; cast the other 3
+    by_task_channels: dict[str, set[str]] = {}
+    for p in active_postings:
+        by_task_channels.setdefault(p.get("task_type", "?"), set()).add(
+            p.get("channel", "?")
+        )
+    default_4 = ["upwork", "fiverr", "reddit_forhire", "onlinejobs_ph"]
+    for t, chs in by_task_channels.items():
+        if 1 <= len(chs) < 4:
+            missing = [c for c in default_4 if c not in chs]
+            if missing:
+                return (f"Fan out the {t} test to the remaining "
+                        f"channel(s): `orc post --task {t} "
+                        f"--channels {','.join(missing)} "
+                        f"--budget 25 --per-channel`")
+
+    # 4. tested-but-not-yet-scaled winners
+    scaled_ready = [(t, rec) for t, rec in best_by_task.items()
+                    if rec and rec.get("n", 0) >= 3]
+    if scaled_ready:
+        t, rec = scaled_ready[0]
+        return (f"Scale winner: post 10x more {t} work to "
+                f"{rec['channel']} this week.")
+
+    # 5. tasks with no postings yet -- cast nets
+    tested = {p.get("task_type") for p in active_postings}
+    tested |= {w.get("task_type") for w in work}
+    untested = [t for t in best_by_task if t not in tested]
+    if untested:
+        return (f"Cast a 4-channel net for an untested task_type. Suggested: "
+                f"`orc post --task {untested[0]} --channels "
+                f"upwork,fiverr,reddit_forhire,onlinejobs_ph --budget 100`")
+
+    # 6. nothing pending -- monitor
+    return "All caught up. Re-check inbox in 12 hr; rerun `orc dashboard`."
+
+
+# --------------------------------------------------------------------------- #
+# argparse plumbing
+# --------------------------------------------------------------------------- #
+
+
+def build_parser() -> argparse.ArgumentParser:
+    ap = argparse.ArgumentParser(
+        prog="orc",
+        description="labor-orchestrator-v2 -- cast nets, measure, scale winners",
+    )
+    sub = ap.add_subparsers(dest="cmd", required=True)
+
+    p_post = sub.add_parser(
+        "post",
+        help="emit paste-ready job postings for one task across N channels",
+    )
+    p_post.add_argument("--task", required=True,
+                        help="task_type key from labor/task_types.yaml")
+    p_post.add_argument("--channels", required=True,
+                        help="comma-separated channel keys from "
+                             "labor/channels.yaml")
+    p_post.add_argument("--budget", required=True,
+                        help="total budget in USD (split evenly) "
+                             "or per-channel when --per-channel is set")
+    p_post.add_argument("--per-channel", action="store_true",
+                        help="treat --budget as per-channel, not total")
+    p_post.add_argument("--test-id", default=None,
+                        help="re-use a specific test_id (default: auto)")
+    p_post.add_argument("--notes", default="",
+                        help="freeform note attached to each posting row")
+    p_post.set_defaults(func=cmd_post)
+
+    p_inbox = sub.add_parser(
+        "inbox",
+        help="read listener.jsonl, classify, write to applications.jsonl",
+    )
+    p_inbox.add_argument("--source", default=None,
+                         help=f"path to listener.jsonl (default {DEFAULT_INBOX})")
+    p_inbox.add_argument("--since", default=None,
+                         help="only consider rows with ts >= this (ISO-8601)")
+    p_inbox.add_argument("--limit", type=int, default=20,
+                         help="max rows to print (state file always full)")
+    p_inbox.add_argument("--dry-run", action="store_true",
+                         help="classify and print, but do not append to "
+                              "applications.jsonl")
+    p_inbox.set_defaults(func=cmd_inbox)
+
+    p_score = sub.add_parser(
+        "score",
+        help="record a completed work item (the only way to add to work.jsonl)",
+    )
+    p_score.add_argument("worker_id", help="our handle for the worker")
+    p_score.add_argument("--test", default=None,
+                         help="test_id from a prior `orc post` (preferred)")
+    p_score.add_argument("--task", default=None, help="task_type key")
+    p_score.add_argument("--channel", default=None, help="channel key")
+    p_score.add_argument("--quality", type=float, required=True,
+                         help="0..10 quality score (see task_type's "
+                              "quality_metric_definition)")
+    p_score.add_argument("--hours", type=float, required=True,
+                         help="hours worked (use est. for fixed-price)")
+    p_score.add_argument("--paid", type=float, required=True,
+                         help="total USD paid for this work item")
+    p_score.add_argument("--brief", default=None, help="URL to brief sent")
+    p_score.add_argument("--accepted-at", default=None,
+                         help="ISO ts when worker accepted")
+    p_score.add_argument("--delivered-at", default=None,
+                         help="ISO ts when work was delivered (default now)")
+    p_score.add_argument("--notes", default="",
+                         help="freeform defect/quality notes")
+    p_score.add_argument("--payment-status", default=None,
+                         choices=[None, "pending", "authorized", "paid"],
+                         help="optional payment-state to log alongside")
+    p_score.set_defaults(func=cmd_score)
+
+    p_lb = sub.add_parser("leaderboard",
+                          help="compute and print the channel x task-type table")
+    p_lb.add_argument("--write", action="store_true",
+                      help="also write to labor/leaderboard.md")
+    p_lb.set_defaults(func=cmd_leaderboard)
+
+    p_rec = sub.add_parser("recommend",
+                           help="best channel for a given task_type and why")
+    p_rec.add_argument("--task", required=True, help="task_type key")
+    p_rec.set_defaults(func=cmd_recommend)
+
+    p_dash = sub.add_parser("dashboard",
+                            help="render John's single-page dashboard markdown")
+    p_dash.add_argument("--write", action="store_true",
+                        help="also write to labor/DASHBOARD.md")
+    p_dash.set_defaults(func=cmd_dashboard)
+
+    return ap
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    return args.func(args) or 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

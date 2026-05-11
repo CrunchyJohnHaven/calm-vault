@@ -1,0 +1,10 @@
+# labor/state/  -- JSONL state for the orchestrator
+#
+# orc creates four files here on first run:
+#   postings.jsonl      -- every job posting drafted via `orc post`
+#   applications.jsonl  -- every applicant surfaced via `orc inbox`
+#   work.jsonl          -- every completed work item via `orc score`
+#   payments.jsonl      -- payment audit trail (alongside work rows)
+#
+# These files are committed empty as a known starting state for the
+# 4-channel Phase-1 test. John can grep / wc them at any time; no DB.

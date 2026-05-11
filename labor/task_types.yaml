@@ -1,0 +1,84 @@
+# labor/task_types.yaml
+# Taxonomy of offshore-labor task types we test for throughput.
+#
+# Schema (per task type):
+#   typical_hourly_rate:        [min_usd, max_usd]   -- the price band we see in market
+#   typical_unit_rate:          (optional) e.g. "$0.50/audio-min" -- when work is priced by unit, not hour
+#   deliverable_format:         what the worker hands back
+#   time_per_unit_estimate:     rough wall-clock per natural unit of work
+#   quality_metric_definition:  how we score quality 0-10 after delivery
+#
+# Hourly bands are John's market priors as of 2026-05-11. The leaderboard
+# updates these from actuals once we have >=3 deliveries per (channel, task).
+
+qa_read_through:
+  typical_hourly_rate: [4, 10]
+  deliverable_format: "annotated PDF or markdown with line-numbered defects + severity (S0..S3) + repro"
+  time_per_unit_estimate: "1 page / 5 min"
+  quality_metric_definition: "fraction of true defects found vs. salted-bug control set; -1 per false-positive"
+
+copy_edit:
+  typical_hourly_rate: [5, 15]
+  typical_unit_rate: "$0.02-0.05/word"
+  deliverable_format: "tracked-changes .docx or markdown diff at sentence granularity"
+  time_per_unit_estimate: "1000 words / hr"
+  quality_metric_definition: "edits/1000w (volume) * editor-acceptance-rate of those edits"
+
+proofread:
+  typical_hourly_rate: [3, 8]
+  typical_unit_rate: "$0.01-0.02/word"
+  deliverable_format: "marked-up PDF or markdown list of corrections, no rewrites"
+  time_per_unit_estimate: "2000 words / hr"
+  quality_metric_definition: "true typos caught / total typos in salted text"
+
+translate:
+  typical_hourly_rate: [10, 25]
+  typical_unit_rate: "$0.08-0.15/source-word"
+  deliverable_format: "target-language doc + one paragraph of translator notes on tricky choices"
+  time_per_unit_estimate: "300-500 source words / hr (technical)"
+  quality_metric_definition: "back-translation match score 0-10 by independent reviewer"
+
+transcribe:
+  typical_hourly_rate: [5, 15]
+  typical_unit_rate: "$0.50-1.50/audio-min"
+  deliverable_format: "timestamped .txt or .srt, speaker-labeled"
+  time_per_unit_estimate: "4-6x audio length"
+  quality_metric_definition: "WER (word error rate) vs. our ground-truth pass; lower is better, mapped 0-10"
+
+data_entry:
+  typical_hourly_rate: [3, 6]
+  typical_unit_rate: "$0.02-0.05/row"
+  deliverable_format: "clean CSV or Google Sheet, schema matches our template exactly"
+  time_per_unit_estimate: "100 rows / hr (10-col)"
+  quality_metric_definition: "1 - (cell error rate) measured against 10% double-keyed audit sample"
+
+prospect_research:
+  typical_hourly_rate: [5, 12]
+  typical_unit_rate: "$0.50-2.00/verified-lead"
+  deliverable_format: "CSV with name | title | company | verified-email | source-url | confidence"
+  time_per_unit_estimate: "10-20 verified leads / hr"
+  quality_metric_definition: "email-bounce-rate inverse + title-accuracy spot-check; mapped 0-10"
+
+inbox_triage:
+  typical_hourly_rate: [5, 10]
+  deliverable_format: "spreadsheet: msg_id | category | urgency | suggested_reply_draft | escalate_yes_no"
+  time_per_unit_estimate: "60-120 emails / hr"
+  quality_metric_definition: "agreement with John's overrides on 20-msg audit sample (kappa)"
+
+manual_ux_qa:
+  typical_hourly_rate: [5, 12]
+  deliverable_format: "filled test-plan checklist + screen recordings of any defects + repro steps"
+  time_per_unit_estimate: "1 full test-plan pass / 30-90 min depending on plan size"
+  quality_metric_definition: "defects-found / salted-defects + clarity-of-repro (0-3 sub-score)"
+
+bounty_submission_triage:
+  typical_hourly_rate: [8, 15]
+  deliverable_format: "per-submission card: validity | severity | dedupe-cluster | one-line summary | recommend_pay_yn"
+  time_per_unit_estimate: "8-15 submissions / hr"
+  quality_metric_definition: "agreement with John's final decision on overlapping audit set"
+
+social_media_management:
+  typical_hourly_rate: [5, 15]
+  deliverable_format: "weekly content calendar + scheduled posts + reply log + weekly metrics summary"
+  time_per_unit_estimate: "5-10 posts/wk + ~30 min/day reply triage"
+  quality_metric_definition: "follower-growth-rate + reply-tone-match (0-3) + post-on-time-rate"
