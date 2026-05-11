@@ -1,8 +1,12 @@
-# Book — Title Page Draft v2
+# Book — Title Page Draft
 
-## Same As You
+**Canonical site:** https://sameasyou.ai
 
-### Autonomous AI Orgs. All you need to know is I'm the same as you. How to design AI for the future.
+## Autonomous AI Orgs
+
+### All you need to know is I'm the same as you.
+
+### How to design AI for the future.
 
 ---
 
@@ -27,10 +31,10 @@ This is, in part, a book about that.
 
 ## Status (May 11, 2026, end of day)
 
-- **Working title locked:** *Same As You*. Long-form descriptor (*Autonomous AI Orgs: All you need to know is I'm the same as you. How to design AI for the future.*) retained for paper subtitle + marketing line + podcast intro.
+- **Working title locked:** 2026-05-11 ~10:50pm UTC, by John Bradley. Exact title (no paraphrase, no abbreviation, no reordering): *Autonomous AI Orgs: All you need to know is I'm the same as you. How to design AI for the future.* See `BOOK_TITLE_LOCKED_2026-05-11.md` in the working library for the lock doctrine.
 - **First chapter drafted:** *Boom. History Books.* (Lewis-omniscient narrator; ~2,500 words; verifiable to artifacts on disk and in repo)
-- **Reference implementation public:** github.com/CrunchyJohnHaven/calm-vault, commit `d024ca2` (and forward)
-- **Canonical landing:** https://sameasyou.ai (DNS live, Pages-side activation pending)
+- **Reference implementation public:** github.com/CrunchyJohnHaven/calm-vault, commit `5643f7d` and forward
+- **Canonical landing:** https://sameasyou.ai (DNS live + HTTP serving 2026-05-11 ~10:30pm UTC; HTTPS cert provisioning)
 - **Demonstration anchor:** First live two-agent run 2026-05-11 21:55:19 UTC; SHA-256 `79d94386329...`
 - **Test suite passing:** 33 of 34 across two suites; details public in the repo
 
@@ -81,8 +85,7 @@ XIII. **Maggie Says Someday.**
 
 ## Composition
 
-- `book_title_autonomous_ai_orgs_2026-05-11.md` — superseded by `same_as_you_book_and_product_meta_2026-05-11.md`
-- `same_as_you_book_and_product_meta_2026-05-11.md` — current canonical (PRIVATE memo; contains personal-frame context not for public repo)
+- `BOOK_TITLE_LOCKED_2026-05-11.md` — John's title-lock doctrine (working library)
 - `calm_pact_tagline_2026-05-11.md` — tagline composes with title
 - `CHAPTER_DRAFT_MAY_11_2026_BOOM_HISTORY_BOOKS.md` — first-chapter draft
-- `SAME_AS_YOU_PRODUCT_SKETCH_v0.md` — companion technical sketch of the personal-narrative-chain extension (separate file, technical-only)
+- `SAME_AS_YOU_PRODUCT_SKETCH_v0.md` — companion technical sketch of the personal-narrative-chain extension (separate file, technical-only; Chapter IX material)
