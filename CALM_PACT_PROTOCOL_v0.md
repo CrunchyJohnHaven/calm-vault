@@ -123,7 +123,7 @@ Standard Pedersen + Σ-protocol security. Audited many times in production crypt
 
 ## 5. Reference implementation
 
-A 300-line Python reference is in development at `https://github.com/CrunchyJohnHaven/calm-vault/tree/main/calm-pact` (publicly visible within hours of this draft going out). The reference:
+A 300-line Python reference is published at `https://github.com/CrunchyJohnHaven/calm-vault/tree/main/calm_pact`. The reference:
 
 - Uses the `cryptography` package on Curve25519 (Ed25519 / X25519 group).
 - Integrates with `~/CredexAI/koushik-credexai-inspect/credexai/sdks/python/credexai/` for identity-credential issuance.
