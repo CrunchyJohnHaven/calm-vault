@@ -1,5 +1,6 @@
 -- AAL Bug Bounty — Cloudflare D1 schema
 --
+-- Single-tier program: one accepted attack = $100 USD via Wise or USDC on Base.
 -- This database is separate from any customer-signup database. Create with:
 --   wrangler d1 create aal-bounty
 --   wrangler d1 execute aal-bounty --file=bounty/submission/schema.sql
@@ -10,20 +11,16 @@ CREATE TABLE IF NOT EXISTS bounty_submissions (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
     tracking_id       TEXT    NOT NULL UNIQUE,
     bug_class         TEXT    NOT NULL,
-    severity_rating   INTEGER NOT NULL CHECK (severity_rating BETWEEN 1 AND 10),
     description       TEXT    NOT NULL,
     proof_of_concept  TEXT    NOT NULL,
-    contact           TEXT    NOT NULL,
-    payment_rail      TEXT    NOT NULL,
-    handle            TEXT,
-    commit_sha        TEXT,
+    payment_rail      TEXT    NOT NULL,           -- 'wise' or 'usdc_base'
+    public_credit     INTEGER NOT NULL DEFAULT 0, -- 1 if reporter consented to Hall-of-Fame credit
     source_ip         TEXT,
     user_agent        TEXT,
 
     -- Pipeline state. `status` is the human-readable state, the rest is metadata.
     status            TEXT    NOT NULL DEFAULT 'received',
     triage_class      TEXT,
-    triage_tier       TEXT,
     triage_notes      TEXT,
     triage_dupe_of    TEXT,
     triage_model      TEXT,
@@ -31,7 +28,7 @@ CREATE TABLE IF NOT EXISTS bounty_submissions (
 
     accepted          INTEGER NOT NULL DEFAULT 0,
     paid_at           INTEGER,
-    payout_usd_cents  INTEGER,
+    payout_usd_cents  INTEGER NOT NULL DEFAULT 10000, -- $100 single tier
     payout_rail       TEXT,
     payout_ref        TEXT,
 
@@ -45,7 +42,7 @@ CREATE INDEX IF NOT EXISTS idx_bounty_submissions_created_at ON bounty_submissio
 
 -- One row per public attestation that gets written back to the
 -- Component 3 watermarked audit chain. Filled in only after the
--- 30-day private window closes.
+-- reporter has been paid AND consented to public credit.
 CREATE TABLE IF NOT EXISTS bounty_attestations (
     id                  INTEGER PRIMARY KEY AUTOINCREMENT,
     tracking_id         TEXT    NOT NULL,

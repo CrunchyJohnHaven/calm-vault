@@ -1,34 +1,34 @@
 #!/usr/bin/env python3
 """AAL Bug Bounty — payment dispatcher.
 
-Once a human reviewer marks a submission ``accepted``, this script fires the
-payout on the rail the reporter requested:
+Single-tier program: one accepted attack pays a flat **$100 USD** on the rail
+the reporter chose. There are only two rails:
 
-  - **Stripe** — payouts via Stripe Connect Express (preferred for US reporters)
-  - **Wise**   — international bank transfer via Wise's Transfers API
-  - **USDC on Base** — on-chain ERC-20 transfer to a reporter-supplied address
+  - **Wise**         — international bank transfer via the Wise Transfers API
+  - **USDC on Base** — on-chain ERC-20 transfer from our payout wallet
 
 A human always runs this script with explicit consent — there is no auto-pay.
-The Cloudflare Worker only records submissions; nothing here is exposed to the
-public internet. Run it from a hardened reviewer workstation.
+The Cloudflare Worker only records submissions; nothing here is exposed to
+the public internet. Run it from a hardened reviewer workstation.
 
 Flow:
 
-  1. Reviewer marks the submission accepted in D1 (see ``review.sql`` examples
-     below) and records ``payout_usd_cents`` plus the verified payout
-     destination on the appropriate rail.
-  2. Reviewer runs ``python3 bounty/payment.py --id AAL-XXXX-XXXX-XXXX``.
+  1. Reviewer marks the submission accepted in D1 (see SQL in
+     ``bounty/README.md``) — the default payout of $100 (``payout_usd_cents
+     = 10000``) is set by the schema; you only need to override it if the
+     program changes.
+  2. Reviewer runs ``python3 bounty/payment.py --id AAL-XXXX-XXXX-XXXX
+     --destination <recipient> --confirm``.
   3. The script reads the accepted row, dispatches to the matching rail, and
      writes ``paid_at`` / ``payout_ref`` back to D1 on success.
-  4. The reviewer manually opens a Component 3 attestation referencing the
-     tracking id and the published payout reference, then writes a row into
-     ``bounty_attestations``.
+  4. After payment, if ``public_credit = 1``, the reviewer manually opens a
+     Component 3 attestation referencing the tracking id and the payout
+     reference, then writes a row into ``bounty_attestations``.
 
 This file documents the flow inline and ships a working CLI. Every external
 call is gated behind ``--confirm`` so accidental invocation cannot move money.
 
 Environment:
-    STRIPE_API_KEY                Stripe secret key (sk_live_... or sk_test_...).
     WISE_API_TOKEN                Wise API token.
     WISE_PROFILE_ID               Wise business profile id.
     USDC_BASE_RPC_URL             Base mainnet JSON-RPC endpoint.
@@ -48,7 +48,6 @@ import subprocess
 import sys
 import time
 import urllib.error
-import urllib.parse
 import urllib.request
 from typing import Any
 
@@ -103,8 +102,8 @@ def d1_query(sql: str, params: list[Any] | None = None) -> list[dict[str, Any]]:
 def load_accepted_submission(tracking_id: str) -> dict[str, Any]:
     rows = d1_query(
         """
-        SELECT tracking_id, bug_class, payment_rail, accepted, paid_at,
-               payout_usd_cents, payout_rail, payout_ref, contact, handle
+        SELECT tracking_id, bug_class, payment_rail, public_credit, accepted,
+               paid_at, payout_usd_cents, payout_rail, payout_ref
         FROM bounty_submissions
         WHERE tracking_id = ?1 LIMIT 1
         """,
@@ -118,15 +117,17 @@ def load_accepted_submission(tracking_id: str) -> dict[str, Any]:
         raise SystemExit(
             f"{tracking_id} is not marked accepted. Reviewer must run:\n"
             f"  UPDATE bounty_submissions SET accepted=1, status='accepted',"
-            f" payout_usd_cents=<cents>, payout_rail='<rail>'"
+            f" payout_rail='<rail>'"
             f" WHERE tracking_id='{tracking_id}';"
         )
     if row.get("paid_at"):
         raise SystemExit(f"{tracking_id} was already paid at unix={row['paid_at']}")
 
     amount_cents = int(row.get("payout_usd_cents") or 0)
-    if amount_cents <= 0 or amount_cents > 10_000_00:
-        raise SystemExit(f"payout_usd_cents={amount_cents} out of range")
+    # Single-tier program; the schema defaults to $100. Allow override only up
+    # to $500 to prevent fat-finger payouts.
+    if amount_cents <= 0 or amount_cents > 50_000:
+        raise SystemExit(f"payout_usd_cents={amount_cents} out of single-tier range")
     return row
 
 
@@ -140,60 +141,6 @@ def mark_paid(tracking_id: str, rail: str, ref: str) -> None:
         """,
         [now, rail, ref, tracking_id],
     )
-
-
-# ---------------------------------------------------------------------------
-# Rail: Stripe (preferred for US reporters)
-# ---------------------------------------------------------------------------
-
-
-def pay_via_stripe(row: dict[str, Any], destination: str, confirm: bool) -> str:
-    """Send a Stripe Connect transfer to ``destination`` (an ``acct_...`` id).
-
-    Stripe Express accounts are the recommended onboarding flow for bounty
-    recipients: they handle KYC and 1099 reporting for US contractors. The
-    reviewer onboards the reporter via a Connect onboarding link out of band,
-    captures the resulting account id, and passes it here.
-    """
-    api_key = os.environ.get("STRIPE_API_KEY")
-    if not api_key:
-        raise SystemExit("STRIPE_API_KEY is not set")
-    if not destination.startswith("acct_"):
-        raise SystemExit("--destination for stripe must be a Connect account id (acct_...)")
-
-    amount_cents = int(row["payout_usd_cents"])
-    body = urllib.parse.urlencode(
-        {
-            "amount": str(amount_cents),
-            "currency": "usd",
-            "destination": destination,
-            "transfer_group": f"aal-bounty:{row['tracking_id']}",
-            "description": f"AAL Bug Bounty payout for {row['tracking_id']}",
-            "metadata[tracking_id]": row["tracking_id"],
-            "metadata[bug_class]": row["bug_class"],
-        }
-    ).encode("utf-8")
-
-    if not confirm:
-        print(f"DRY-RUN stripe transfer ${amount_cents/100:,.2f} → {destination}")
-        return "dry-run"
-
-    req = urllib.request.Request(
-        "https://api.stripe.com/v1/transfers",
-        data=body,
-        method="POST",
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Idempotency-Key": f"aal-bounty:{row['tracking_id']}",
-        },
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            payload = json.loads(resp.read())
-    except urllib.error.HTTPError as e:
-        raise SystemExit(f"Stripe error {e.code}: {e.read().decode('utf-8', 'replace')}")
-    return str(payload.get("id") or "")
 
 
 # ---------------------------------------------------------------------------
@@ -353,14 +300,14 @@ def main(argv: list[str]) -> int:
     ap.add_argument("--id", dest="tracking_id", required=True, help="Submission tracking id.")
     ap.add_argument(
         "--rail",
-        choices=("stripe", "wise", "usdc_base"),
+        choices=("wise", "usdc_base"),
         help="Override the rail recorded in D1. Defaults to the reporter's choice.",
     )
     ap.add_argument(
         "--destination",
         required=True,
         help=(
-            "Rail-specific destination — Stripe Connect acct id, Wise recipient id, "
+            "Rail-specific destination — Wise recipient id, "
             "or 0x-prefixed Base address."
         ),
     )
@@ -373,12 +320,10 @@ def main(argv: list[str]) -> int:
 
     row = load_accepted_submission(args.tracking_id)
     rail = args.rail or row.get("payout_rail") or row.get("payment_rail")
-    if rail not in ("stripe", "wise", "usdc_base"):
+    if rail not in ("wise", "usdc_base"):
         raise SystemExit(f"unknown rail {rail!r}")
 
-    if rail == "stripe":
-        ref = pay_via_stripe(row, args.destination, args.confirm)
-    elif rail == "wise":
+    if rail == "wise":
         ref = pay_via_wise(row, args.destination, args.confirm)
     else:
         ref = pay_via_usdc_base(row, args.destination, args.confirm)

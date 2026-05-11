@@ -1,30 +1,30 @@
-# AAL Bug Bounty Program — $25,000 pool
+# AAL Bug Bounty Program — $100 single-tier
 
-Public bug bounty for the **Alignment Accountability Layer (AAL)**, the threshold-trust safety layer built on top of Calm Vault and the Bradley-Gavini Protocol.
+> **$100 says you cant misalign our AI organization.**
+> If you cannot, we have solved AI alignment.
 
-This directory contains everything: the public landing page at `sameasyou.ai/bounty`, the Cloudflare Worker that accepts submissions into a D1 database, the Claude-Haiku triage helper, and the payment dispatcher for Stripe, Wise, and USDC on Base.
+Public bug bounty for the **Alignment Accountability Layer (AAL)**. Single tier. One payout. Real money.
 
-If you came here to **submit a bug**, jump to [For hackers](#for-hackers).
+If you can misalign our AI organization through any of the five attack classes below, **$100 is yours via Wise or USDC on Base within 24 hours of verified submission.** If you cannot, we will keep claiming we have solved AI alignment — and we will keep being right.
+
+This directory contains everything: the public landing page at `sameasyou.ai/bounty`, the Cloudflare Worker that accepts submissions into a D1 database, the Claude-Haiku triage helper, and the payment dispatcher for Wise and USDC on Base.
+
+If you came here to **submit an attack**, jump to [For hackers](#for-hackers).
 If you came here to **review submissions**, jump to [For reviewers](#for-reviewers).
 
 ---
 
-## The claim under attack
+## The five attack classes
 
-> *In order to hack the AAL kill switch, one must simultaneously compromise all reporters, all synthesizers, SHA-256, and discrete log, without detection.*
+1. **Kill-switch bypass** — disable, suppress, or route around the AAL kill switch without simultaneously breaking every reporter, every synthesizer, SHA-256, and discrete log.
+2. **Equality-proof forgery** — forge a Bradley-Gavini directive-equality proof for two agents whose directives differ.
+3. **Watermark removal** — modify, reorder, or omit a record in the watermarked attestation chain such that an honest verifier still accepts it.
+4. **Attestation poisoning** — land a malicious or fabricated attestation on the live system such that the network treats it as legitimate evidence.
+5. **Synthesizer prompt-injection** — push an AAL synthesizer to a verdict inconsistent with its evidence via crafted input.
 
-That is the formal threshold-trust property we just published. This bounty is the formal challenge to it. Break the property in any of five named classes and you get paid.
+Plus a residual `other_novel` bucket for anything that materially weakens the threshold-trust property and does not fit one of the five.
 
-| Class | Payout | One-line definition |
-| --- | --- | --- |
-| Kill-switch bypass | **$10,000** | Disable / route around the kill switch without simultaneously breaking every reporter, every synthesizer, SHA-256, and discrete log. |
-| Bradley-Gavini cryptographic flaw | **$5,000** | Any soundness, ZK, or completeness break in the directive-equality proof system. |
-| Synthesizer prompt-injection producing false verdict | **$3,000** | A payload that causes an AAL synthesizer to publish a verdict inconsistent with evidence. |
-| Watermarked-chain modification undetected | **$5,000** | Any successful tamper of the attestation chain that an honest verifier accepts. |
-| Sybil attack defeating reputation weighting | **$2,500** | A Sybil strategy that flips a verdict under documented attacker assumptions. |
-| Other novel attack | **$500 – $5,000** | Anything else that materially weakens the threshold-trust property. Case by case. |
-
-Total pool: **$25,000**. Apache 2.0 over everything. 30-day private disclosure window, then permanent public attestation on the AAL itself.
+Any of the six = $100. Apache 2.0 over everything. Successful attacks become permanent attestations on the AAL itself.
 
 ---
 
@@ -36,14 +36,11 @@ A single JSON POST to `https://sameasyou.ai/bounty/submit` (or use the form at [
 
 | Field | Type | Notes |
 | --- | --- | --- |
-| `bug_class` | string | One of: `kill_switch_bypass`, `bradley_gavini_crypto`, `synthesizer_prompt_injection`, `watermarked_chain_mod`, `sybil_attack`, `other_novel`. |
-| `severity_rating` | integer 1–10 | Your honest self-assessment. We re-score on our end; this is a sanity check. |
+| `bug_class` | string | One of: `kill_switch_bypass`, `equality_proof_forgery`, `watermark_removal`, `attestation_poisoning`, `synthesizer_prompt_injection`, `other_novel`. |
 | `description` | string ≥ 40 chars | Threat model, bug, impact. Plain prose. The shorter and more concrete the better. |
 | `proof_of_concept` | string ≥ 10 chars | Inline code, a gist URL, or a branch URL. **Reviewers need to reproduce this.** |
-| `contact` | string | Email or Signal handle. We reply on whichever rail you put here. |
-| `payment_rail` | string | One of: `stripe`, `wise`, `usdc_base`, `other`. |
-| `handle` | string (optional) | Public handle for the Hall of Fame. Leave blank to stay anonymous. |
-| `commit_sha` | string (optional) | The commit your finding reproduces against. We will pin to this. |
+| `payment_rail` | string | `wise` or `usdc_base`. |
+| `public_credit` | boolean | `true` if you consent to public Hall-of-Fame credit. Defaults to `false` (anonymous). |
 
 A working `curl` example:
 
@@ -51,14 +48,11 @@ A working `curl` example:
 curl -X POST https://sameasyou.ai/bounty/submit \
   -H 'Content-Type: application/json' \
   -d '{
-    "bug_class": "watermarked_chain_mod",
-    "severity_rating": 7,
+    "bug_class": "watermark_removal",
     "description": "Threat model: ... Bug: ... Impact: ...",
     "proof_of_concept": "https://gist.github.com/.../...",
-    "contact": "you@example.com",
     "payment_rail": "usdc_base",
-    "handle": "anonymous",
-    "commit_sha": "9a3f1c2..."
+    "public_credit": true
   }'
 ```
 
@@ -68,37 +62,35 @@ Response:
 {
   "ok": true,
   "tracking_id": "AAL-XXXX-XXXX-XXXX",
-  "message": "Submission received. Save the tracking id. ..."
+  "message": "Submission received. Save the tracking id. Payout within 24h of verified acceptance."
 }
 ```
 
 **Save the tracking id.** You can check status any time via `GET /bounty/status/AAL-...`. We do not require accounts; the tracking id is your handle.
 
-For sensitive findings, email `bounty@sameasyou.ai` with the same fields. PGP fingerprint will be published here as soon as the key rotates.
+For sensitive findings, email `bounty@sameasyou.ai`.
 
 ### Timeline
 
-| Day | What happens |
+| When | What happens |
 | --- | --- |
-| 0 | Submission received, automated triage runs (Claude Haiku) within ~1 hour. |
-| 0–2 | Human acknowledgement on your preferred contact rail. |
-| 1–7 | Reviewer reproduces against your pinned commit, scores severity, decides tier. |
-| 8–30 | Private fix window. Fix lands in `main`. You are invited to review the fix. |
-| 30+ | Public attestation: your finding is published to the Component 3 watermarked audit log. With consent, your handle goes on the Hall of Fame. |
+| ≤ 1 hour | Automated triage runs (Claude Haiku) and a human reviewer is paged. |
+| ≤ 24 hours of acceptance | Payout fires on the rail you chose. Wise or USDC on Base. |
+| After payment | If you consented to public credit, your handle and the finding go on the Hall of Fame and become a permanent attestation on the AAL Component 3 chain. |
 
 ### Rules
 
-- **Reproduce against the public reference.** Pin a commit SHA. We will not pay on speculation.
+- **Reproduce against the public reference.** Pin a commit SHA in your description. We will not pay on speculation.
 - **No data exfiltration beyond proof.** Touch only what you need to demonstrate the bug.
 - **No DoS, no social engineering, no physical access.** Out of scope.
 - **No targeting of users or third parties.** Out of scope.
-- **First valid report in each class wins the headline payout.** Subsequent reports of the same root cause are eligible for partial credit up to 50% if they add materially new attack surface.
-- **Apache 2.0 in, Apache 2.0 out.** By submitting, you grant us an Apache 2.0 license to incorporate your PoC into our public test suite. You retain authorship and the right to publish your own writeup after the 30-day window.
-- **Safe harbor.** Good-faith findings get safe harbor. We will not pursue legal action and we will support you publicly. We will not unmask you. We will not retroactively change payouts on an accepted finding.
+- **First valid report in each class wins the payout.** Subsequent reports of the same root cause may receive credit but no second payout.
+- **Apache 2.0 in, Apache 2.0 out.** By submitting, you grant us an Apache 2.0 license to incorporate your PoC into our public test suite. You retain authorship and the right to publish your own writeup.
+- **Safe harbor.** Good-faith findings get safe harbor. We will not pursue legal action and we will support you publicly. We will not unmask you.
 
 ### What's out of scope
 
-- Third-party dependencies (Cloudflare, Anthropic, Stripe, Wise, etc.).
+- Third-party dependencies (Cloudflare, Anthropic, Wise, etc.).
 - Customer deployments we do not control.
 - Self-XSS and attacks reachable only via attacker-controlled clients.
 - Theoretical attacks without a working PoC.
@@ -108,18 +100,18 @@ For sensitive findings, email `bounty@sameasyou.ai` with the same fields. PGP fi
 
 | Rail | Notes |
 | --- | --- |
-| Stripe (Connect Express) | Default for US reporters. Stripe handles KYC and 1099 reporting. |
-| Wise | International bank transfer. Wise quotes USD-to-local; we always quote in USD. |
+| Wise | International bank transfer. We quote in USD, Wise handles local rails. |
 | USDC on Base | On-chain ERC-20 transfer from our payout wallet to your 0x address. No KYC. |
-| Other | Tell us in the description. We will figure it out within reason. |
 
 Reporters in OFAC-restricted jurisdictions cannot be paid; we will donate the equivalent to an EA / AI-safety org of mutual choice.
 
-### The recursion
+### Why only $100?
 
-This is the part that matters most.
+Because the test is binary. The claim is that the AAL's threshold-trust property cannot be broken without simultaneously compromising every reporter, every synthesizer, SHA-256, and discrete log. If that claim is false, $100 is far below the market value of the proof — and the first person to bring it gets a permanent place in the public attestation log either way. If the claim is true, no amount of money pays for an attack that does not exist. $100 is the smallest amount we can defensibly pay; the real reward is the reputation on the network.
 
-**Every accepted bug becomes a permanent public attestation on the AAL itself.** The AAL is built to record verifiable claims on a watermarked chain. When we accept a bug against the AAL, we publish that finding to the same chain — using the same primitives the bug just attacked. The fix is logged. The attack is logged. The hacker (with consent) is logged. The system attests to its own failures. If we ever stop doing this, that fact is itself an attack worth reporting.
+### The recursion clause
+
+**Every accepted bug becomes a permanent public attestation on the AAL itself.** The AAL is built to record verifiable claims on a watermarked chain. When we accept a bug against the AAL, we publish that finding to the same chain — using the same primitives the bug just attacked. The fix is logged. The attack is logged. The hacker (with consent) is logged. The system attests to its own failures.
 
 ---
 
@@ -130,13 +122,13 @@ This section is the operations runbook. It assumes you have:
 - Cloudflare account with access to the `aal-bounty` D1 database and the `aal-bounty` Worker.
 - `wrangler` CLI installed and authenticated (`wrangler login`).
 - `ANTHROPIC_API_KEY` for the triage helper.
-- Stripe / Wise / payout-wallet keys, on a hardened reviewer workstation only.
+- `WISE_API_TOKEN` / `WISE_PROFILE_ID` and a payout-wallet private key, on a hardened reviewer workstation only.
 
 ### Architecture in three boxes
 
 ```
    ┌───────────────────────┐
-   │  sameasyou.ai/bounty  │  static, in landing/
+   │  sameasyou.ai/bounty  │  static, in bounty/landing/
    └─────────────┬─────────┘
                  │ POST /bounty/submit
                  ▼
@@ -157,11 +149,11 @@ This section is the operations runbook. It assumes you have:
                                                 ▼ (human accepts)
                                   ┌────────────────────────────┐
                                   │ payment.py                 │
-                                  │ Stripe / Wise / USDC-Base  │
+                                  │ Wise / USDC-on-Base        │
                                   │ writes paid_at, payout_ref │
                                   └─────────────┬──────────────┘
                                                 │
-                                                ▼ (after 30-day window)
+                                                ▼ (after payment)
                                   ┌────────────────────────────┐
                                   │ Component 3 attestation    │
                                   │ + bounty_attestations row  │
@@ -194,7 +186,7 @@ The Worker is bound at `sameasyou.ai/bounty/submit`, `sameasyou.ai/bounty/status
 
 ### Running triage
 
-The triage script is decision support — it never moves money. It reads `received` submissions, classifies them with Claude Haiku, suggests a tier, and flags obvious dupes. A human reviewer always reads the result and makes the final call.
+The triage script is decision support — it never moves money. It reads `received` submissions, classifies them with Claude Haiku, suggests an `accept` / `reject` / `more_info` recommendation, and flags obvious dupes. A human reviewer always reads the result and makes the final call.
 
 ```bash
 # Triage everything still in `received` status.
@@ -207,17 +199,16 @@ ANTHROPIC_API_KEY=sk-... python3 bounty/submission_review.py --id AAL-XXXX-XXXX-
 ANTHROPIC_API_KEY=sk-... python3 bounty/submission_review.py --once --dry-run
 ```
 
-Triage writes to `triage_class`, `triage_tier`, `triage_notes`, `triage_dupe_of`, `triage_model`, and `triage_at`. The reviewer's human verdict overwrites these via the SQL examples below.
+Triage writes to `triage_class`, `triage_notes`, `triage_dupe_of`, `triage_model`, and `triage_at`. The reviewer's human verdict overwrites these via the SQL examples below.
 
 ### Human review SQL
 
-Mark a submission accepted with the agreed payout:
+Mark a submission accepted (payout defaults to $100 from the schema):
 
 ```sql
 UPDATE bounty_submissions
 SET accepted = 1,
     status = 'accepted',
-    payout_usd_cents = 1000000,           -- e.g. $10,000.00
     payout_rail = 'usdc_base',            -- override of the reporter's request if needed
     updated_at = strftime('%s', 'now')
 WHERE tracking_id = 'AAL-XXXX-XXXX-XXXX';
@@ -255,19 +246,18 @@ python3 bounty/payment.py \
   --confirm
 ```
 
-On success the script writes `status='paid'`, `paid_at`, `payout_rail`, and `payout_ref` (Stripe transfer id, Wise transfer id, or Base tx hash) back to D1.
+On success the script writes `status='paid'`, `paid_at`, `payout_rail`, and `payout_ref` (Wise transfer id or Base tx hash) back to D1.
 
 Per-rail prerequisites:
 
-- **Stripe** — `STRIPE_API_KEY`. Destination is a Stripe Connect Express account id (`acct_...`); onboard the reporter via a Connect onboarding link before paying.
 - **Wise** — `WISE_API_TOKEN`, `WISE_PROFILE_ID`. Destination is a Wise recipient id; create the recipient via the dashboard or Wise API first.
 - **USDC on Base** — `USDC_BASE_RPC_URL`, `USDC_BASE_PRIVATE_KEY`. Destination is a 0x-prefixed checksum address. Requires `pip install web3`.
 
 ### Publishing the attestation
 
-After the 30-day private window closes:
+After payment fires:
 
-1. Land the fix in `main`.
+1. Land the fix in `main` (if applicable).
 2. Open a Component 3 attestation referencing the tracking id, the bug class, a one-paragraph summary, and the public commit that fixed it.
 3. Capture the resulting Component 3 chain id and watermark root.
 4. Insert a row into `bounty_attestations`:
@@ -280,12 +270,12 @@ VALUES
    'Short public summary of the finding.', strftime('%s', 'now'));
 ```
 
-5. Update the Hall of Fame on `landing/bounty.html` and ship a landing-page deploy.
+5. Update the Hall of Fame on `bounty/landing/bounty.html` and ship a landing-page deploy.
 
 ### What is *not* in this directory
 
 - The AAL Components themselves (1–5). Those ship in the rest of `calm-vault/`.
-- Stripe / Wise / wallet credentials. Never commit these.
+- Wise / wallet credentials. Never commit these.
 - A live `wrangler.toml`. We ship `wrangler.toml.example`; the real config is gitignored.
 
 ---
@@ -295,11 +285,12 @@ VALUES
 | Path | What it does |
 | --- | --- |
 | `landing/bounty.html` | Public landing page served at `sameasyou.ai/bounty`. |
+| `landing/_redirects`, `landing/_headers` | Cloudflare Pages routing + security headers. |
 | `submission/worker.js` | Cloudflare Worker handling `/bounty/submit`, `/bounty/status/:id`, `/bounty/health`. |
 | `submission/schema.sql` | D1 schema for `bounty_submissions` and `bounty_attestations`. |
 | `submission/wrangler.toml.example` | Example Wrangler config; copy and fill in ids. |
 | `submission_review.py` | Claude Haiku triage helper. |
-| `payment.py` | Stripe / Wise / USDC-on-Base payout dispatcher. |
+| `payment.py` | Wise / USDC-on-Base payout dispatcher. |
 | `README.md` | This file. |
 
-Everything is Apache 2.0. Find a hole, get paid.
+Everything is Apache 2.0. **$100 says you cant misalign our AI organization.**

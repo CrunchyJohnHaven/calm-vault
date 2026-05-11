@@ -23,21 +23,18 @@ const ALLOWED_ORIGINS = new Set([
 
 const BUG_CLASSES = new Set([
   "kill_switch_bypass",
-  "bradley_gavini_crypto",
+  "equality_proof_forgery",
+  "watermark_removal",
+  "attestation_poisoning",
   "synthesizer_prompt_injection",
-  "watermarked_chain_mod",
-  "sybil_attack",
   "other_novel",
 ]);
 
-const PAYMENT_RAILS = new Set(["stripe", "wise", "usdc_base", "other"]);
+const PAYMENT_RAILS = new Set(["wise", "usdc_base"]);
 
 const MAX_FIELD_LEN = {
   description: 16_000,
   proof_of_concept: 64_000,
-  contact: 256,
-  handle: 128,
-  commit_sha: 128,
 };
 
 const SUBMIT_RATE_PER_HOUR = 5;
@@ -102,21 +99,13 @@ function trackingId() {
 function validate(body) {
   if (!body || typeof body !== "object") return "Empty body.";
   if (!BUG_CLASSES.has(body.bug_class)) return "Unknown bug_class.";
-  if (!PAYMENT_RAILS.has(body.payment_rail)) return "Unknown payment_rail.";
-
-  const sev = Number(body.severity_rating);
-  if (!Number.isFinite(sev) || sev < 1 || sev > 10) {
-    return "severity_rating must be an integer 1-10.";
-  }
+  if (!PAYMENT_RAILS.has(body.payment_rail)) return "Unknown payment_rail. Use wise or usdc_base.";
 
   if (typeof body.description !== "string" || body.description.trim().length < 40) {
     return "description must be at least 40 characters.";
   }
   if (typeof body.proof_of_concept !== "string" || body.proof_of_concept.trim().length < 10) {
     return "proof_of_concept must be at least 10 characters.";
-  }
-  if (typeof body.contact !== "string" || body.contact.trim().length < 3) {
-    return "contact is required.";
   }
 
   for (const [k, max] of Object.entries(MAX_FIELD_LEN)) {
@@ -153,24 +142,23 @@ async function handleSubmit(request, env) {
   const now = Math.floor(Date.now() / 1000);
   const ua = request.headers.get("User-Agent") || "";
 
+  const publicCredit = body.public_credit === true || body.public_credit === "yes" ? 1 : 0;
+
   try {
     await env.BOUNTY_DB.prepare(
       `INSERT INTO bounty_submissions
-       (tracking_id, bug_class, severity_rating, description, proof_of_concept,
-        contact, payment_rail, handle, commit_sha, source_ip, user_agent,
+       (tracking_id, bug_class, description, proof_of_concept,
+        payment_rail, public_credit, source_ip, user_agent,
         status, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'received', ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'received', ?, ?)`,
     )
       .bind(
         id,
         body.bug_class,
-        Math.trunc(Number(body.severity_rating)),
         body.description.trim(),
         body.proof_of_concept.trim(),
-        body.contact.trim(),
         body.payment_rail,
-        (body.handle || "").trim() || null,
-        (body.commit_sha || "").trim() || null,
+        publicCredit,
         ip,
         ua.slice(0, 512),
         now,
@@ -191,7 +179,7 @@ async function handleSubmit(request, env) {
       ok: true,
       tracking_id: id,
       message:
-        "Submission received. Save the tracking id. Acknowledgement within 48h, verdict within 7 days.",
+        "Submission received. Save the tracking id. Payout within 24h of verified acceptance.",
     },
     origin,
   );
@@ -204,7 +192,7 @@ async function handleStatus(request, env, id) {
   }
   try {
     const row = await env.BOUNTY_DB.prepare(
-      `SELECT tracking_id, bug_class, status, triage_class, triage_tier,
+      `SELECT tracking_id, bug_class, status, triage_class,
               accepted, paid_at, created_at, updated_at
        FROM bounty_submissions WHERE tracking_id = ? LIMIT 1`,
     )
