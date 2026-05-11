@@ -1,0 +1,37 @@
+# Cloudflare Worker for the Calm Vault no-touch platform.
+#
+# Deploy:
+#   1. wrangler d1 create calm_vault          # capture the database_id
+#   2. paste it into [[d1_databases]] below
+#   3. npm run db:migrate:remote
+#   4. wrangler secret put RESEND_API_KEY
+#   5. wrangler secret put ANTHROPIC_API_KEY  # optional, reserved for future use
+#   6. npm run deploy
+
+name = "calm-vault-platform"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Public origin used in /verify URLs returned to clients.
+# Override per-environment if you deploy to a different hostname.
+[vars]
+PUBLIC_ORIGIN = "https://sameasyou.ai"
+FROM_EMAIL = "Calm Vault <hello@sameasyou.ai>"
+STRIPE_PRO_PAYMENT_LINK = "https://buy.stripe.com/6oU6oA3gKgyg0B9ady0sU0l"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "calm_vault"
+# Run `wrangler d1 create calm_vault` and paste the id below.
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
+
+# Optional custom domain. Uncomment after DNS is configured.
+# routes = [
+#   { pattern = "sameasyou.ai/*", custom_domain = true },
+#   { pattern = "api.sameasyou.ai/*", custom_domain = true },
+# ]
+
+[observability]
+enabled = true
