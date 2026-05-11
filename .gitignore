@@ -33,3 +33,9 @@ audit.log
 # Cloudflare / wrangler
 .wrangler/
 wrangler.toml
+!worker/wrangler.toml
+
+# Node / Worker
+node_modules/
+worker/dist/
+*.log
