@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="Calm Vault — A credential broker for AI agents">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b0d10"/>
+      <stop offset="100%" stop-color="#11151a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="20%" cy="0%" r="70%">
+      <stop offset="0%" stop-color="#16201a" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#0b0d10" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="90%" cy="20%" r="60%">
+      <stop offset="0%" stop-color="#1a1620" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#0b0d10" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#a4f3c4"/>
+      <stop offset="50%" stop-color="#7fb8f2"/>
+      <stop offset="100%" stop-color="#c79df0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect width="1200" height="630" fill="url(#glow2)"/>
+
+  <!-- Brand mark -->
+  <g transform="translate(80,80)">
+    <rect width="68" height="68" rx="16" fill="#a4f3c4"/>
+    <text x="34" y="48" font-family="Inter, system-ui, sans-serif" font-size="38" font-weight="800" fill="#0b0d10" text-anchor="middle">C</text>
+  </g>
+  <text x="170" y="128" font-family="Inter, system-ui, sans-serif" font-size="28" font-weight="700" fill="#e7eef5">Calm Vault</text>
+
+  <!-- Tagline pill -->
+  <g transform="translate(80,200)">
+    <rect width="380" height="40" rx="20" fill="rgba(164,243,196,0.08)" stroke="rgba(164,243,196,0.3)" stroke-width="1"/>
+    <circle cx="22" cy="20" r="4" fill="#a4f3c4"/>
+    <text x="40" y="26" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="500" fill="#a4f3c4">V1 · Apache 2.0 · ~450 lines of Python</text>
+  </g>
+
+  <!-- Headline -->
+  <text x="80" y="320" font-family="Inter, system-ui, sans-serif" font-size="68" font-weight="700" fill="#e7eef5" letter-spacing="-2">A credential broker</text>
+  <text x="80" y="400" font-family="Inter, system-ui, sans-serif" font-size="68" font-weight="700" fill="url(#grad)" letter-spacing="-2">for AI agents.</text>
+
+  <!-- Sub -->
+  <text x="80" y="470" font-family="Inter, system-ui, sans-serif" font-size="24" font-weight="400" fill="#8a98a8">Short-lived, scoped, revocable grants. Local. Passphrase-protected.</text>
+
+  <!-- URL -->
+  <text x="80" y="560" font-family="JetBrains Mono, ui-monospace, monospace" font-size="20" font-weight="500" fill="#a4f3c4">vault.thecreativitymachine.ai</text>
+
+  <!-- Lock icon -->
+  <g transform="translate(950,200)" opacity="0.85">
+    <rect x="0" y="80" width="160" height="120" rx="14" fill="#a4f3c4"/>
+    <path d="M30 80 V 50 a50 50 0 0 1 100 0 V 80" fill="none" stroke="#a4f3c4" stroke-width="14" stroke-linecap="round"/>
+    <circle cx="80" cy="140" r="14" fill="#0b0d10"/>
+    <rect x="76" y="140" width="8" height="28" rx="4" fill="#0b0d10"/>
+  </g>
+</svg>

@@ -1,0 +1,164 @@
+Output from command in shell default:
+Cloning into '/tmp/calm-vault-fresh'...
+done.
+
+[notice] A new release of pip is available: 24.3.1 -> 26.1.1
+[notice] To update, run: pip install --upgrade pip
+
+==========================================================
+CALM VAULT V1 — END-TO-END SMOKE TEST TRANSCRIPT
+==========================================================
+
+## Versions
+Python 3.12.8
+cryptography 48.0.0
+vault commit: 73313a4
+
+==========================================================
+## 0. CLI help
+==========================================================
+usage: calm-vault [-h] [--home HOME] [--passphrase PASSPHRASE] [--json]
+                  {setup,issue-agent,add,grant,request,revoke,list} ...
+
+Local, passphrase-protected credential broker for AI agents.
+
+positional arguments:
+  {setup,issue-agent,add,grant,request,revoke,list}
+    setup               initialise a new vault
+    issue-agent         register a new agent identity
+    add                 store a new credential
+    grant               issue a time-bound grant for a credential
+    request             redeem a grant for the underlying credential value
+    revoke              revoke a grant, agent, or credential
+    list                list credentials, agents, and outstanding grants
+
+options:
+  -h, --help            show this help message and exit
+  --home HOME           vault home directory (default: /tmp/cv-smoke)
+  --passphrase PASSPHRASE
+                        passphrase (overrides $CALM_VAULT_PASSPHRASE / TTY
+                        prompt)
+  --json                force JSON output
+
+==========================================================
+## 1. setup (initialise a new vault)
+==========================================================
+$ python3 src/calm_vault.py --passphrase 'surge-mode-pw' setup
+{
+  "status": "ok",
+  "vault_home": "/tmp/cv-smoke-final"
+}
+
+## vault home contents:
+total 12
+drwxr-xr-x  2 ubuntu ubuntu 100 May 11 21:44 .
+drwxrwxrwt 16 root   root   400 May 11 21:44 ..
+-rw-r--r--  1 ubuntu ubuntu  65 May 11 21:44 audit.log
+-rw-r--r--  1 ubuntu ubuntu 180 May 11 21:44 config.json
+-rw-r--r--  1 ubuntu ubuntu 184 May 11 21:44 vault.enc
+
+==========================================================
+## 2. issue-agent test-agent
+==========================================================
+$ python3 src/calm_vault.py --passphrase 'surge-mode-pw' issue-agent test-agent
+{
+  "id": "88beec82-edf3-46ae-9d1d-360a96cf9c8e",
+  "name": "test-agent",
+  "token": "lgdh9jUEa-_7-tceCknc0lElWjL18g0-"
+}
+
+==========================================================
+## 3. add test-cred 'hello-world-value'
+==========================================================
+$ python3 src/calm_vault.py --passphrase 'surge-mode-pw' add test-cred 'hello-world-value'
+{
+  "id": "48e398ca-7420-4f31-bfcb-17f442f1c36b",
+  "name": "test-cred"
+}
+
+==========================================================
+## 4. grant test-cred --duration 60
+==========================================================
+$ python3 src/calm_vault.py --passphrase 'surge-mode-pw' grant test-cred --agent test-agent --duration 60
+{
+  "agent": "test-agent",
+  "credential": "test-cred",
+  "credential_id": "48e398ca-7420-4f31-bfcb-17f442f1c36b",
+  "expires_at": 1778535913,
+  "id": "ff354268-287b-4527-b39d-eba41dc7cfd6",
+  "issued_at": 1778535853,
+  "nonce": "1b183c5b562ea7ba",
+  "sig": "nURWqr4U5ehGMl2-b7Cz-10pvcmUP2mvh51xjnz8Dg4"
+}
+
+==========================================================
+## 5. request test-cred --grant <json>
+==========================================================
+$ python3 src/calm_vault.py --passphrase 'surge-mode-pw' request test-cred --grant "$GRANT_JSON"
+hello-world-value
+
+[SMOKE-TEST-PASS] returned value matches stored credential: hello-world-value
+
+==========================================================
+## 6. revoke (cascade revoke credential + grants)
+==========================================================
+$ python3 src/calm_vault.py --passphrase 'surge-mode-pw' revoke test-cred
+revoked credential test-cred and cascade-revoked dependent grants
+
+## post-revoke list:
+{
+  "agents": [
+    {
+      "created_at": 1778535853,
+      "id": "88beec82-edf3-46ae-9d1d-360a96cf9c8e",
+      "name": "test-agent"
+    }
+  ],
+  "credentials": [],
+  "grants": []
+}
+
+## attempting to redeem the revoked grant (should fail):
+error: grant has been revoked
+[SMOKE-TEST-PASS] redemption of revoked grant correctly rejected (exit 1)
+
+==========================================================
+## 7. negative test: tampered grant signature
+==========================================================
+{
+  "id": "5d8c29f7-031f-458a-84b9-23347e84cbcc",
+  "name": "tamper-cred"
+}
+error: grant signature invalid (forged or tampered)
+[SMOKE-TEST-PASS] tampered grant correctly rejected (exit 1)
+
+==========================================================
+## 8. negative test: expired grant
+==========================================================
+{
+  "id": "00a221e8-8da8-4966-baea-c4de1378a91a",
+  "name": "exp-cred"
+}
+issued 1-second grant; sleeping 2s...
+error: grant expired
+[SMOKE-TEST-PASS] expired grant correctly rejected (exit 1)
+
+==========================================================
+## audit log (last 12 lines)
+==========================================================
+{"ts": 1778535853, "op": "setup", "home": "/tmp/cv-smoke-final"}
+{"ts": 1778535853, "op": "issue-agent", "agent": "test-agent"}
+{"ts": 1778535853, "op": "add", "credential": "test-cred"}
+{"ts": 1778535853, "op": "grant", "credential": "test-cred", "agent": "test-agent", "grant_id": "ff354268-287b-4527-b39d-eba41dc7cfd6", "expires_at": 1778535913}
+{"ts": 1778535853, "op": "request", "credential": "test-cred", "agent": "test-agent", "grant_id": "ff354268-287b-4527-b39d-eba41dc7cfd6"}
+{"ts": 1778535854, "op": "revoke-credential", "credential": "test-cred"}
+{"ts": 1778535854, "op": "add", "credential": "tamper-cred"}
+{"ts": 1778535854, "op": "grant", "credential": "tamper-cred", "agent": null, "grant_id": "3d48faed-8e5c-4a58-88ac-769ef785548f", "expires_at": 1778535914}
+{"ts": 1778535855, "op": "add", "credential": "exp-cred"}
+{"ts": 1778535855, "op": "grant", "credential": "exp-cred", "agent": null, "grant_id": "d88d796c-ab31-4b3c-9669-f1333b717d0b", "expires_at": 1778535856}
+
+==========================================================
+ALL SMOKE TESTS PASSED
+==========================================================
+
+Exit code: 0

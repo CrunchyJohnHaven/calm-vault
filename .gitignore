@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Vault state (NEVER commit your real vault)
+.calm-vault/
+*.enc
+audit.log
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Test scratch
+/tmp/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Cloudflare / wrangler
+.wrangler/
+wrangler.toml
