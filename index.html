@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0b0d10" />
+
+    <title>Calm Vault — A credential broker for AI agents</title>
+    <meta name="description" content="A local, passphrase-protected credential broker for AI agents. Short-lived, scoped, revocable grants. One file. One passphrase. ~450 lines of Python. Apache 2.0." />
+    <meta name="keywords" content="AI agents, credential broker, secrets management, agent security, Python, Apache 2.0, Calm Vault" />
+    <meta name="author" content="CrunchyJohnHaven" />
+    <link rel="canonical" href="https://sameasyou.ai/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://sameasyou.ai/" />
+    <meta property="og:title" content="Calm Vault — A credential broker for AI agents" />
+    <meta property="og:description" content="Short-lived, scoped, revocable credential grants for autonomous agents. Local. Passphrase-protected. Apache 2.0." />
+    <meta property="og:image" content="https://sameasyou.ai/og.svg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Calm Vault" />
+    <meta name="twitter:description" content="A credential broker for AI agents. Short-lived, scoped, revocable grants. Local. Apache 2.0." />
+    <meta name="twitter:image" content="https://sameasyou.ai/og.svg" />
+
+    <!-- Performance: preconnect to font origins; everything else is inlined -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://github.com" />
+
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" /></noscript>
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0d10'/%3E%3Cpath d='M20 28v-6a12 12 0 0 1 24 0v6' fill='none' stroke='%23a4f3c4' stroke-width='4' stroke-linecap='round'/%3E%3Crect x='16' y='28' width='32' height='24' rx='4' fill='%23a4f3c4'/%3E%3Ccircle cx='32' cy='40' r='3' fill='%230b0d10'/%3E%3C/svg%3E" />
+
+    <style>
+      :root {
+        --bg: #0b0d10;
+        --bg-elev: #11151a;
+        --bg-card: #141a21;
+        --fg: #e7eef5;
+        --fg-dim: #8a98a8;
+        --fg-muted: #5b6778;
+        --accent: #a4f3c4;
+        --accent-dim: #6fc99c;
+        --border: #1f2730;
+        --warn: #f3c46f;
+        --max-w: 1080px;
+        --radius: 14px;
+      }
+      *,*::before,*::after { box-sizing: border-box; }
+      html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: radial-gradient(1200px 600px at 20% -10%, #16201a 0%, transparent 60%),
+                    radial-gradient(900px 500px at 90% 10%, #1a1620 0%, transparent 55%),
+                    var(--bg);
+        color: var(--fg);
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        font-size: 17px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      code, pre { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.95em; }
+
+      .wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+      header {
+        padding: 28px 0 0;
+      }
+      .nav {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 16px;
+      }
+      .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: -0.01em; }
+      .brand-mark {
+        width: 32px; height: 32px; border-radius: 8px;
+        background: var(--accent); color: var(--bg);
+        display: grid; place-items: center; font-weight: 800; font-size: 18px;
+        box-shadow: 0 0 0 1px rgba(164,243,196,0.4), 0 8px 24px -8px rgba(164,243,196,0.4);
+      }
+      .nav-links { display: flex; gap: 18px; color: var(--fg-dim); font-size: 14px; }
+      .nav-links a { color: var(--fg-dim); }
+      .nav-links a:hover { color: var(--fg); text-decoration: none; }
+
+      .hero { padding: 88px 0 64px; }
+      .pill {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 6px 12px; border-radius: 999px;
+        background: rgba(164,243,196,0.08);
+        color: var(--accent);
+        font-size: 13px; font-weight: 500;
+        border: 1px solid rgba(164,243,196,0.18);
+      }
+      .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+      h1 {
+        font-size: clamp(36px, 6vw, 64px);
+        line-height: 1.05;
+        letter-spacing: -0.025em;
+        margin: 20px 0 18px;
+        font-weight: 700;
+      }
+      h1 .grad {
+        background: linear-gradient(120deg, #a4f3c4 0%, #7fb8f2 50%, #c79df0 100%);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+      }
+      .lede {
+        max-width: 720px;
+        color: var(--fg-dim);
+        font-size: clamp(17px, 2.1vw, 21px);
+        line-height: 1.55;
+      }
+      .cta-row {
+        margin-top: 36px;
+        display: flex; flex-wrap: wrap; gap: 12px;
+      }
+      .btn {
+        display: inline-flex; align-items: center; gap: 10px;
+        padding: 12px 18px; border-radius: 10px;
+        font-weight: 600; font-size: 15px;
+        transition: transform .12s ease, background .12s ease, border-color .12s ease;
+        border: 1px solid transparent;
+      }
+      .btn:hover { transform: translateY(-1px); text-decoration: none; }
+      .btn-primary { background: var(--accent); color: var(--bg); }
+      .btn-primary:hover { background: #b8f7d2; }
+      .btn-ghost { background: transparent; color: var(--fg); border-color: var(--border); }
+      .btn-ghost:hover { border-color: var(--fg-dim); }
+
+      .terminal {
+        margin-top: 56px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: 0 20px 60px -20px rgba(0,0,0,0.6);
+      }
+      .terminal-bar {
+        display: flex; align-items: center; gap: 6px;
+        padding: 12px 14px;
+        background: var(--bg-elev);
+        border-bottom: 1px solid var(--border);
+      }
+      .terminal-bar .light { width: 11px; height: 11px; border-radius: 50%; }
+      .terminal-bar .light.r { background: #ff5f57; }
+      .terminal-bar .light.y { background: #febc2e; }
+      .terminal-bar .light.g { background: #28c840; }
+      .terminal-bar .title { margin-left: 10px; color: var(--fg-muted); font-size: 12px; }
+      pre.terminal-body {
+        margin: 0;
+        padding: 22px 24px;
+        overflow-x: auto;
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--fg);
+      }
+      .terminal-body .prompt { color: var(--accent-dim); user-select: none; }
+      .terminal-body .com { color: var(--fg-muted); }
+      .terminal-body .out { color: var(--fg-dim); }
+      .terminal-body .ok { color: var(--accent); }
+      .terminal-body .key { color: var(--warn); }
+
+      section { padding: 72px 0; border-top: 1px solid var(--border); }
+      section h2 { font-size: clamp(26px, 3.6vw, 36px); margin: 0 0 16px; letter-spacing: -0.02em; }
+      section p.section-lede { color: var(--fg-dim); max-width: 680px; margin: 0 0 32px; font-size: 17px; }
+
+      .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+      .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 22px;
+      }
+      .card h3 { margin: 0 0 8px; font-size: 17px; letter-spacing: -0.01em; }
+      .card p { margin: 0; color: var(--fg-dim); font-size: 15px; line-height: 1.55; }
+      .card .ico { display: inline-flex; width: 36px; height: 36px; border-radius: 9px; background: rgba(164,243,196,0.12); color: var(--accent); align-items: center; justify-content: center; margin-bottom: 14px; font-size: 18px; }
+
+      .threat-cols { display: grid; gap: 18px; grid-template-columns: 1fr 1fr; }
+      @media (max-width: 720px) { .threat-cols { grid-template-columns: 1fr; } }
+      .threat-cols .card ul { padding-left: 18px; margin: 0; color: var(--fg-dim); }
+      .threat-cols .card li { margin: 6px 0; }
+      .threat-cols .card.warn { border-color: rgba(243,196,111,0.3); }
+      .threat-cols .card.warn h3 { color: var(--warn); }
+
+      .footer {
+        padding: 56px 0 72px;
+        color: var(--fg-muted);
+        font-size: 14px;
+        border-top: 1px solid var(--border);
+      }
+      .footer .row { display: flex; flex-wrap: wrap; gap: 18px; justify-content: space-between; align-items: center; }
+      .footer a { color: var(--fg-dim); }
+
+      ::selection { background: rgba(164,243,196,0.3); color: var(--fg); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="nav">
+          <div class="brand">
+            <div class="brand-mark" aria-hidden="true">C</div>
+            <span>Calm Vault</span>
+          </div>
+          <nav class="nav-links" aria-label="Primary">
+            <a href="#how">How it works</a>
+            <a href="#threats">Threat model</a>
+            <a href="https://github.com/CrunchyJohnHaven/calm-vault" rel="noopener">GitHub</a>
+          </nav>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero" style="border-top: 0; padding-top: 72px;">
+          <span class="pill"><span class="dot" aria-hidden="true"></span> V1 · Apache 2.0 · ~450 lines of Python</span>
+          <h1>A credential broker<br/><span class="grad">for AI agents.</span></h1>
+          <p class="lede">Your agents should never hold your keys. Calm Vault stores secrets locally, encrypted with your passphrase, and hands out short-lived, scoped, revocable <em>grants</em> instead. One file. One passphrase. No cloud.</p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="https://github.com/CrunchyJohnHaven/calm-vault" rel="noopener">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.87-1.36-3.87-1.36-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.25 3.34.96.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.45.11-3.01 0 0 .97-.31 3.18 1.18.92-.26 1.92-.39 2.9-.39s1.98.13 2.9.39c2.2-1.49 3.17-1.18 3.17-1.18.62 1.56.23 2.72.11 3.01.73.81 1.18 1.84 1.18 3.1 0 4.42-2.7 5.4-5.27 5.68.41.35.78 1.05.78 2.12v3.14c0 .31.21.68.8.56C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+              Clone on GitHub
+            </a>
+            <a class="btn btn-ghost" href="https://github.com/CrunchyJohnHaven/calm-vault/blob/main/docs/QUICKSTART.md" rel="noopener">Read the quickstart →</a>
+          </div>
+
+          <div class="terminal" role="figure" aria-label="Five commands from setup to redemption">
+            <div class="terminal-bar" aria-hidden="true">
+              <span class="light r"></span><span class="light y"></span><span class="light g"></span>
+              <span class="title">~/projects/agent-harness</span>
+            </div>
+<pre class="terminal-body"><span class="com"># 1. one-time setup</span>
+<span class="prompt">$</span> calm-vault setup
+<span class="out">Vault passphrase: ••••••••</span>
+<span class="ok">{ "status": "ok", "vault_home": "~/.calm-vault" }</span>
+
+<span class="com"># 2. register an agent and store a credential</span>
+<span class="prompt">$</span> calm-vault issue-agent slack-bot
+<span class="prompt">$</span> calm-vault add slack-token <span class="key">"xoxb-real-token"</span>
+
+<span class="com"># 3. issue a 60-second grant scoped to slack-bot</span>
+<span class="prompt">$</span> calm-vault grant slack-token --agent slack-bot --duration 60
+<span class="ok">{ "id": "f2a4b9...", "expires_at": 1731000000, "sig": "Lf...G2g", ... }</span>
+
+<span class="com"># 4. the agent redeems it, just-in-time</span>
+<span class="prompt">$</span> calm-vault request slack-token --grant "$GRANT"
+<span class="out">xoxb-real-token</span>
+
+<span class="com"># 5. revoke anything, by grant id / agent / credential</span>
+<span class="prompt">$</span> calm-vault revoke slack-bot</pre>
+          </div>
+        </section>
+
+        <section id="how">
+          <h2>How it works</h2>
+          <p class="section-lede">Three boring ideas, executed honestly.</p>
+          <div class="grid">
+            <div class="card">
+              <div class="ico" aria-hidden="true">🔐</div>
+              <h3>Local root of trust</h3>
+              <p>The master key is derived from your passphrase via Scrypt (n=2¹⁵, r=8, p=1). The vault file is Fernet-encrypted at rest — AES-128-CBC plus HMAC-SHA256. No service to call. No account to sign up for.</p>
+            </div>
+            <div class="card">
+              <div class="ico" aria-hidden="true">⏱️</div>
+              <h3>Short-lived grants</h3>
+              <p>Every grant is an HMAC-signed envelope with a credential id, agent name, issue time, expiry, and nonce. Default duration is five minutes. The agent never sees the master key — just a one-shot ticket.</p>
+            </div>
+            <div class="card">
+              <div class="ico" aria-hidden="true">🪓</div>
+              <h3>Real revocation</h3>
+              <p>Kill a grant by id, an agent by name, or a credential by name. Revocation is immediate and cascades — if you revoke a credential, every outstanding grant for it stops working on the next redemption.</p>
+            </div>
+            <div class="card">
+              <div class="ico" aria-hidden="true">📜</div>
+              <h3>Append-only audit</h3>
+              <p>Every <code>setup</code>, <code>issue-agent</code>, <code>add</code>, <code>grant</code>, <code>request</code>, and <code>revoke</code> writes a JSON line to <code>audit.log</code>. No plaintext values — just operations, timestamps, and identifiers. Replayable forever.</p>
+            </div>
+            <div class="card">
+              <div class="ico" aria-hidden="true">🧱</div>
+              <h3>One file, no daemon</h3>
+              <p>The whole broker is one Python file, ~450 lines, that you can read in twenty minutes. No background process. No service to keep alive. Wrap it in your agent harness as a subprocess and you're done.</p>
+            </div>
+            <div class="card">
+              <div class="ico" aria-hidden="true">🎁</div>
+              <h3>Apache 2.0, no telemetry</h3>
+              <p>Fork it, embed it, ship it inside your product. Calm Vault has zero outbound network calls and zero analytics. The only thing it knows about you is what you typed into it.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="threats">
+          <h2>Threat model (the short version)</h2>
+          <p class="section-lede">Honest scope. V1 is the small, local, honest version — bigger guarantees are on the roadmap.</p>
+          <div class="threat-cols">
+            <div class="card">
+              <h3>Calm Vault protects against</h3>
+              <ul>
+                <li>Agents leaking credentials they were never given.</li>
+                <li>Long-lived agent compromise — grants expire in minutes.</li>
+                <li>Replay after revocation — revoked grants are rejected.</li>
+                <li>Tampering with grants — every grant is HMAC-signed.</li>
+                <li>Casual disk inspection — vault data is Fernet-encrypted at rest.</li>
+              </ul>
+            </div>
+            <div class="card warn">
+              <h3>Calm Vault does not protect against</h3>
+              <ul>
+                <li>A passphrase you typed into the agent's context.</li>
+                <li>A compromised machine with the vault already unlocked.</li>
+                <li>An agent that pipes the redeemed value into a prompt-replayable scratchpad.</li>
+                <li>Side channels — V1 is single-machine, process-level.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="roadmap">
+          <h2>What's coming</h2>
+          <p class="section-lede">V1 ships today. V2 closes the loop.</p>
+          <div class="grid">
+            <div class="card"><h3><code>calm-vault serve</code></h3><p>Daemon mode with a Unix-socket API so agents don't have to spawn the CLI on every redemption.</p></div>
+            <div class="card"><h3>Auto-refreshing issuers</h3><p>OAuth-style upstream token refresh — Calm Vault rotates the underlying credential before grants are minted.</p></div>
+            <div class="card"><h3>Key rotation</h3><p>Cosign-style master-key rotation and one-shot re-encryption without losing audit history.</p></div>
+            <div class="card"><h3>Pluggable backends</h3><p>1Password, AWS Secrets Manager, HashiCorp Vault — Calm Vault as the agent-facing facade, your existing vault as storage.</p></div>
+            <div class="card"><h3>Hardware-backed keys</h3><p>TPM, Secure Enclave, YubiKey FIDO2 PRF. The passphrase becomes a second factor, not the only factor.</p></div>
+            <div class="card"><h3>Multi-agent policies</h3><p>Per-agent quotas, time-of-day windows, credential allowlists. Defense in depth for fleet operators.</p></div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="row">
+          <div>© <span id="yr">2026</span> CrunchyJohnHaven · Apache 2.0</div>
+          <div>
+            <a href="https://github.com/CrunchyJohnHaven/calm-vault" rel="noopener">GitHub</a> ·
+            <a href="https://github.com/CrunchyJohnHaven/calm-vault/blob/main/docs/QUICKSTART.md" rel="noopener">Quickstart</a> ·
+            <a href="https://github.com/CrunchyJohnHaven/calm-vault/blob/main/CODE_OF_CONDUCT.md" rel="noopener">Code of conduct</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+  </body>
+</html>
