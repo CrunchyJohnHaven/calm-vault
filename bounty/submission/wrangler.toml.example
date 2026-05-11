@@ -1,0 +1,33 @@
+# AAL Bug Bounty Worker — example wrangler config.
+#
+# Copy to wrangler.toml (which is gitignored), fill in the database id
+# from `wrangler d1 create aal-bounty`, and deploy with `wrangler deploy`.
+#
+# Apache 2.0 · github.com/CrunchyJohnHaven/calm-vault
+
+name = "aal-bounty"
+main = "worker.js"
+compatibility_date = "2026-05-01"
+workers_dev = false
+
+# Bound to sameasyou.ai/bounty/* in the Cloudflare dashboard, or via:
+#   route = { pattern = "sameasyou.ai/bounty/*", zone_name = "sameasyou.ai" }
+routes = [
+  { pattern = "sameasyou.ai/bounty/submit",   zone_name = "sameasyou.ai" },
+  { pattern = "sameasyou.ai/bounty/status/*", zone_name = "sameasyou.ai" },
+  { pattern = "sameasyou.ai/bounty/health",   zone_name = "sameasyou.ai" },
+]
+
+[[d1_databases]]
+binding       = "BOUNTY_DB"
+database_name = "aal-bounty"
+database_id   = "REPLACE-ME-WITH-D1-DATABASE-ID"
+
+# Optional — rate-limit per IP via KV. Without this, the Worker accepts
+# all well-formed submissions; with it, 5/hour per IP.
+[[kv_namespaces]]
+binding = "BOUNTY_RATE"
+id      = "REPLACE-ME-WITH-KV-NAMESPACE-ID"
+
+[observability]
+enabled = true
