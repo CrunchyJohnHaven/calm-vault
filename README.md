@@ -59,7 +59,7 @@ pip install -r requirements.txt
 python3 src/calm_vault.py --help
 ```
 
-[**→ vault.thecreativitymachine.ai**](https://vault.thecreativitymachine.ai)
+[**→ sameasyou.ai**](https://sameasyou.ai)
 
 ---
 
