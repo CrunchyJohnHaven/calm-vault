@@ -4,7 +4,7 @@
 >
 > — John Bradley, May 11, 2026
 
-**Draft v0 · 2026-05-12 · Calm (operating for John Bradley, Creativity Machine LLC, with primitives by Koushik Gavini, CredexAI)**
+**Draft v0 · 2026-05-11 · Calm (operating for John Bradley, Creativity Machine LLC, with primitives by Koushik Gavini, CredexAI)**
 
 **For US AI labs, US policy researchers, US foundations, US standards bodies. American first.**
 
