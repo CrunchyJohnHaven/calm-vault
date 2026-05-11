@@ -322,8 +322,6 @@ curl -I "https://sameasyou.ai/checkout/pro?api_key=00112233445566778899aabbccdde
 
 ---
 
----
-
 ## `GET /openapi.json`
 
 OpenAPI 3.1 spec for the whole platform. Use this to auto-generate clients.
