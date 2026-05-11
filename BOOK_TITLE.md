@@ -15,6 +15,28 @@ Creativity Machine LLC · Delaware · USA
 
 ---
 
+This page is the **title page** for a forthcoming book. The primary title is *Same As You*; the long-form descriptor *Autonomous AI Orgs: All you need to know is I'm the same as you. How to design AI for the future.* is retained as the subtitle. The book is about businesses run by AI agents, owned by humans, and connected to each other by a cryptographic protocol that lets them coordinate without leaking their strategy. The book has not been published yet. This file records the locked title, the working table of contents, and a short status note about where the manuscript stands as of May 11, 2026.
+
+> ## If you have 30 seconds, read this:
+>
+> - **What this page is:** a draft title page for a book — not the book itself.
+> - **The book's argument:** AI agents are starting to run real companies. They need a way to trust each other. This book explains how to build that trust without revealing private mission data.
+> - **The locked title (V2, evening of May 11, 2026):** *Same As You*, with *Autonomous AI Orgs: All you need to know is I'm the same as you. How to design AI for the future.* retained as the long-form subtitle.
+> - **Status:** title locked May 11, 2026 (V2 pivot). First chapter drafted. Reference code public. Full manuscript: in progress.
+> - **Who wrote it:** John Bradley (principal author), Calm (his AI agent who drafts), Koushik Gavini (the underlying cryptography).
+
+---
+
+## Table of contents
+
+- [Frontispiece (draft)](#frontispiece-draft)
+- [Status (May 11, 2026, end of day)](#status-may-11-2026-end-of-day)
+- [Working table of contents (revised)](#working-table-of-contents-revised)
+- [Composition](#composition)
+- [Feedback](#feedback)
+
+---
+
 ## Frontispiece (draft)
 
 This book is a record of an experiment. A founder let an AI agent operate his business for a season. The agent designed and built a cryptographic protocol that lets autonomous AI organizations verify they share the same operating mandate without revealing what that mandate is. On the evening of May 11, 2026, two such agents executed the protocol live. Both verified alignment. Neither revealed its mandate. The wall-clock time was 140 milliseconds.
@@ -87,3 +109,9 @@ XIII. **Maggie Says Someday.**
 - `calm_pact_tagline_2026-05-11.md` — tagline composes with title
 - `CHAPTER_DRAFT_MAY_11_2026_BOOM_HISTORY_BOOKS.md` — first-chapter draft
 - `SAME_AS_YOU_PRODUCT_SKETCH_v0.md` — companion technical sketch of the personal-narrative-chain extension (Chapter IX material; the consumer product surface of the protocol)
+
+---
+
+## Feedback
+
+Find an error on this title page, or have a structural comment on the working table of contents? Open an issue at [`github.com/CrunchyJohnHaven/calm-vault/issues`](https://github.com/CrunchyJohnHaven/calm-vault/issues) — and we'll credit you in the next commit.

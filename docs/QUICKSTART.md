@@ -4,6 +4,31 @@ A 5-minute walkthrough from an empty machine to your first agent redeeming a cre
 
 This guide uses **only** the commands exposed by `src/calm_vault.py` — `setup`, `issue-agent`, `add`, `grant`, `request`, `revoke`, and `list`. No hidden subcommands, no future API.
 
+> ## If you have 30 seconds, read this:
+>
+> - **What this page is:** a step-by-step guide that takes you from an empty machine to a working secret-broker for AI agents in about five minutes.
+> - **What you'll do:** install one Python package, run seven short commands, and end up with an AI agent that can use a real credential without ever holding it.
+> - **What you need:** Python 3.10+, `pip`, a terminal, and one secret you'd like to lock up (any token will do; you can use a fake one for testing).
+> - **What you won't need:** an account, a cloud service, or a credit card. Calm Vault is local-only and free.
+> - **If something breaks:** the most common failure is forgetting to activate your virtualenv. Re-run `source .venv/bin/activate` and try again.
+
+---
+
+## Table of contents
+
+- [0. Prerequisites](#0-prerequisites)
+- [1. Install](#1-install)
+- [2. Initialise the vault](#2-initialise-the-vault)
+- [3. Register an agent identity](#3-register-an-agent-identity)
+- [4. Store your first credential](#4-store-your-first-credential)
+- [5. Issue your first grant](#5-issue-your-first-grant)
+- [6. Redeem the grant (acting as the agent)](#6-redeem-the-grant-acting-as-the-agent)
+- [7. Revoke](#7-revoke)
+- [8. Inspect](#8-inspect)
+- [Common patterns](#common-patterns)
+- [Where to next](#where-to-next)
+- [Feedback](#feedback)
+
 ---
 
 ## 0. Prerequisites
@@ -188,3 +213,9 @@ For low-level audit, just `tail -f ~/.calm-vault/audit.log` — every operation 
 - [`README.md`](../README.md) — the why and the threat model.
 - [`src/calm_vault.py`](../src/calm_vault.py) — the entire broker, ~450 lines. Read it.
 - File a bug or feature request via the templates in [`.github/ISSUE_TEMPLATE`](../.github/ISSUE_TEMPLATE).
+
+---
+
+## Feedback
+
+Find a command that doesn't work on your machine, a typo, or a missing step? Open an issue at [`github.com/CrunchyJohnHaven/calm-vault/issues`](https://github.com/CrunchyJohnHaven/calm-vault/issues) — and we'll credit you in the next commit.

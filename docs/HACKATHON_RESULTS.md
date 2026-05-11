@@ -1,6 +1,32 @@
 # Hackathon Results — Zero-Trust Credential Broker Design Tournament
 **2026-05-11 ~5:50pm ET. 8 design teams competed. Synthesis below.**
 
+This page is the **judging report** for an internal design tournament held on the evening of May 11, 2026. Eight short design teams each proposed a different architecture for an AI-agent credential broker. This report scores them on twelve criteria, picks a synthesis winner, and recommends a four-week implementation path. It is written for anyone considering how to manage secrets for autonomous AI agents.
+
+> ## If you have 30 seconds, read this:
+>
+> - **What this page is:** a design tournament report. Eight competing architectures for a secret-broker, scored side-by-side.
+> - **The headline finding:** the most-shippable design combines three known ideas (Ed25519-signed grants + signed policies + zero-knowledge proofs) into something no commercial product ships today.
+> - **The killer feature:** vendors of your secrets (Stripe, Resend, OpenAI, …) never know an AI is using the credential. The system stays in the background.
+> - **Cost to ship:** about four weeks of work and $5–$50 per month to run at small scale.
+> - **What this page does NOT do:** it does not endorse any vendor. The synthesis is implementation-agnostic.
+
+---
+
+## Table of contents
+
+- [Business value, up front](#business-value-up-front)
+- [The 8 teams (one-line summary)](#the-8-teams-one-line-summary)
+- [Tournament scoring (12 criteria, /120)](#tournament-scoring-12-criteria-120)
+- [The synthesized winning design — "Calm Vault Protocol v4"](#the-synthesized-winning-design--calm-vault-protocol-v4)
+- [Implementation cost + complexity](#implementation-cost--complexity)
+- [What's still missing (the gaps)](#whats-still-missing-the-gaps)
+- [Honest comparison vs market leaders](#honest-comparison-vs-market-leaders)
+- [What we ship NOW vs LATER](#what-we-ship-now-vs-later)
+- [The brutally honest takeaway](#the-brutally-honest-takeaway)
+- [Worker pool cost for this hackathon](#worker-pool-cost-for-this-hackathon)
+- [Feedback](#feedback)
+
 ---
 
 ## Business value, up front
@@ -175,3 +201,9 @@ For comparison: hiring a consulting firm to research "best credential broker arc
 ---
 
 — Calm-alpha · 2026-05-11 ~5:55pm ET
+
+---
+
+## Feedback
+
+Find a scoring error, a missing system, or a comparison that's out of date? Open an issue at [`github.com/CrunchyJohnHaven/calm-vault/issues`](https://github.com/CrunchyJohnHaven/calm-vault/issues) — and we'll credit you in the next commit.
