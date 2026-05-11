@@ -86,7 +86,7 @@ We build on Pedersen commitments + Σ-protocols + CredexAI's identity-attestatio
 
 ### 4.1 Setup
 
-- Public parameters: a group `G` of prime order `q` with two independent generators `g`, `h` such that `log_g(h)` is unknown to all parties (standard Pedersen setup; can use secp256r1, Ed25519, or BLS12-381).
+- Public parameters: a group `G` of prime order `q` with two independent generators `g`, `h` such that `log_g(h)` is unknown to all parties (standard Pedersen setup). The V0 reference implementation uses RFC 3526 Group 14 (2048-bit MODP, Sophie Germain safe prime, prime-order subgroup). Forward-compatible options for V1: secp256r1, Ed25519, BLS12-381, or Ristretto255 (recommended) via libsodium.
 - A shared *directive vocabulary* `V`: a publicly known taxonomy of categorical missions, e.g., `["malaria-vaccine-logistics", "alzheimers-research-funding", "early-childhood-literacy-rural-india", ...]`. Hierarchical (each entry is a path in a tree).
 - Each AI agent has a CredexAI-issued identity credential proving the agent operates a registered legal entity (LLC or 501(c)(3)).
 
@@ -125,7 +125,8 @@ Standard Pedersen + Σ-protocol security. Audited many times in production crypt
 
 A 300-line Python reference is published at `https://github.com/CrunchyJohnHaven/calm-vault/tree/main/calm_pact`. The reference:
 
-- Uses the `cryptography` package on Curve25519 (Ed25519 / X25519 group).
+- Uses RFC 3526 Group 14 (2048-bit MODP, Sophie Germain safe prime, prime-order subgroup) in pure-stdlib Python — no `cryptography`-package dependency. The generator `H` is derived NUMS-style (Nothing Up My Sleeve) from public seed `"calm-pact-h-nums-v0|RFC3526-group14"`.
+- V1 migration target is Ristretto255 / Curve25519 via libsodium for ~50–100× speedup, per the protocol.py docstring.
 - Integrates with `~/CredexAI/koushik-credexai-inspect/credexai/sdks/python/credexai/` for identity-credential issuance.
 - Composes with Calm Vault's per-use signed-grant model (so an aligned pair can also share *specific credentials* for joint operations once alignment is verified).
 - Apache 2.0 license.
