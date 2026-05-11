@@ -5,7 +5,9 @@ Test categories:
   1. Correctness  — chain extends, hashes recompute, signatures verify
   2. Security     — tampering with any field invalidates verification
   3. Adversarial  — forge signatures, reorder blocks, replace prev_hash, etc.
-  4. Performance  — 1000 blocks added + verified in under 30 seconds
+  4. Performance  — 1000 blocks added + verified within the pure-Python
+                    Bradley-Gavini group's budget (see ``_PERF_BUDGET_S``
+                    below; currently 90 s wall-clock)
 
 Run as:
     python3 -m calm_pact.aal_component2_watermarking.test_action_chain
@@ -159,7 +161,7 @@ def t01():
     )
 
 
-@test("Chain extends correctly across 5 sequential actions", "Correctness")
+@test("Chain extends correctly across 5 sequential actions (incl. round-trip)", "Correctness")
 def t02():
     _, signer, chain = _new_world()
     blocks = [_append_action(signer, chain, action_kind=f"k{i}") for i in range(5)]
@@ -168,7 +170,22 @@ def t02():
             return False
         if blocks[i].block_index != i:
             return False
-    return verify_chain(list(chain), _registry_for(signer))
+    if not verify_chain(list(chain), _registry_for(signer)):
+        return False
+    # Round-trip through to_list / from_list — ``from_list`` re-runs every
+    # structural invariant via ActionChain.append, so a successful round-trip
+    # proves the serialised form is faithful.
+    rehydrated = ActionChain.from_list(chain.to_list())
+    if len(rehydrated) != len(chain):
+        return False
+    # And a tampered serialised chain must be rejected at rehydration time.
+    bad_list = chain.to_list()
+    bad_list[2]["action_kind"] = "INJECTED"
+    try:
+        ActionChain.from_list(bad_list)
+        return False
+    except ValueError:
+        return True
 
 
 @test("Block hash invariant: H(prev || canonical || sig) == block_hash", "Correctness")
@@ -445,7 +462,7 @@ def t15():
         return True
 
 
-@test("Attestation tampered with a foreign agent_pubkey does not verify", "Adversarial")
+@test("Attestation: foreign pubkey + impossible validity window both rejected", "Adversarial")
 def t16():
     principal = Principal.generate()
     signer, _ = AgentSigner.create(principal=principal, agent_id="agent-A")
@@ -461,10 +478,24 @@ def t16():
     )
     if bad_attestation.verify():
         return False
-    # And a verifier handed the bad attestation must reject the chain:
+    # A verifier handed the bad attestation must reject the chain:
     chain = ActionChain()
     blk = _append_action(signer, chain)
-    return verify_chain([blk], {"agent-A": bad_attestation}) is False
+    if verify_chain([blk], {"agent-A": bad_attestation}) is not False:
+        return False
+    # Defence-in-depth: register_agent must reject an impossible validity
+    # window at creation time rather than silently issuing an attestation
+    # that can never become active.
+    try:
+        principal.register_agent(
+            agent_id="agent-C",
+            agent_pubkey=pubkey_bytes(Ed25519PrivateKey.generate().public_key()),
+            valid_from_ns=1_000_000_000,
+            valid_until_ns=999_999_999,  # earlier than valid_from_ns
+        )
+        return False
+    except ValueError:
+        return True
 
 
 @test("Untrusted principal: chain rejected when not in trusted_principals", "Adversarial")

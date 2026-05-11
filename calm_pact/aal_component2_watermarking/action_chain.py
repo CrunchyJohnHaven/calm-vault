@@ -296,9 +296,16 @@ class ActionChain:
 
     @classmethod
     def from_list(cls, items: List[dict]) -> "ActionChain":
+        """Rehydrate a chain from JSON-safe dicts, re-running all
+        structural invariant checks via :meth:`append`.
+
+        Raises :class:`ValueError` on the first block that violates an
+        invariant — protects against loading malformed or tampered
+        serialised chains and then silently extending them.
+        """
         chain = cls()
         for d in items:
-            chain.blocks.append(Block.from_dict(d))
+            chain.append(Block.from_dict(d))
         return chain
 
 
@@ -310,10 +317,12 @@ def make_unsigned_block(
     action_kind: str,
     payload_commitment_C: int,
     prev_hash: bytes,
-) -> bytes:
-    """Convenience: return the canonical body + signing message for an
-    in-progress block. The caller (typically an :class:`AgentSigner`)
-    signs the result and then assembles a full :class:`Block`.
+) -> tuple[bytes, bytes]:
+    """Convenience: return ``(canonical_body, signing_message_bytes)``
+    for an in-progress block. The caller (typically an
+    :class:`AgentSigner`) signs ``signing_message_bytes`` and then
+    assembles a full :class:`Block` using ``canonical_body`` to recompute
+    ``block_hash``.
     """
     canonical = block_canonical_bytes(
         block_index=block_index,
@@ -322,7 +331,7 @@ def make_unsigned_block(
         action_kind=action_kind,
         payload_commitment_C=payload_commitment_C,
     )
-    return signing_message(prev_hash, canonical)
+    return canonical, signing_message(prev_hash, canonical)
 
 
 def now_ns() -> int:

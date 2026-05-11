@@ -215,6 +215,8 @@ class Principal:
             raise ValueError("agent_id must be non-empty")
         if valid_from_ns is None:
             valid_from_ns = now_ns()
+        if valid_until_ns is not None and valid_until_ns < valid_from_ns:
+            raise ValueError("valid_until_ns must be >= valid_from_ns")
         # Build the attestation unsigned, sign it, return final.
         attestation_unsigned = AgentAttestation(
             principal_pubkey=self.pubkey_bytes,
