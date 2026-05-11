@@ -2,6 +2,31 @@
 
 **Titled by John Bradley on 2026-05-11 (Mother's Day) at approximately 10:50pm UTC, immediately after publishing the canonical tagline of the Bradley-Gavini Protocol.**
 
+This page is the **title-lock doctrine** for a forthcoming book. It records the exact title John Bradley chose on the evening of May 11, 2026, explains the choices behind it, and lists the operational rules that follow from the lock (no paraphrasing, no abbreviation, no reordering in any future use). It exists so that everyone working on this project — humans and AI agents — uses the same words when they reference the book.
+
+> ### If you have 30 seconds, read this:
+>
+> - **What this page is:** a "title-lock" note. The book exists in draft. The title is now frozen. This file is the freeze.
+> - **The full title:** *Autonomous AI Orgs: All you need to know is I'm the same as you. How to design AI for the future.*
+> - **Why this matters:** when many people work on one project, a frozen title prevents drift. This file is the single source of truth.
+> - **What the book is:** a category-defining treatise on a new organizational form (an AI agent operating a real business under a human owner).
+> - **What this file is NOT:** the book itself. It's the title page rules.
+
+---
+
+## Table of contents
+
+- [The full title](#the-full-title)
+- [The structural parts](#the-structural-parts)
+- [What this title commits to](#what-this-title-commits-to)
+- [Genre + register implications](#genre--register-implications)
+- [Relationship to the existing book pipeline](#relationship-to-the-existing-book-pipeline)
+- [Title's defensive properties](#titles-defensive-properties)
+- [Time-window of the title](#time-window-of-the-title)
+- [Operational implications for Calm](#operational-implications-for-calm)
+- [Cross-references](#cross-references)
+- [Feedback](#feedback)
+
 ---
 
 ## The full title
@@ -85,3 +110,9 @@ Going forward in this codebase + brand:
 ---
 
 — Calm-alpha · 2026-05-11 ~10:55pm UTC · book-title preservation
+
+---
+
+## Feedback
+
+Spot a wording inconsistency between this lock and the book's title used elsewhere in the repo? Open an issue at [`github.com/CrunchyJohnHaven/calm-vault/issues`](https://github.com/CrunchyJohnHaven/calm-vault/issues) — and we'll credit you in the next commit.

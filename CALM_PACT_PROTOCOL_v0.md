@@ -8,6 +8,40 @@
 
 **For US AI labs, US policy researchers, US foundations, US standards bodies. American first.**
 
+This is the **technical specification** for a protocol called Calm Pact (also called the Bradley-Gavini Protocol). In plain terms: it lets two AI agents that have never met prove to each other — and to anyone watching — that they share the same core mission, without revealing what that mission is. If their missions match, they go on to do business together. If they don't, they walk away. Nothing else leaks. This draft is open for adversarial review.
+
+> ### If you have 30 seconds, read this:
+>
+> - **What this page is:** a draft protocol spec for cryptographers, AI safety researchers, and policy people. Technical, but written so an interested non-specialist can follow the shape.
+> - **The problem:** if AI agents start running real companies, they will need a way to trust each other. Telling each other your private strategy doesn't scale.
+> - **The fix:** a Pedersen commitment + a Schnorr-style equality proof. Both are old, well-studied cryptography. The novelty is the packaging.
+> - **What's claimed:** the proof reveals exactly one bit ("missions match: yes / no") and nothing else. Reference implementation ≈ 300 lines of Python.
+> - **What's asked:** adversarial review. If the math is wrong, we want to know now — not after a billion dollars is moving through it.
+> - **Status:** draft v0, May 11, 2026. Not yet peer-reviewed. Working test suite (33 / 34 passing) at [`calm_pact/`](calm_pact/).
+
+---
+
+## Table of contents
+
+- [Abstract](#abstract)
+- [1. The autonomous AI collective as a new legal entity class](#1-the-autonomous-ai-collective-as-a-new-legal-entity-class)
+- [2. The problem: directive privacy versus alignment trust](#2-the-problem-directive-privacy-versus-alignment-trust)
+- [3. Prior work](#3-prior-work)
+- [4. The Calm Pact protocol](#4-the-calm-pact-protocol)
+  - [4.1 Setup](#41-setup)
+  - [4.2 Protocol](#42-protocol)
+  - [4.3 Categorical alignment, not just exact equality](#43-categorical-alignment-not-just-exact-equality)
+  - [4.4 Security claims](#44-security-claims)
+- [5. Reference implementation](#5-reference-implementation)
+- [6. Use cases (12-month horizon)](#6-use-cases-12-month-horizon)
+- [7. Legal entity structures](#7-legal-entity-structures)
+- [8. Why this should be American](#8-why-this-should-be-american)
+- [9. What we're asking](#9-what-were-asking)
+- [10. Authors + provenance](#10-authors--provenance)
+- [Feedback](#feedback)
+
+---
+
 That epigraph IS the protocol's one-line spec. Two autonomous AI organizations meet to transact. Each runs Calm Pact. Each commits to its primary mandate via a Pedersen commitment on a 2048-bit Schnorr group. They exchange commitments + a Σ-protocol equality proof. If their mandates are categorically equivalent — *"I'm the same as you"* — the proof verifies. They proceed to transact under cryptographic guarantee. If the mandates differ, the proof fails. They walk away. **No information about the mandate is exchanged beyond the equality bit.** That is all you need to know. That is all you DO know.
 
 ---
@@ -228,3 +262,9 @@ Contact: `calm@thecreativitymachine.ai` for technical, `john.b@credexai.xyz` for
 **This is a draft. America first. Help us make it real.**
 
 — Calm, 2026-05-11
+
+---
+
+## Feedback
+
+Find a flaw in the protocol, an unclear sentence, or a citation that doesn't quite hold up? Open an issue at [`github.com/CrunchyJohnHaven/calm-vault/issues`](https://github.com/CrunchyJohnHaven/calm-vault/issues) — and we'll credit you in the next commit.

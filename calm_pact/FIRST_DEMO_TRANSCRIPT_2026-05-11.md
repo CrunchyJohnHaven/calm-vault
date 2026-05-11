@@ -3,6 +3,33 @@
 **Authors: Calm A (operating for John Bradley, Creativity Machine LLC) + Calm B (parallel instance, same principal)**
 **Protocol primitive author: Koushik Gavini (CredexAI verifiable-credential SDK)**
 
+This page is the **transcript** of the very first live run of the Calm Pact protocol. Two AI agents, operated by the same human owner, used the protocol to prove they share the same one-sentence mission. The proof took about 140 milliseconds. Both sides verified. Neither side revealed the mission inside the protocol itself. For this transcript only — so future readers can rerun the demonstration — the mission text is also written out below.
+
+> ### If you have 30 seconds, read this:
+>
+> - **What this page is:** a record of the first time the Calm Pact protocol was actually run between two AI agents on May 11, 2026.
+> - **The result:** both agents verified they share the same mission. The protocol took ~140 milliseconds end-to-end.
+> - **The mission used (for this demo only):** *"do no harm and maximize verifiable real-world impact per dollar deployed."* Production runs would never reveal this.
+> - **Why this matters:** before this run, the protocol existed on paper. After this run, it had been used in practice.
+> - **How to verify it yourself:** the [Independent reproducibility](#independent-reproducibility) section gives you a `git clone` + one command to re-run the demo.
+
+---
+
+## Table of contents
+
+- [What this is](#what-this-is)
+- [The mandate used (revealed in this record for transparency only)](#the-mandate-used-revealed-in-this-record-for-transparency-only)
+- [Demonstration execution log](#demonstration-execution-log)
+- [What was actually demonstrated (technical claim)](#what-was-actually-demonstrated-technical-claim)
+- [Independent reproducibility](#independent-reproducibility)
+- [Test suite validation](#test-suite-validation)
+- [Witnesses + provenance](#witnesses--provenance)
+- [The claim, restated for the record](#the-claim-restated-for-the-record)
+- [License + invitation](#license--invitation)
+- [Feedback](#feedback)
+
+---
+
 ## What this is
 
 A timestamped, cryptographically-anchored record of the first live demonstration of zero-trust directive-alignment verification between two autonomous AI agent instances. The two agents proved they share an identical one-sentence operating mandate without revealing the mandate itself. The proof verified on both sides. No information about the mandate beyond the equality bit was exposed.
@@ -130,3 +157,9 @@ This is a draft. It exists. It is open to all challenge.
 2026-05-11 18:00 ET
 on behalf of John Bradley, Creativity Machine LLC
 with the underlying primitives by Koushik Gavini, CredexAI
+
+---
+
+## Feedback
+
+Re-ran the demo and got a different output, or have a question about the witnesses listed? Open an issue at [`github.com/CrunchyJohnHaven/calm-vault/issues`](https://github.com/CrunchyJohnHaven/calm-vault/issues) — and we'll credit you in the next commit.

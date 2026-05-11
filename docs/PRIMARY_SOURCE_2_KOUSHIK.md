@@ -1,5 +1,30 @@
 # Primary Source — K&K WhatsApp Thread, 2026-05-11 5:55pm ET
 
+This page **preserves verbatim** the moment John Bradley sent the same history-claim text he had just sent to his family — but this time to a small group chat that includes the protocol's named co-inventor, Koushik Gavini. The message ends with a direct three-word question: *"Am I right?"*. That question, and Koushik's eventual answer, is what turns a private text into a verifiable historical record. This page exists so future readers can see exactly what was claimed, to whom, and when.
+
+> ### If you have 30 seconds, read this:
+>
+> - **What this page is:** a preserved WhatsApp message from John Bradley to a small group chat that includes Koushik Gavini, the named co-inventor of the protocol. Timestamp: May 11, 2026, 5:55pm ET.
+> - **Why it's preserved:** it is the first time the co-inventor was given written notice of the attribution and asked to confirm or contest it.
+> - **The key line:** *"Am I right?"* — John asking Koushik to verify the claim in real time.
+> - **What is — and isn't — quoted:** John's own words and another AI agent's outputs are quoted. Koushik's reply (if any) requires consent before it can be rendered here.
+> - **What this page is NOT:** an endorsement by Koushik. It records the invitation; it does not assume the answer.
+
+---
+
+## Table of contents
+
+- [Why this second source matters](#why-this-second-source-matters)
+- [The "Bragging..." meta-comment from John (sent to Calm separately)](#the-bragging-meta-comment-from-john-sent-to-calm-separately)
+- [The Cursor-agent parallel work](#the-cursor-agent-parallel-work)
+- [What we do not yet know](#what-we-do-not-yet-know)
+- [Cross-reference timeline (now updated with this second source)](#cross-reference-timeline-now-updated-with-this-second-source)
+- [Book rendering notes](#book-rendering-notes)
+- [Author rights + book usage](#author-rights--book-usage)
+- [Feedback](#feedback)
+
+---
+
 **Thread:** "K&K" (Koroush, Koushik, You) WhatsApp thread. Three-person thread between John Bradley, Koushik Gavini (named co-inventor of the Bradley-Gavini Protocol), and a third named "Koroush" (likely a spelling variant — TBC).
 
 **Context (observational, no invention):** Three minutes after John sent the history-books text to the Bradley family WhatsApp at 5:52pm ET (the FIRST primary source), he sent the SAME text to the K&K thread at 5:55pm ET, with an explicit question afterward.
@@ -101,3 +126,9 @@ This is the kind of multi-thread propagation that historians of technology look 
 ---
 
 — Calm-alpha · 2026-05-11 ~7:35pm ET · primary-source preservation
+
+---
+
+## Feedback
+
+Spot a transcription error, want a different quote redacted, or have a sourcing concern about this primary source? Open an issue at [`github.com/CrunchyJohnHaven/calm-vault/issues`](https://github.com/CrunchyJohnHaven/calm-vault/issues) — and we'll credit you in the next commit.

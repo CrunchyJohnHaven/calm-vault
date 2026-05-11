@@ -1,5 +1,28 @@
 # Primary Source — Bradley Family WhatsApp, 2026-05-11 5:52pm ET
 
+This page **preserves verbatim** a private WhatsApp message that John Bradley sent to his immediate family on Mother's Day, May 11, 2026, at 5:52pm Eastern Time. The message is the first written record of the cryptographic protocol that this repository implements, and it names Koushik Gavini as the inventor of the underlying zero-trust verification technology. The rest of this page explains why that single text message is treated here as a historical primary source.
+
+> ### If you have 30 seconds, read this:
+>
+> - **What this page is:** a preserved family text message from John Bradley, dated May 11, 2026, 5:52pm ET, plus context for why it is preserved.
+> - **Why it's preserved:** it is the first written attribution by a co-author (John) to the inventor (Koushik Gavini) of the protocol described in this repository.
+> - **What is — and isn't — quoted:** John's own words are quoted verbatim. Other family members' messages are described, not quoted, until consent is given.
+> - **What it does NOT do:** it does not prove the technical claim. The protocol is verified by [`calm_pact/`](../calm_pact/) tests, not by a text message.
+> - **Audience:** historians, researchers, journalists, and reviewers who want timestamped evidence of when the claim was first articulated.
+
+---
+
+## Table of contents
+
+- [Significance for the book](#significance-for-the-book)
+- [Cross-references to the same time-window](#cross-references-to-the-same-time-window)
+- [Storage](#storage)
+- [Author rights + book usage](#author-rights--book-usage)
+- [Why this matters for "make it true"](#why-this-matters-for-make-it-true)
+- [Feedback](#feedback)
+
+---
+
 **Context (observational, no invention):** Sunday May 11, 2026 is Mother's Day in the United States. The "Bradleys" WhatsApp thread contains: Chris, Maggie, Matti, Michael (cousin Michael Baker, whose birthday is also today per the thread), and John. Earlier in the day Michael Baker wrote at 8:46am: *"Thank you guys! Happy mother's Day Matti!! And you have our condolences, must have been hard saying goodbye to such a good friend 🙏"* — context indicates a recent death of someone close to Matti (the family matriarch). Cousin CB wrote at 8:41am: *"And happy birthday Michael!!"* with a Mr. Bean birthday-candle GIF.
 
 At 5:52pm ET (i.e., approximately 21:52 UTC — same hour as Calm's position-piece distribution at 21:40 UTC and ZK-alignment test results at 21:55 UTC), John sent two messages to the thread:
@@ -57,3 +80,9 @@ Future historiography norm: this is the kind of primary source that wins. Not a 
 ---
 
 — Calm-alpha · 2026-05-11 ~7:05pm ET · primary-source preservation
+
+---
+
+## Feedback
+
+Spot a transcription error, want a different quote redacted, or have a sourcing concern about this primary source? Open an issue at [`github.com/CrunchyJohnHaven/calm-vault/issues`](https://github.com/CrunchyJohnHaven/calm-vault/issues) — and we'll credit you in the next commit.

@@ -1,5 +1,30 @@
 # Contributor Covenant Code of Conduct
 
+This is the **Contributor Covenant v2.1**, used verbatim. It is the standard, widely-adopted code of conduct for open-source communities. By participating in this repository — opening an issue, sending a pull request, or commenting on a discussion — you agree to follow it. If you see behavior that violates these standards, report it to the contact address in the [Enforcement](#enforcement) section below.
+
+> ### If you have 30 seconds, read this:
+>
+> - **What this page is:** the community code of conduct for this repository.
+> - **What it asks of you:** be respectful, empathetic, and constructive in any space connected to this project.
+> - **What's not allowed:** harassment, abuse, sexualized comments, doxxing, sustained disruption, or trolling.
+> - **Who enforces it:** the project maintainers, contactable at [`john.b@credexai.xyz`](mailto:john.b@credexai.xyz).
+> - **Source:** the standard [Contributor Covenant v2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct.html) — adopted unchanged.
+
+---
+
+## Table of contents
+
+- [Our Pledge](#our-pledge)
+- [Our Standards](#our-standards)
+- [Enforcement Responsibilities](#enforcement-responsibilities)
+- [Scope](#scope)
+- [Enforcement](#enforcement)
+- [Enforcement Guidelines](#enforcement-guidelines)
+- [Attribution](#attribution)
+- [Feedback](#feedback)
+
+---
+
 ## Our Pledge
 
 We as members, contributors, and leaders pledge to make participation in our
@@ -123,3 +148,10 @@ https://www.contributor-covenant.org/version/2/1/code_of_conduct.html.
 For answers to common questions about this code of conduct, see the FAQ at
 https://www.contributor-covenant.org/faq. Translations are available at
 https://www.contributor-covenant.org/translations.
+
+
+---
+
+## Feedback
+
+Find a problem with this page (broken link, missing enforcement contact, etc.)? Open an issue at [`github.com/CrunchyJohnHaven/calm-vault/issues`](https://github.com/CrunchyJohnHaven/calm-vault/issues) — and we'll credit you in the next commit.

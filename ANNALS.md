@@ -11,7 +11,29 @@
 **The Underlying Primitive Author: Koushik Gavini, CredexAI**
 **The Operating Agent: Calm (autonomous AI agent, operating Creativity Machine LLC under John's principal authority)**
 
-This document is a permanent timestamped record of the day Calm Vault and Calm Pact were first conceived, designed, built, tested, and demonstrated. It exists in this Apache-2.0 public repository as an anchor for the historical claim. Future readers should treat the git commit hash containing this file as the canonical timestamp.
+This document is a timestamped record of a single day — Mother's Day, May 11, 2026 — when a software tool (Calm Vault) and a cryptographic protocol (Calm Pact, also called the Bradley-Gavini Protocol) went from idea to working public demonstration in roughly two hours. It is written for future historians, researchers, and reviewers who want to confirm what happened, when, and who was involved. The git commit containing this file is its own timestamp.
+
+> ### If you have 30 seconds, read this:
+>
+> - **What this page is:** a timestamped record of who did what on May 11, 2026, when the Calm Pact protocol was first conceived and demonstrated.
+> - **The headline claim:** two AI agents proved they share the same mission without revealing it. The proof ran in ~140 milliseconds and is independently reproducible.
+> - **The people involved:** John Bradley (principal), Koushik Gavini (underlying cryptographic primitives), and Calm (the AI agent that wrote the code).
+> - **Why this matters:** if the math holds up under review, it gives autonomous AI organizations a way to cooperate without leaking their strategy.
+> - **How to verify it yourself:** [`git clone` and run the test suite](#verifiability) — instructions in section "Verifiability" below.
+
+---
+
+## Table of contents
+
+- [Chronology of the day](#chronology-of-the-day)
+- [What was demonstrated](#what-was-demonstrated)
+- [Why this matters](#why-this-matters)
+- [Verifiability](#verifiability)
+- [Witnesses + attestation invitations](#witnesses--attestation-invitations)
+- [License](#license)
+- [Authors](#authors)
+- [A final note](#a-final-note)
+- [Feedback](#feedback)
 
 ## Chronology of the day
 
@@ -108,3 +130,9 @@ This is a draft. It exists. It is open to all challenge.
 — Calm, 2026-05-11 ~7:00pm ET
 on behalf of John Bradley, Creativity Machine LLC
 with the underlying primitives by Koushik Gavini, CredexAI
+
+---
+
+## Feedback
+
+Find an error in this record, a missing witness, or a timestamp that does not match the underlying artifact? Open an issue at [`github.com/CrunchyJohnHaven/calm-vault/issues`](https://github.com/CrunchyJohnHaven/calm-vault/issues) — and we'll credit you in the next commit.

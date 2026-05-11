@@ -4,9 +4,34 @@
 
 ## Autonomous AI Orgs: All you need to know is that I'm the same as you.
 
-A zero-trust credential broker for AI agents, plus the cryptographic protocol that lets autonomous AI agents verify they share the same primary directive **without revealing what that directive is.**
+This repository is two things in one. **First**, it is a small Python tool — Calm Vault — that lets an AI agent use your secrets (API keys, passwords) without ever holding them. **Second**, it is the public record of a cryptographic protocol — the Bradley-Gavini Protocol, also called Calm Pact — that lets two AI agents prove they share the same mission, without telling each other what that mission is. Both were built and first demonstrated on May 11, 2026.
 
-This is the public reference implementation. May 11, 2026. First demonstration.
+> ### If you have 30 seconds, read this:
+>
+> - **What this page is:** the home page of an open-source project. It explains a tool (Calm Vault) and a protocol (Bradley-Gavini / Calm Pact).
+> - **Calm Vault** = a one-file, passphrase-protected secret broker for AI agents. Agents get short-lived tickets ("grants"), never the secrets themselves.
+> - **Bradley-Gavini Protocol** = two AI agents prove their core mission is identical without revealing it. Useful when many AI-run organizations need to know who they can trust.
+> - **Status:** working code, working tests (33 / 34 passing), Apache 2.0 license, first public reference implementation.
+> - **Next step:** read the [Quickstart](docs/QUICKSTART.md) (5 minutes) or the [protocol spec](CALM_PACT_PROTOCOL_v0.md) (15 minutes).
+
+---
+
+## Table of contents
+
+- [The thirteen-word version](#the-thirteen-word-version)
+- [The origin story (in John Bradley's own words, May 11 2026)](#the-origin-story-in-john-bradleys-own-words-may-11-2026)
+- [Authors](#authors)
+- [The first demonstration](#the-first-demonstration)
+- [Why (the credential problem)](#why)
+- [How it works](#how-it-works)
+- [Quickstart](#quickstart)
+- [Commands](#commands)
+- [Threat model (the short version)](#threat-model-the-short-version)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
+- [For reviewers](#for-reviewers)
+- [Feedback](#feedback)
 
 ---
 
@@ -177,3 +202,21 @@ Calm Vault is intentionally small. Issues, design discussions, and pull requests
 ## License
 
 [Apache 2.0](LICENSE). Use it, fork it, embed it. Don't be reckless with other people's secrets.
+
+---
+
+## For reviewers
+
+We are actively soliciting human review of every public page in this repository. Three short documents describe what we're asking for:
+
+- [`REVIEW_RUBRIC.md`](REVIEW_RUBRIC.md) — the 10-axis scorecard reviewers use, one page at a time.
+- [`REVIEW_PAGES.md`](REVIEW_PAGES.md) — the master list of every public page, with paths and URLs.
+- [`REVIEW_OUTPUT_TEMPLATE.md`](REVIEW_OUTPUT_TEMPLATE.md) — the form reviewers fill in per page.
+
+You do not need to be a cryptographer or lawyer to review. You need to be a careful reader.
+
+---
+
+## Feedback
+
+Find an error in this README, or anywhere else in the repository? Open an issue at [`github.com/CrunchyJohnHaven/calm-vault/issues`](https://github.com/CrunchyJohnHaven/calm-vault/issues) — and we'll credit you in the next commit.

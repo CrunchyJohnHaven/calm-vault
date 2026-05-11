@@ -6,6 +6,35 @@
 **Group parameters:** RFC 3526 Group 14 (2048-bit MODP, Sophie Germain safe prime, prime-order subgroup)  
 **Generator H:** derived via NUMS (Nothing Up My Sleeve) from public seed `"calm-pact-h-nums-v0|RFC3526-group14"`
 
+This page is the **per-test report** for the foundational test suite. We ran 25 tests against the protocol, organized into six categories: does it work, does the math hold, does it resist attacks, does it handle edge cases, is it fast enough, and does it behave correctly over many random trials. Twenty-four tests passed. One performance test missed by about 5 milliseconds — a calibration issue, not a security issue. The rest of this page lists every test, its result, and an honest interpretation.
+
+> ### If you have 30 seconds, read this:
+>
+> - **What this page is:** a row-by-row table of the 25-test foundational suite for the Calm Pact protocol.
+> - **The score:** 24 of 25 passed.
+> - **The miss:** test t25 (median verify time < 30ms). Our median is ~35ms in pure Python. Swapping in a faster math library fixes it in 30 minutes.
+> - **The four key security properties (hiding, binding, soundness, Fiat-Shamir-bound):** all four confirmed by the relevant tests.
+> - **How to re-run:** [`git clone`](https://github.com/CrunchyJohnHaven/calm-vault) and `cd calm-vault/calm_pact && python3 test_protocol.py` — about 45 seconds.
+
+---
+
+## Table of contents
+
+- [Summary](#summary)
+- [Detailed results by category](#detailed-results-by-category)
+  - [1. Correctness — 5/5 PASS](#1-correctness--55-pass)
+  - [2. Cryptographic properties — 5/5 PASS](#2-cryptographic-properties--55-pass)
+  - [3. Adversarial — 4/4 PASS](#3-adversarial--44-pass)
+  - [4. Edge cases — 5/5 PASS](#4-edge-cases--55-pass)
+  - [5. Performance — 3/4 PASS](#5-performance--34-pass)
+  - [6. Statistical — 2/2 PASS](#6-statistical--22-pass)
+- [What the test suite did NOT cover (gaps to address before production)](#what-the-test-suite-did-not-cover-gaps-to-address-before-production)
+- [Honest call on the failure](#honest-call-on-the-failure)
+- [What this means for Calm Pact going forward](#what-this-means-for-calm-pact-going-forward)
+- [Feedback](#feedback)
+
+---
+
 ## Summary
 
 **Total tests: 25 | Passed: 24 | Failed: 1**
@@ -151,3 +180,10 @@ The one performance gap is fixable in 30 minutes with a library swap.
 5. **Solicit cryptographer review** — already in flight via the Calm Pact blast email to Stanford HAI, METR, Center for AI Safety
 
 **The protocol is alpha-ready.** Beta-ready after V0.1 (gmpy2) + V1 (libsodium). Production-ready after external cryptographer review + formal proof.
+
+
+---
+
+## Feedback
+
+Re-ran the suite and got a different number, or spotted a test category we should add? Open an issue at [`github.com/CrunchyJohnHaven/calm-vault/issues`](https://github.com/CrunchyJohnHaven/calm-vault/issues) — and we'll credit you in the next commit.

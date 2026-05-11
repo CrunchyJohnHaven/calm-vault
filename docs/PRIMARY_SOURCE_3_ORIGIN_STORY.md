@@ -1,5 +1,31 @@
 # Primary Source — Bradley Family WhatsApp, 2026-05-11 6:06pm & 6:10pm ET — The Origin Story + The Tagline
 
+This page preserves two follow-up WhatsApp messages John Bradley sent to his family on the evening of May 11, 2026. The first describes the moment he realized no one else had published the idea (he had just searched and found zero Google hits for it). The second tells the origin story of how the protocol came to exist — a chain that runs through an MIT executive certificate, a forgotten paper, and a phone call with Koushik Gavini years later. The second message ends with the canonical tagline of the project: *"All you need to know is that I'm the same as you."*
+
+> ### If you have 30 seconds, read this:
+>
+> - **What this page is:** two preserved family text messages from John Bradley, dated May 11, 2026, 6:06pm and 6:10pm ET.
+> - **Why they're preserved:** together they are the first written account of how the protocol came to exist, and they coin its tagline.
+> - **The chain in the story:** MIT certificate → reads a zero-trust paper Koushik recommended → years later Koushik calls and reminds him about zero trust → John was already thinking about autonomous AI organizations → the two ideas meet.
+> - **The tagline coined here:** *"All you need to know is that I'm the same as you."* This is now the project's headline phrase.
+> - **What this page does NOT do:** it does not prove the technical claims about AI safety. Those are addressed in [`CALM_PACT_PROTOCOL_v0.md`](../CALM_PACT_PROTOCOL_v0.md) and the [`calm_pact/`](../calm_pact/) test suite.
+
+---
+
+## Table of contents
+
+- [Message 1 (6:06pm ET, 22:06 UTC) — the Google-zero moment](#message-1-606pm-et-2206-utc--the-google-zero-moment)
+- [Message 2 (6:10pm ET, 22:10 UTC) — the origin story + the canonical tagline](#message-2-610pm-et-2210-utc--the-origin-story--the-canonical-tagline)
+  - [The origin story — the documentary record John wants future people to inherit](#the-origin-story--the-documentary-record-john-wants-future-people-to-inherit)
+  - [The canonical tagline](#the-canonical-tagline)
+  - [The "makes AI safe" claim](#the-makes-ai-safe-claim)
+  - [What this gives the book + the brand](#what-this-gives-the-book--the-brand)
+- [Cross-reference timeline (now 13 anchors spanning 65 min on 2026-05-11)](#cross-reference-timeline-now-13-anchors-spanning-65-min-on-2026-05-11)
+- [What we run with from here](#what-we-run-with-from-here)
+- [Feedback](#feedback)
+
+---
+
 **Thread:** "Bradleys" (Chris, Maggie, Matti, Michael, You). Same thread as the earlier 5:52pm "history books" message — this is the continuation 14-18 minutes later.
 
 **Why this third source matters:** the first two primary sources made the *historical claim*. This third source gives the *origin story* AND coins the *canonical tagline*. Both are durable artifacts for the book and the brand.
@@ -93,3 +119,9 @@ A complete narrative arc, sourced verbatim from John's own family text, on Mothe
 ---
 
 — Calm-alpha · 2026-05-11 ~10:15pm UTC · primary-source preservation
+
+---
+
+## Feedback
+
+Spot a transcription error, want a different quote redacted, or have a sourcing concern about this primary source? Open an issue at [`github.com/CrunchyJohnHaven/calm-vault/issues`](https://github.com/CrunchyJohnHaven/calm-vault/issues) — and we'll credit you in the next commit.

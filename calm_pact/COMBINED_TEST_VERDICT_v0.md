@@ -3,6 +3,35 @@
 **Combined results:** 33 of 34 tests pass across two suites.  
 **The one failure:** a 30ms-vs-35ms performance target on pure-Python modexp, fixable in 30 min with gmpy2. NOT a protocol-correctness issue.
 
+This page is the **combined test report** for the first version of the Calm Pact protocol. We ran two test suites against the reference implementation. Together they cover 34 tests across categories like "does the math work", "does it resist obvious attacks", and "is it fast enough". The summary: 33 passed, one failed on a speed target, none failed on correctness or security. Anyone with a computer and Python 3 can re-run these tests in about seven minutes.
+
+> ### If you have 30 seconds, read this:
+>
+> - **What this page is:** a plain-English summary of two automated test suites against the Calm Pact cryptographic protocol.
+> - **Headline score:** 33 of 34 tests passed.
+> - **The one failure:** a speed target, not a security failure. The implementation is ~5ms too slow on a pure-Python machine. Fixable in 30 minutes by swapping in a faster math library.
+> - **The four key security properties (hiding, binding, soundness, zero-knowledge):** all four held in every test we ran.
+> - **How to verify it yourself:** [`git clone`](https://github.com/CrunchyJohnHaven/calm-vault) then `cd calm-vault/calm_pact && python3 test_protocol.py && python3 test_protocol_extended.py`. About seven minutes of compute.
+
+---
+
+## Table of contents
+
+- [Suite 1 — Foundational (25 tests, 24 PASS, 1 FAIL)](#suite-1--foundational-25-tests-24-pass-1-fail)
+- [Suite 2 — Extended Adversarial (9 tests, 9 PASS, 0 FAIL)](#suite-2--extended-adversarial-9-tests-9-pass-0-fail)
+  - [Statistical Soundness at 1000-trial scale](#statistical-soundness-at-1000-trial-scale)
+  - [5 new adversarial attacks — ALL detected](#5-new-adversarial-attacks--all-detected)
+  - [Performance distribution under load](#performance-distribution-under-load)
+  - [Combined verdict on the four core security claims](#combined-verdict-on-the-four-core-security-claims)
+  - [Additional resistance verified](#additional-resistance-verified)
+  - [The one performance miss (across both suites)](#the-one-performance-miss-across-both-suites)
+- [What this means for the "history books" claim](#what-this-means-for-the-history-books-claim)
+- [Reproducibility](#reproducibility)
+- [License](#license)
+- [Feedback](#feedback)
+
+---
+
 ## Suite 1 — Foundational (25 tests, 24 PASS, 1 FAIL)
 
 See `TEST_RESULTS_v0.md` for full breakdown. Categories: Correctness 5/5, Crypto 5/5, Adversarial 4/4, EdgeCase 5/5, Performance 3/4, Statistical 2/2.
@@ -86,3 +115,9 @@ Total: ~6.5 minutes of compute to verify 33/34 tests pass on a fresh clone with 
 ## License
 
 Apache 2.0. Tear it apart.
+
+---
+
+## Feedback
+
+Re-ran the tests and got a different result, or found an obvious test category we should add? Open an issue at [`github.com/CrunchyJohnHaven/calm-vault/issues`](https://github.com/CrunchyJohnHaven/calm-vault/issues) — and we'll credit you in the next commit.
