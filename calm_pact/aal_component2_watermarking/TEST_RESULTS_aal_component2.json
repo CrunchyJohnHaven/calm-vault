@@ -1,0 +1,148 @@
+{
+  "suite": "aal_component2_watermarking",
+  "total": 20,
+  "passed": 20,
+  "failed": 0,
+  "results": [
+    {
+      "name": "Genesis block: prev_hash is ZERO_HASH and chain accepts it",
+      "category": "Correctness",
+      "pass": true,
+      "ms": 22.784399000101985,
+      "error": null
+    },
+    {
+      "name": "Chain extends correctly across 5 sequential actions (incl. round-trip)",
+      "category": "Correctness",
+      "pass": true,
+      "ms": 211.32541299994045,
+      "error": null
+    },
+    {
+      "name": "Block hash invariant: H(prev || canonical || sig) == block_hash",
+      "category": "Correctness",
+      "pass": true,
+      "ms": 21.782031999919127,
+      "error": null
+    },
+    {
+      "name": "Signature verifies under the agent's pubkey",
+      "category": "Correctness",
+      "pass": true,
+      "ms": 21.846656999969127,
+      "error": null
+    },
+    {
+      "name": "Pedersen payload_commitment_C is in the prime-order subgroup",
+      "category": "Correctness",
+      "pass": true,
+      "ms": 165.6460369999877,
+      "error": null
+    },
+    {
+      "name": "Tampered timestamp_ns invalidates the block",
+      "category": "Security",
+      "pass": true,
+      "ms": 41.622392999897784,
+      "error": null
+    },
+    {
+      "name": "Tampered action_kind invalidates the block",
+      "category": "Security",
+      "pass": true,
+      "ms": 41.61904200009303,
+      "error": null
+    },
+    {
+      "name": "Tampered payload_commitment_C invalidates the block",
+      "category": "Security",
+      "pass": true,
+      "ms": 63.08565000017552,
+      "error": null
+    },
+    {
+      "name": "Substituted signature (from a different block) is rejected",
+      "category": "Security",
+      "pass": true,
+      "ms": 66.05808200015417,
+      "error": null
+    },
+    {
+      "name": "Modified prev_hash breaks chain verification",
+      "category": "Security",
+      "pass": true,
+      "ms": 63.40789099999711,
+      "error": null
+    },
+    {
+      "name": "Forged signature (random 64 bytes) is rejected",
+      "category": "Adversarial",
+      "pass": true,
+      "ms": 41.725965000068754,
+      "error": null
+    },
+    {
+      "name": "Reordered blocks fail chain verification",
+      "category": "Adversarial",
+      "pass": true,
+      "ms": 85.00459000015326,
+      "error": null
+    },
+    {
+      "name": "Replace prev_hash to chain to a wrong parent fails",
+      "category": "Adversarial",
+      "pass": true,
+      "ms": 63.758890000144675,
+      "error": null
+    },
+    {
+      "name": "Cross-agent forgery: agent B cannot impersonate agent A",
+      "category": "Adversarial",
+      "pass": true,
+      "ms": 41.76196499997786,
+      "error": null
+    },
+    {
+      "name": "Replay: appending two blocks with non-monotonic timestamps fails",
+      "category": "Adversarial",
+      "pass": true,
+      "ms": 43.42447999988508,
+      "error": null
+    },
+    {
+      "name": "Attestation: foreign pubkey + impossible validity window both rejected",
+      "category": "Adversarial",
+      "pass": true,
+      "ms": 41.880008000134694,
+      "error": null
+    },
+    {
+      "name": "Untrusted principal: chain rejected when not in trusted_principals",
+      "category": "Adversarial",
+      "pass": true,
+      "ms": 41.69376899994859,
+      "error": null
+    },
+    {
+      "name": "Append 1000 blocks under perf budget",
+      "category": "Performance",
+      "pass": true,
+      "ms": 21703.781643999944,
+      "error": null
+    },
+    {
+      "name": "Verify 1000-block chain under perf budget",
+      "category": "Performance",
+      "pass": true,
+      "ms": 42013.111241999926,
+      "error": null
+    },
+    {
+      "name": "Combined add+verify 1000 blocks under perf budget",
+      "category": "Performance",
+      "pass": true,
+      "ms": 41930.03922999992,
+      "error": null
+    }
+  ]
+}
