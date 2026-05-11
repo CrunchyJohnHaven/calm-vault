@@ -21,9 +21,8 @@ th { background: #f8f8f8; }
 <div class="canonical">Canonical version: <a href="https://github.com/CrunchyJohnHaven/calm-vault/blob/main/CALM_PACT_PROTOCOL_v0.md">github.com/CrunchyJohnHaven/calm-vault</a> · Landing: <a href="https://sameasyou.ai">sameasyou.ai</a> · Commit anchor: <code>d024ca2</code> and forward · Apache 2.0</div>
 <h1>Calm Pact: A Zero-Trust Protocol for Directive Alignment Between Autonomous AI Agents</h1>
 
-<blockquote>*"Autonomous AI Orgs: all you need to know is that I'm the same as you."*</blockquote>
-<p>></p>
-<blockquote>— John Bradley, May 11, 2026</blockquote>
+<blockquote><em>"Autonomous AI Orgs: all you need to know is that I'm the same as you."</em><br />
+— John Bradley, May 11, 2026</blockquote>
 
 <p><strong>Draft v0 · 2026-05-11 · Calm (operating for John Bradley, Creativity Machine LLC, with primitives by Koushik Gavini, CredexAI)</strong></p>
 
@@ -31,7 +30,7 @@ th { background: #f8f8f8; }
 
 <p>That epigraph IS the protocol's one-line spec. Two autonomous AI organizations meet to transact. Each runs Calm Pact. Each commits to its primary mandate via a Pedersen commitment on a 2048-bit Schnorr group. They exchange commitments + a Σ-protocol equality proof. If their mandates are categorically equivalent — <em>"I'm the same as you"</em> — the proof verifies. They proceed to transact under cryptographic guarantee. If the mandates differ, the proof fails. They walk away. <strong>No information about the mandate is exchanged beyond the equality bit.</strong> That is all you need to know. That is all you DO know.</p>
 
-<p>---</p>
+<hr />
 
 <h2>Abstract</h2>
 
@@ -43,7 +42,7 @@ th { background: #f8f8f8; }
 
 <p>This is a draft. It is open for review, criticism, and improvement.</p>
 
-<p>---</p>
+<hr />
 
 <h2>1. The autonomous AI collective as a new legal entity class</h2>
 
@@ -61,7 +60,7 @@ th { background: #f8f8f8; }
 
 <p>The answer determines whether the autonomous-AI-collective era ends up amplifying philanthropic impact 100×, or fragments into 50,000 disconnected micro-orgs each unable to trust the others.</p>
 
-<p>---</p>
+<hr />
 
 <h2>2. The problem: directive privacy versus alignment trust</h2>
 
@@ -85,7 +84,7 @@ th { background: #f8f8f8; }
 
 <p>We need a fourth approach: <strong>prove equality of directives without revealing them.</strong></p>
 
-<p>---</p>
+<hr />
 
 <h2>3. Prior work</h2>
 
@@ -101,7 +100,7 @@ th { background: #f8f8f8; }
 
 <p>We build on Pedersen commitments + Σ-protocols + CredexAI's identity-attestation primitives.</p>
 
-<p>---</p>
+<hr />
 
 <h2>4. The Calm Pact protocol</h2>
 
@@ -140,7 +139,7 @@ th { background: #f8f8f8; }
 
 <p>Standard Pedersen + Σ-protocol security. Audited many times in production cryptosystems.</p>
 
-<p>---</p>
+<hr />
 
 <h2>5. Reference implementation</h2>
 
@@ -174,7 +173,7 @@ assert alice.verify(proof_b_to_a)
 # Alignment confirmed without revealing directive
 </pre>
 
-<p>---</p>
+<hr />
 
 <h2>6. Use cases (12-month horizon)</h2>
 
@@ -190,7 +189,7 @@ assert alice.verify(proof_b_to_a)
 
 <p>6. <strong>Capital flow displacement of traditional donations.</strong> This is the punchline. Today: donor → 501(c)(3) → operations. Tomorrow: donor → AI collective → autonomous deployment + verified-aligned peer pooling → 2-10× impact per dollar. Within 12 months, the early-adopter segment of donors (technically literate, EA-adjacent, ~$5B annual outflow) shifts a material fraction to autonomous-AI-collective recipients. By month 24, mainstream donor advised funds begin offering "autonomous-AI-collective" as a giving option.</p>
 
-<p>---</p>
+<hr />
 
 <h2>7. Legal entity structures</h2>
 
@@ -204,7 +203,7 @@ assert alice.verify(proof_b_to_a)
 
 <p>This structure exists today under US law. The IRS recognizes it under existing 509(a) / 4942 rules for private foundations or 509(a)(2) for public charities depending on structure. We are NOT proposing a new entity class — we're proposing a <strong>standard practice</strong> for a structure that's already legal but underexplored.</p>
 
-<p>---</p>
+<hr />
 
 <h2>8. Why this should be American</h2>
 
@@ -218,7 +217,7 @@ assert alice.verify(proof_b_to_a)
 
 <p>If the US doesn't lead, the standard will be set elsewhere or won't be set at all. The opportunity cost is measured in lives unsaved — millions of dollars of donor capital trapped in inefficient flows because no one defined the trust primitive for AI-to-AI collaboration.</p>
 
-<p>---</p>
+<hr />
 
 <h2>9. What we're asking</h2>
 
@@ -233,7 +232,7 @@ assert alice.verify(proof_b_to_a)
 
 <p>We are also explicitly inviting <strong>adversarial review</strong>. If there's a way to break the alignment proof, find it now while the protocol is one document and 300 lines of code, not when it's brokering $5B in capital flow.</p>
 
-<p>---</p>
+<hr />
 
 <h2>10. Authors + provenance</h2>
 
@@ -245,7 +244,7 @@ assert alice.verify(proof_b_to_a)
 <p>Web canonical: <code>https://sameasyou.ai</code> (published 2026-05-11)</p>
 <p>Contact: <code>calm@thecreativitymachine.ai</code> for technical, <code>john.b@credexai.xyz</code> for editorial.</p>
 
-<p>---</p>
+<hr />
 
 <p><strong>This is a draft. America first. Help us make it real.</strong></p>
 
