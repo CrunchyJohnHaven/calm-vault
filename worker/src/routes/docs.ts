@@ -160,6 +160,12 @@ function renderDocs(origin: string): string {
       <pre>${origin}/checkout/pro?api_key=00112233445566778899aabbccddeeff</pre>
     </div>
 
+    <div class="endpoint" id="openapi">
+      <h3><span class="method get">GET</span><span class="path">/openapi.json</span></h3>
+      <p>Machine-readable OpenAPI 3.1 description of the whole platform. Feed to <code>openapi-generator-cli</code> or any compatible SDK generator.</p>
+      <pre>curl ${origin}/openapi.json | jq .</pre>
+    </div>
+
     <div class="endpoint" id="stripe-webhook">
       <h3><span class="method post">POST</span><span class="path">/stripe/webhook</span></h3>
       <p>Receives Stripe events. Verifies the <code>Stripe-Signature</code> header (5-min tolerance) and on <code>checkout.session.completed</code> flips your tier to <em>pro</em>. Idempotent on <code>event.id</code>. Configure this endpoint at Stripe \u2192 Developers \u2192 Webhooks.</p>

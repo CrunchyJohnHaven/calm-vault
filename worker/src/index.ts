@@ -23,6 +23,7 @@ import { handleCertificate } from "./routes/certificate";
 import { handleCheckoutPro } from "./routes/checkout";
 import { handleDocsApi } from "./routes/docs";
 import { handleMe } from "./routes/me";
+import { handleOpenApi } from "./routes/openapi";
 import { handleOrgsList } from "./routes/orgs_list";
 import { handleRegisterOrg } from "./routes/register_org";
 import { handleSignup } from "./routes/signup";
@@ -53,6 +54,10 @@ export default {
 
       if (path === "/docs/api" && method === "GET") {
         return handleDocsApi(env);
+      }
+
+      if (path === "/openapi.json" && method === "GET") {
+        return handleOpenApi(env);
       }
 
       if (path === "/signup" && method === "POST") {

@@ -88,6 +88,37 @@ beforeAll(async () => {
 });
 
 describe("batch 2 — /me, /orgs, /certificate, /stripe/webhook, HEAD", () => {
+  it("/openapi.json serves a valid 3.1 spec covering all routes", async () => {
+    const r = await SELF.fetch("https://test.sameasyou.ai/openapi.json");
+    expect(r.status).toBe(200);
+    const spec = (await r.json()) as {
+      openapi: string;
+      info: { title: string };
+      paths: Record<string, unknown>;
+    };
+    expect(spec.openapi).toBe("3.1.0");
+    expect(spec.info.title).toContain("Calm Vault");
+    // Every public route should be documented.
+    const expected = [
+      "/healthz",
+      "/signup",
+      "/register-org",
+      "/verify/{org_id}",
+      "/verify/keys",
+      "/attest",
+      "/me",
+      "/orgs",
+      "/certificate/{org_id}",
+      "/checkout/pro",
+      "/stripe/webhook",
+      "/docs/api",
+      "/openapi.json",
+    ];
+    for (const p of expected) {
+      expect(spec.paths[p], `missing path ${p}`).toBeDefined();
+    }
+  });
+
   it("HEAD on a GET route returns 200 with empty body", async () => {
     const r = await SELF.fetch("https://test.sameasyou.ai/healthz", {
       method: "HEAD",
