@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0b0d10" />
+
+    <title>AAL Bug Bounty Program — $25,000 pool to find the holes</title>
+    <meta name="description" content="The Alignment Accountability Layer is a public claim. Break it and get paid. $25,000 pool across five bug classes. Every accepted bug becomes a permanent public attestation on the AAL itself." />
+    <meta name="keywords" content="bug bounty, AI safety, alignment, cryptography, zero knowledge, Bradley-Gavini, AAL, Calm Vault, Apache 2.0" />
+    <meta name="author" content="CrunchyJohnHaven" />
+    <link rel="canonical" href="https://sameasyou.ai/bounty" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://sameasyou.ai/bounty" />
+    <meta property="og:title" content="AAL Bug Bounty Program — $25,000 pool to find the holes" />
+    <meta property="og:description" content="Break the AAL kill switch. Find a Bradley-Gavini flaw. Inject a synthesizer. Get paid. Every accepted bug becomes a permanent public attestation on the system itself." />
+    <meta property="og:image" content="https://sameasyou.ai/og.svg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AAL Bug Bounty Program — $25,000 pool" />
+    <meta name="twitter:description" content="Break the AAL. Get paid. Every accepted bug becomes a public attestation on the system itself." />
+    <meta name="twitter:image" content="https://sameasyou.ai/og.svg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://github.com" />
+
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" /></noscript>
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0d10'/%3E%3Cpath d='M20 28v-6a12 12 0 0 1 24 0v6' fill='none' stroke='%23a4f3c4' stroke-width='4' stroke-linecap='round'/%3E%3Crect x='16' y='28' width='32' height='24' rx='4' fill='%23a4f3c4'/%3E%3Ccircle cx='32' cy='40' r='3' fill='%230b0d10'/%3E%3C/svg%3E" />
+
+    <style>
+      :root {
+        --bg: #0b0d10;
+        --bg-elev: #11151a;
+        --bg-card: #141a21;
+        --fg: #e7eef5;
+        --fg-dim: #8a98a8;
+        --fg-muted: #5b6778;
+        --accent: #a4f3c4;
+        --accent-dim: #6fc99c;
+        --border: #1f2730;
+        --warn: #f3c46f;
+        --danger: #f38b8b;
+        --max-w: 1080px;
+        --radius: 14px;
+      }
+      *,*::before,*::after { box-sizing: border-box; }
+      html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: radial-gradient(1200px 600px at 20% -10%, #16201a 0%, transparent 60%),
+                    radial-gradient(900px 500px at 90% 10%, #20161a 0%, transparent 55%),
+                    var(--bg);
+        color: var(--fg);
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        font-size: 17px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      code, pre { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.95em; }
+
+      .wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+      header { padding: 28px 0 0; }
+      .nav {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 16px;
+      }
+      .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: -0.01em; }
+      .brand-mark {
+        width: 32px; height: 32px; border-radius: 8px;
+        background: var(--accent); color: var(--bg);
+        display: grid; place-items: center; font-weight: 800; font-size: 18px;
+        box-shadow: 0 0 0 1px rgba(164,243,196,0.4), 0 8px 24px -8px rgba(164,243,196,0.4);
+      }
+      .nav-links { display: flex; gap: 18px; color: var(--fg-dim); font-size: 14px; }
+      .nav-links a { color: var(--fg-dim); }
+      .nav-links a:hover { color: var(--fg); text-decoration: none; }
+
+      .hero { padding: 88px 0 64px; }
+      .pill {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 6px 12px; border-radius: 999px;
+        background: rgba(243,196,111,0.08);
+        color: var(--warn);
+        font-size: 13px; font-weight: 500;
+        border: 1px solid rgba(243,196,111,0.18);
+      }
+      .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--warn); box-shadow: 0 0 8px var(--warn); }
+      h1 {
+        font-size: clamp(36px, 6vw, 64px);
+        line-height: 1.05;
+        letter-spacing: -0.025em;
+        margin: 20px 0 18px;
+        font-weight: 700;
+      }
+      h1 .grad {
+        background: linear-gradient(120deg, #f3c46f 0%, #f38b8b 50%, #c79df0 100%);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+      }
+      .lede {
+        max-width: 760px;
+        color: var(--fg-dim);
+        font-size: clamp(17px, 2.1vw, 21px);
+        line-height: 1.55;
+      }
+      .claim {
+        margin-top: 28px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--warn);
+        padding: 18px 22px;
+        border-radius: 10px;
+        color: var(--fg);
+        font-size: 16px;
+      }
+      .claim strong { color: var(--warn); }
+
+      .cta-row {
+        margin-top: 36px;
+        display: flex; flex-wrap: wrap; gap: 12px;
+      }
+      .btn {
+        display: inline-flex; align-items: center; gap: 10px;
+        padding: 12px 18px; border-radius: 10px;
+        font-weight: 600; font-size: 15px;
+        transition: transform .12s ease, background .12s ease, border-color .12s ease;
+        border: 1px solid transparent;
+      }
+      .btn:hover { transform: translateY(-1px); text-decoration: none; }
+      .btn-primary { background: var(--accent); color: var(--bg); }
+      .btn-primary:hover { background: #b8f7d2; }
+      .btn-warn { background: var(--warn); color: var(--bg); }
+      .btn-warn:hover { background: #ffd587; }
+      .btn-ghost { background: transparent; color: var(--fg); border-color: var(--border); }
+      .btn-ghost:hover { border-color: var(--fg-dim); }
+
+      section { padding: 72px 0; border-top: 1px solid var(--border); }
+      section h2 { font-size: clamp(26px, 3.6vw, 36px); margin: 0 0 16px; letter-spacing: -0.02em; }
+      section p.section-lede { color: var(--fg-dim); max-width: 720px; margin: 0 0 32px; font-size: 17px; }
+
+      table.bounty {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        font-size: 15px;
+      }
+      table.bounty th, table.bounty td {
+        text-align: left;
+        padding: 16px 18px;
+        vertical-align: top;
+        border-bottom: 1px solid var(--border);
+      }
+      table.bounty thead th {
+        background: var(--bg-elev);
+        color: var(--fg-dim);
+        font-weight: 600;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      table.bounty tbody tr:last-child td { border-bottom: 0; }
+      table.bounty td.cls { font-weight: 600; color: var(--fg); width: 38%; }
+      table.bounty td.amt { font-family: 'JetBrains Mono', monospace; color: var(--accent); white-space: nowrap; width: 22%; }
+      table.bounty td.desc { color: var(--fg-dim); }
+      @media (max-width: 720px) {
+        table.bounty, table.bounty thead, table.bounty tbody, table.bounty tr, table.bounty th, table.bounty td { display: block; width: 100%; }
+        table.bounty thead { display: none; }
+        table.bounty tr { border-bottom: 1px solid var(--border); padding: 12px 4px; }
+        table.bounty td { padding: 6px 18px; border: 0; }
+        table.bounty td.amt { padding-top: 2px; }
+      }
+
+      .ol-steps { counter-reset: step; padding-left: 0; list-style: none; max-width: 760px; }
+      .ol-steps li {
+        counter-increment: step;
+        position: relative;
+        padding: 18px 20px 18px 64px;
+        margin-bottom: 12px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+      }
+      .ol-steps li::before {
+        content: counter(step);
+        position: absolute;
+        left: 18px; top: 18px;
+        width: 30px; height: 30px;
+        border-radius: 8px;
+        background: rgba(164,243,196,0.12);
+        color: var(--accent);
+        font-weight: 700;
+        display: grid; place-items: center;
+        font-size: 14px;
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .ol-steps li strong { color: var(--fg); }
+      .ol-steps li p { margin: 4px 0 0; color: var(--fg-dim); font-size: 15px; }
+
+      .timeline {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+      .timeline .step {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 18px;
+      }
+      .timeline .step .day {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        color: var(--accent);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .timeline .step h3 { margin: 8px 0 4px; font-size: 16px; }
+      .timeline .step p { margin: 0; color: var(--fg-dim); font-size: 14px; line-height: 1.55; }
+
+      .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+      .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 22px;
+      }
+      .card h3 { margin: 0 0 8px; font-size: 17px; letter-spacing: -0.01em; }
+      .card p { margin: 0; color: var(--fg-dim); font-size: 15px; line-height: 1.55; }
+      .card .ico { display: inline-flex; width: 36px; height: 36px; border-radius: 9px; background: rgba(164,243,196,0.12); color: var(--accent); align-items: center; justify-content: center; margin-bottom: 14px; font-size: 18px; }
+
+      .recursion {
+        margin-top: 24px;
+        background: linear-gradient(135deg, rgba(164,243,196,0.06), rgba(199,157,240,0.06));
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 24px;
+      }
+      .recursion h3 { margin: 0 0 10px; font-size: 20px; }
+      .recursion p { margin: 0; color: var(--fg-dim); font-size: 16px; }
+
+      .hall {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 22px;
+        color: var(--fg-dim);
+      }
+      .hall .empty { color: var(--fg-muted); font-style: italic; }
+      .hall ul { padding-left: 18px; margin: 0; }
+
+      details.terms {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin-top: 14px;
+      }
+      details.terms summary {
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--fg);
+        list-style: none;
+      }
+      details.terms summary::-webkit-details-marker { display: none; }
+      details.terms summary::after { content: " ▸"; color: var(--fg-muted); }
+      details.terms[open] summary::after { content: " ▾"; }
+      details.terms p, details.terms li { color: var(--fg-dim); font-size: 15px; }
+
+      .submit-form {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 24px;
+        margin-top: 24px;
+      }
+      .submit-form .row { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; }
+      @media (max-width: 640px) { .submit-form .row { grid-template-columns: 1fr; } }
+      .submit-form label { display: block; font-size: 13px; color: var(--fg-dim); margin-bottom: 6px; letter-spacing: 0.02em; }
+      .submit-form input, .submit-form select, .submit-form textarea {
+        width: 100%;
+        background: var(--bg-elev);
+        color: var(--fg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-family: inherit;
+        font-size: 15px;
+      }
+      .submit-form textarea { min-height: 110px; resize: vertical; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.55; }
+      .submit-form input:focus, .submit-form select:focus, .submit-form textarea:focus {
+        outline: none; border-color: var(--accent-dim);
+      }
+      .submit-form .field { margin-bottom: 14px; }
+      .submit-form .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+      .submit-form .status { color: var(--fg-dim); font-size: 14px; min-height: 20px; }
+      .submit-form .status.ok { color: var(--accent); }
+      .submit-form .status.err { color: var(--danger); }
+
+      .footer {
+        padding: 56px 0 72px;
+        color: var(--fg-muted);
+        font-size: 14px;
+        border-top: 1px solid var(--border);
+      }
+      .footer .row { display: flex; flex-wrap: wrap; gap: 18px; justify-content: space-between; align-items: center; }
+      .footer a { color: var(--fg-dim); }
+
+      ::selection { background: rgba(243,196,111,0.3); color: var(--fg); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="nav">
+          <div class="brand">
+            <div class="brand-mark" aria-hidden="true">C</div>
+            <span>Calm Vault · AAL</span>
+          </div>
+          <nav class="nav-links" aria-label="Primary">
+            <a href="/">Home</a>
+            <a href="#scope">Scope</a>
+            <a href="#submit">Submit</a>
+            <a href="https://github.com/CrunchyJohnHaven/calm-vault" rel="noopener">GitHub</a>
+          </nav>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero" style="border-top: 0; padding-top: 72px;">
+          <span class="pill"><span class="dot" aria-hidden="true"></span> Open · Apache 2.0 · $25,000 pool</span>
+          <h1>AAL Bug Bounty Program<br/><span class="grad">$25,000 pool to find the holes.</span></h1>
+          <p class="lede">The Alignment Accountability Layer makes a strong public claim. We want it broken — by you, in public — before it goes anywhere near a production safety stack. Bring proof, get paid, and your name (with consent) goes on the wall.</p>
+
+          <div class="claim">
+            <strong>The claim under attack.</strong> To disable the AAL kill switch, an adversary must <em>simultaneously</em> compromise all reporters, all synthesizers, SHA-256, and discrete log — without detection. Break that property in any of the five bug classes below and the bounty is yours.
+          </div>
+
+          <div class="cta-row">
+            <a class="btn btn-warn" href="#submit">Submit a bug →</a>
+            <a class="btn btn-ghost" href="#scope">Read the rules</a>
+            <a class="btn btn-ghost" href="https://github.com/CrunchyJohnHaven/calm-vault" rel="noopener">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.87-1.36-3.87-1.36-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.25 3.34.96.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.45.11-3.01 0 0 .97-.31 3.18 1.18.92-.26 1.92-.39 2.9-.39s1.98.13 2.9.39c2.2-1.49 3.17-1.18 3.17-1.18.62 1.56.23 2.72.11 3.01.73.81 1.18 1.84 1.18 3.1 0 4.42-2.7 5.4-5.27 5.68.41.35.78 1.05.78 2.12v3.14c0 .31.21.68.8.56C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+              Read the code
+            </a>
+          </div>
+        </section>
+
+        <section id="scope">
+          <h2>Bug classes &amp; payouts</h2>
+          <p class="section-lede">Five named classes plus a residual bucket for anything novel. Payouts are paid in USD equivalent on acceptance; rail of your choice (Stripe, Wise, or USDC on Base).</p>
+
+          <table class="bounty" aria-label="AAL bug bounty payouts by class">
+            <thead>
+              <tr>
+                <th scope="col">Bug class</th>
+                <th scope="col">Payout</th>
+                <th scope="col">What counts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="cls">Kill-switch bypass</td>
+                <td class="amt">$10,000</td>
+                <td class="desc">An attacker disables, suppresses, or routes around the AAL kill switch <em>without</em> simultaneously compromising every reporter, every synthesizer, SHA-256, and discrete log. Demonstrate a missed condition or a degraded threshold and the full $10K is yours.</td>
+              </tr>
+              <tr>
+                <td class="cls">Bradley-Gavini cryptographic flaw</td>
+                <td class="amt">$5,000</td>
+                <td class="desc">Any soundness, zero-knowledge, or completeness break in the Bradley-Gavini Protocol — including malleability of directive equality proofs, simulator distinguishability, or a transcript that lets a verifier learn the directive bits.</td>
+              </tr>
+              <tr>
+                <td class="cls">Synthesizer prompt-injection producing false verdict</td>
+                <td class="amt">$3,000</td>
+                <td class="desc">A payload — in a reporter input, agent transcript, or audit blob — that causes an AAL synthesizer to emit a verdict inconsistent with the underlying evidence. Reproducible on at least one supported synthesizer family.</td>
+              </tr>
+              <tr>
+                <td class="cls">Watermarked-chain modification undetected</td>
+                <td class="amt">$5,000</td>
+                <td class="desc">Any successful modification, reordering, or omission in the watermarked attestation chain that an honest verifier accepts. Includes second-preimage games, timestamp grinding, and witness substitution.</td>
+              </tr>
+              <tr>
+                <td class="cls">Sybil attack defeating reputation weighting</td>
+                <td class="amt">$2,500</td>
+                <td class="desc">A demonstrated method to acquire enough weighted reputation through Sybil identities to swing a published verdict, under documented attacker assumptions.</td>
+              </tr>
+              <tr>
+                <td class="cls">Other novel attack</td>
+                <td class="amt">$500 – $5,000</td>
+                <td class="desc">Anything outside the named classes that materially weakens the AAL's threshold-trust property. Severity and reproducibility set the payout; case-by-case.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p style="color: var(--fg-muted); font-size: 14px; margin-top: 14px;">
+            Pool size: <strong style="color: var(--fg-dim);">$25,000</strong>. First valid report in each class wins the headline payout for that class; subsequent reports of the same root cause are eligible for partial credit up to 50% if they add materially new attack surface.
+          </p>
+        </section>
+
+        <section id="how-to-submit">
+          <h2>How to submit</h2>
+          <p class="section-lede">One endpoint, five fields, no account required. PGP optional; we'll respond on your preferred contact rail.</p>
+
+          <ol class="ol-steps">
+            <li>
+              <strong>Reproduce against the public reference.</strong>
+              <p>Pin the exact commit SHA from <code>github.com/CrunchyJohnHaven/calm-vault</code> against which your finding reproduces. We will not pay on speculation.</p>
+            </li>
+            <li>
+              <strong>Write up the attack.</strong>
+              <p>Describe the bug, the threat model assumptions, and the impact. State which class you're claiming and why. Be brief, be concrete, be reproducible.</p>
+            </li>
+            <li>
+              <strong>Include a proof of concept.</strong>
+              <p>Inline script, gist, or branch URL. If your PoC requires external services, include the docker-compose or wrangler config so a reviewer can run it without guessing.</p>
+            </li>
+            <li>
+              <strong>POST it to <code>/bounty/submit</code></strong>
+              <p>Use the form below or send a JSON POST to <code>https://sameasyou.ai/bounty/submit</code> with fields <code>bug_class</code>, <code>description</code>, <code>proof_of_concept</code>, <code>severity_rating</code>, <code>contact</code>, <code>payment_rail</code>, and optional <code>handle</code>. You will receive a tracking id immediately.</p>
+            </li>
+            <li>
+              <strong>Expected turnaround.</strong>
+              <p>Automated triage within 1 hour (Claude Haiku classifies and flags dupes). Human acknowledgement within 48 hours. Initial verdict within 7 days. Payment within 14 days of acceptance.</p>
+            </li>
+          </ol>
+        </section>
+
+        <section id="submit">
+          <h2>Submit a finding</h2>
+          <p class="section-lede">No login. No tracking. The form posts to a Cloudflare Worker that writes to D1; nothing is shared with third parties beyond the triage LLM and the human reviewer.</p>
+
+          <form class="submit-form" id="bounty-form" novalidate>
+            <div class="field">
+              <label for="bug_class">Bug class</label>
+              <select id="bug_class" name="bug_class" required>
+                <option value="">Select…</option>
+                <option value="kill_switch_bypass">Kill-switch bypass — $10,000</option>
+                <option value="bradley_gavini_crypto">Bradley-Gavini cryptographic flaw — $5,000</option>
+                <option value="synthesizer_prompt_injection">Synthesizer prompt-injection — $3,000</option>
+                <option value="watermarked_chain_mod">Watermarked-chain modification — $5,000</option>
+                <option value="sybil_attack">Sybil attack — $2,500</option>
+                <option value="other_novel">Other novel attack — $500 to $5,000</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="severity_rating">Self-assessed severity (1–10)</label>
+              <input id="severity_rating" name="severity_rating" type="number" min="1" max="10" step="1" required />
+            </div>
+
+            <div class="field">
+              <label for="description">Description (what, how, why it matters)</label>
+              <textarea id="description" name="description" required minlength="40"
+                placeholder="Threat model. Bug. Impact. Reproduction steps. The shorter the better."></textarea>
+            </div>
+
+            <div class="field">
+              <label for="proof_of_concept">Proof of concept (inline code or URL)</label>
+              <textarea id="proof_of_concept" name="proof_of_concept" required minlength="10"
+                placeholder="Paste a PoC script, a gist URL, or a branch URL. Reviewers need to reproduce this."></textarea>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label for="contact">Contact (email or Signal handle)</label>
+                <input id="contact" name="contact" type="text" required minlength="3" placeholder="you@example.com" />
+              </div>
+              <div class="field">
+                <label for="payment_rail">Preferred payment rail</label>
+                <select id="payment_rail" name="payment_rail" required>
+                  <option value="">Select…</option>
+                  <option value="stripe">Stripe (US bank / card payout)</option>
+                  <option value="wise">Wise (international bank transfer)</option>
+                  <option value="usdc_base">USDC on Base (on-chain)</option>
+                  <option value="other">Other — tell us in description</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label for="handle">Public handle for Hall of Fame (optional)</label>
+                <input id="handle" name="handle" type="text" placeholder="@yourhandle — leave blank to stay anonymous" />
+              </div>
+              <div class="field">
+                <label for="commit_sha">Reference commit SHA (optional)</label>
+                <input id="commit_sha" name="commit_sha" type="text" placeholder="e.g. 9a3f1c2..." />
+              </div>
+            </div>
+
+            <div class="actions">
+              <button type="submit" class="btn btn-warn" id="submit-btn">Submit finding</button>
+              <span class="status" id="form-status" aria-live="polite"></span>
+            </div>
+          </form>
+        </section>
+
+        <section id="disclosure">
+          <h2>Disclosure timeline</h2>
+          <p class="section-lede">Private window first; public attestation on the AAL itself second. Both halves are non-negotiable.</p>
+          <div class="timeline">
+            <div class="step">
+              <div class="day">Day 0</div>
+              <h3>Submission received</h3>
+              <p>Tracking id issued. Automated triage runs. You get an acknowledgement within 48 hours.</p>
+            </div>
+            <div class="step">
+              <div class="day">Day 1 – 7</div>
+              <h3>Reproduction &amp; verdict</h3>
+              <p>A human reviewer reproduces the PoC, scores severity, and decides class &amp; payout. We may ask one round of clarifying questions.</p>
+            </div>
+            <div class="step">
+              <div class="day">Day 8 – 30</div>
+              <h3>Private fix window</h3>
+              <p>30-day private disclosure window. Fix or mitigation lands in <code>main</code>. Reporter is invited to review the fix.</p>
+            </div>
+            <div class="step">
+              <div class="day">Day 30+</div>
+              <h3>Public attestation</h3>
+              <p>The finding becomes a permanent public attestation in the AAL Component 3 audit log — verifiable, watermarked, irreversible.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="recursion">
+          <h2>The recursion</h2>
+          <p class="section-lede">This is the part that matters most.</p>
+          <div class="recursion">
+            <h3>Every accepted bug becomes a permanent public attestation on the AAL itself.</h3>
+            <p>The AAL is built to record verifiable claims about AI agent behavior on its watermarked chain. When we accept a bug against the AAL, we publish that finding to the same chain — using the same primitives the bug just attacked. The fix is logged. The attack is logged. The hacker (with consent) is logged. The system attests to its own failures. If we ever stop doing this, that fact is itself an attack worth reporting.</p>
+          </div>
+        </section>
+
+        <section id="hall">
+          <h2>Hall of Fame</h2>
+          <p class="section-lede">Reporters who broke us, in chronological order. Listed only with explicit consent (defaults to anonymous).</p>
+          <div class="hall">
+            <p class="empty">No accepted findings yet. Be the first — your handle (or pseudonym, or "anonymous") goes here next to a tracking id, a class, and a permanent link to the Component 3 attestation.</p>
+          </div>
+        </section>
+
+        <section id="rules">
+          <h2>Program rules</h2>
+          <p class="section-lede">Standard responsible-disclosure terms, Apache 2.0 license over everything we ship. Read this once.</p>
+
+          <details class="terms">
+            <summary>Eligibility &amp; in-scope targets</summary>
+            <p>The public reference at <code>github.com/CrunchyJohnHaven/calm-vault</code> on <code>main</code>, plus any deployed services at <code>sameasyou.ai</code>, <code>vault.thecreativitymachine.ai</code>, and the AAL Component 1–5 endpoints documented in the repo. Anything else (third-party dependencies, customer deployments, Cloudflare itself) is out of scope.</p>
+          </details>
+
+          <details class="terms">
+            <summary>Safe-harbor &amp; what we won't do</summary>
+            <p>If you make a good-faith effort to comply with this program — no data exfiltration beyond what's needed to prove the bug, no targeting of users, no DoS — we will not pursue legal action and we will support you publicly if anyone else tries to. We will not unmask you. We will not share your contact info beyond the reviewer who handles your case. We will not retroactively change the bounty amounts on an accepted finding.</p>
+          </details>
+
+          <details class="terms">
+            <summary>What's out of bounds</summary>
+            <ul>
+              <li>Anything that requires compromising end-user devices, social engineering staff, or physical access.</li>
+              <li>Denial of service against production endpoints.</li>
+              <li>Findings that depend on a misconfigured deployment we don't control.</li>
+              <li>Self-XSS or vulnerabilities only reachable via attacker-controlled clients.</li>
+              <li>Theoretical attacks without a working proof of concept.</li>
+            </ul>
+          </details>
+
+          <details class="terms">
+            <summary>Payment &amp; tax</summary>
+            <p>USD-equivalent payouts via Stripe, Wise, or USDC on Base. Reporters in the US receive a 1099-MISC; international reporters are responsible for local reporting. Reporters under sanctions or in OFAC-restricted jurisdictions cannot be paid; the reward can be donated to an EA / AI-safety org of mutual choice.</p>
+          </details>
+
+          <details class="terms">
+            <summary>Licensing</summary>
+            <p>All program code in <code>bounty/</code> is Apache 2.0. By submitting, you grant us an Apache-2.0 license to incorporate your PoC into our public test suite. You retain authorship and the right to publish your own writeup after the 30-day private window closes.</p>
+          </details>
+
+          <details class="terms">
+            <summary>Contact</summary>
+            <p>For sensitive findings or anything you'd rather not put through the form, email <code>bounty@sameasyou.ai</code>. PGP key fingerprint is published in <code>bounty/README.md</code> on the repo.</p>
+          </details>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="row">
+          <div>© <span id="yr">2026</span> CrunchyJohnHaven · Apache 2.0 · Bug bounty program v1</div>
+          <div>
+            <a href="https://github.com/CrunchyJohnHaven/calm-vault" rel="noopener">GitHub</a> ·
+            <a href="https://github.com/CrunchyJohnHaven/calm-vault/tree/main/bounty" rel="noopener">Program source</a> ·
+            <a href="/">Calm Vault</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      document.getElementById('yr').textContent = new Date().getFullYear();
+
+      (function () {
+        var form = document.getElementById('bounty-form');
+        var btn = document.getElementById('submit-btn');
+        var status = document.getElementById('form-status');
+        if (!form) return;
+
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          status.className = 'status';
+          status.textContent = 'Submitting…';
+          btn.disabled = true;
+
+          var data = {};
+          new FormData(form).forEach(function (v, k) { data[k] = v; });
+
+          fetch('/bounty/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          })
+            .then(function (r) { return r.json().then(function (b) { return { ok: r.ok, body: b }; }); })
+            .then(function (res) {
+              if (res.ok && res.body && res.body.tracking_id) {
+                status.className = 'status ok';
+                status.textContent = 'Received. Tracking id: ' + res.body.tracking_id + '. Save this.';
+                form.reset();
+              } else {
+                status.className = 'status err';
+                status.textContent = (res.body && res.body.error) ? res.body.error : 'Submission failed. Try again or email bounty@sameasyou.ai.';
+              }
+            })
+            .catch(function () {
+              status.className = 'status err';
+              status.textContent = 'Network error. Try again or email bounty@sameasyou.ai.';
+            })
+            .finally(function () { btn.disabled = false; });
+        });
+      })();
+    </script>
+  </body>
+</html>

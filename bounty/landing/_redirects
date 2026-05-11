@@ -1,0 +1,11 @@
+# Cloudflare Pages-style redirects for the AAL bug bounty.
+#
+# When this directory is deployed as a separate Pages project (or its files
+# are merged into the main sameasyou.ai deploy), the canonical URL is
+# `https://sameasyou.ai/bounty`. Make both `/bounty` and `/bounty/` resolve
+# to bounty.html, and keep deep links stable.
+
+/bounty           /bounty.html   200
+/bounty/          /bounty.html   200
+/bounty/index     /bounty.html   301
+/bounty/index.html /bounty.html  301

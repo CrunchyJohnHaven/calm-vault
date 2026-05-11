@@ -200,6 +200,36 @@
       .footer a { color: var(--fg-dim); }
 
       ::selection { background: rgba(164,243,196,0.3); color: var(--fg); }
+
+      .nav-bounty {
+        color: var(--warn) !important;
+        border: 1px solid rgba(243,196,111,0.35);
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-weight: 600;
+      }
+      .nav-bounty:hover { background: rgba(243,196,111,0.08); text-decoration: none; }
+
+      .bounty-ribbon {
+        margin-top: 24px;
+        display: flex; flex-wrap: wrap; align-items: center; gap: 14px;
+        background: linear-gradient(135deg, rgba(243,196,111,0.08), rgba(199,157,240,0.06));
+        border: 1px solid rgba(243,196,111,0.25);
+        border-radius: 12px;
+        padding: 14px 18px;
+        color: var(--fg);
+        font-size: 15px;
+      }
+      .bounty-ribbon strong { color: var(--warn); }
+      .bounty-ribbon a.cta {
+        margin-left: auto;
+        background: var(--warn);
+        color: var(--bg);
+        font-weight: 600;
+        padding: 8px 14px;
+        border-radius: 8px;
+      }
+      .bounty-ribbon a.cta:hover { background: #ffd587; text-decoration: none; }
     </style>
   </head>
   <body>
@@ -213,6 +243,7 @@
           <nav class="nav-links" aria-label="Primary">
             <a href="#how">How it works</a>
             <a href="#threats">Threat model</a>
+            <a href="/bounty" class="nav-bounty">Bounty · $25K</a>
             <a href="https://github.com/CrunchyJohnHaven/calm-vault" rel="noopener">GitHub</a>
           </nav>
         </div>
@@ -229,6 +260,11 @@
               Clone on GitHub
             </a>
             <a class="btn btn-ghost" href="https://github.com/CrunchyJohnHaven/calm-vault/blob/main/docs/QUICKSTART.md" rel="noopener">Read the quickstart →</a>
+          </div>
+
+          <div class="bounty-ribbon" role="complementary" aria-label="AAL bug bounty">
+            <span><strong>Find a hole, get paid.</strong> AAL bug bounty program — $25,000 pool to break the alignment kill switch.</span>
+            <a class="cta" href="/bounty">Open the bounty →</a>
           </div>
 
           <div class="terminal" role="figure" aria-label="Five commands from setup to redemption">
