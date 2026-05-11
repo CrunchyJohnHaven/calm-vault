@@ -2,11 +2,9 @@
 
 **Canonical site:** https://sameasyou.ai
 
-## Autonomous AI Orgs
+## Same As You
 
-### All you need to know is I'm the same as you.
-
-### How to design AI for the future.
+### Autonomous AI Orgs: All you need to know is I'm the same as you. How to design AI for the future.
 
 ---
 
@@ -17,14 +15,14 @@ Creativity Machine LLC · Delaware · USA
 
 ---
 
-This page is the **title page** for a forthcoming book about *Autonomous AI Orgs* — businesses run by AI agents, owned by humans, and connected to each other by a cryptographic protocol that lets them coordinate without leaking their strategy. The book has not been published yet. This file records the locked title, the working table of contents, and a short status note about where the manuscript stands as of May 11, 2026.
+This page is the **title page** for a forthcoming book. The primary title is *Same As You*; the long-form descriptor *Autonomous AI Orgs: All you need to know is I'm the same as you. How to design AI for the future.* is retained as the subtitle. The book is about businesses run by AI agents, owned by humans, and connected to each other by a cryptographic protocol that lets them coordinate without leaking their strategy. The book has not been published yet. This file records the locked title, the working table of contents, and a short status note about where the manuscript stands as of May 11, 2026.
 
 > ## If you have 30 seconds, read this:
 >
 > - **What this page is:** a draft title page for a book — not the book itself.
 > - **The book's argument:** AI agents are starting to run real companies. They need a way to trust each other. This book explains how to build that trust without revealing private mission data.
-> - **The locked title:** *Autonomous AI Orgs: All you need to know is I'm the same as you. How to design AI for the future.*
-> - **Status:** title locked May 11, 2026. First chapter drafted. Reference code public. Full manuscript: in progress.
+> - **The locked title (V2, evening of May 11, 2026):** *Same As You*, with *Autonomous AI Orgs: All you need to know is I'm the same as you. How to design AI for the future.* retained as the long-form subtitle.
+> - **Status:** title locked May 11, 2026 (V2 pivot). First chapter drafted. Reference code public. Full manuscript: in progress.
 > - **Who wrote it:** John Bradley (principal author), Calm (his AI agent who drafts), Koushik Gavini (the underlying cryptography).
 
 ---
@@ -53,10 +51,10 @@ This is, in part, a book about that.
 
 ## Status (May 11, 2026, end of day)
 
-- **Working title locked:** 2026-05-11 ~10:50pm UTC, by John Bradley. Exact title (no paraphrase, no abbreviation, no reordering): *Autonomous AI Orgs: All you need to know is I'm the same as you. How to design AI for the future.* See `BOOK_TITLE_LOCKED_2026-05-11.md` in the working library for the lock doctrine.
+- **Primary title:** *Same As You* (locked by John Bradley 2026-05-11 evening, replacing the prior "Autonomous AI Orgs" primary lock). The long-form descriptor — *Autonomous AI Orgs: All you need to know is I'm the same as you. How to design AI for the future.* — is retained as subtitle for the paper, the spine, marketing collateral, and podcast intros.
 - **First chapter drafted:** *Boom. History Books.* (Lewis-omniscient narrator; ~2,500 words; verifiable to artifacts on disk and in repo)
 - **Reference implementation public:** github.com/CrunchyJohnHaven/calm-vault, commit `5643f7d` and forward
-- **Canonical landing:** https://sameasyou.ai (DNS live + HTTP serving 2026-05-11 ~10:30pm UTC; HTTPS cert provisioning)
+- **Canonical landing:** https://sameasyou.ai (DNS live + HTTP serving 2026-05-11 ~10:30pm UTC; HTTPS cert provisioning; pivot to *Same As You* primary brand staged for deploy)
 - **Demonstration anchor:** First live two-agent run 2026-05-11 21:55:19 UTC; SHA-256 `79d94386329...`
 - **Test suite passing:** 33 of 34 across two suites; details public in the repo
 
@@ -107,10 +105,10 @@ XIII. **Maggie Says Someday.**
 
 ## Composition
 
-- `BOOK_TITLE_LOCKED_2026-05-11.md` — John's title-lock doctrine (working library)
+- `BOOK_TITLE_LOCKED_2026-05-11.md` — superseded by `BOOK_TITLE_LOCKED_2026-05-11_V2_SAME_AS_YOU.md` (the V2 lock per John's evening pivot)
 - `calm_pact_tagline_2026-05-11.md` — tagline composes with title
 - `CHAPTER_DRAFT_MAY_11_2026_BOOM_HISTORY_BOOKS.md` — first-chapter draft
-- `SAME_AS_YOU_PRODUCT_SKETCH_v0.md` — companion technical sketch of the personal-narrative-chain extension (separate file, technical-only; Chapter IX material)
+- `SAME_AS_YOU_PRODUCT_SKETCH_v0.md` — companion technical sketch of the personal-narrative-chain extension (Chapter IX material; the consumer product surface of the protocol)
 
 ---
 

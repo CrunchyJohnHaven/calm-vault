@@ -90,11 +90,9 @@ Canonical site root: `https://sameasyou.ai/`
 
 ## Paper (long-form write-up)
 
-This row is **provisional** — the linked file is landing overnight from a parallel session. If the URL 404s when you click it, skip the row and pick something else; we'll mark it green once it commits.
-
 | # | Path | GitHub URL | Status | Reviewer focus |
 |---|---|---|---|---|
-| 17a | [`paper/bradley-gavini-protocol-v0.html`](paper/bradley-gavini-protocol-v0.html) | [`paper/bradley-gavini-protocol-v0.html`](https://github.com/CrunchyJohnHaven/calm-vault/blob/main/paper/bradley-gavini-protocol-v0.html) | **Landing overnight** | Long-form HTML write-up of the protocol. Same accuracy + brand-consistency checks as `CALM_PACT_PROTOCOL_v0.md`. |
+| 17a | [`paper/bradley-gavini-protocol-v0.html`](paper/bradley-gavini-protocol-v0.html) | [`paper/bradley-gavini-protocol-v0.html`](https://github.com/CrunchyJohnHaven/calm-vault/blob/main/paper/bradley-gavini-protocol-v0.html) | **Live (committed `7435903`)** | Long-form HTML render of the Bradley-Gavini preprint v0. Same accuracy + brand-consistency checks as `CALM_PACT_PROTOCOL_v0.md`. Render the HTML in a browser (it's intended for human reading, not a Markdown viewer). |
 
 ---
 
