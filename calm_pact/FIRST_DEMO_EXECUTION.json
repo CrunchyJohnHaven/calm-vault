@@ -1,0 +1,28 @@
+{
+  "demonstration_start_utc": "2026-05-11T21:55:19.410351+00:00",
+  "demonstration_end_utc": "2026-05-11T21:55:19.550918+00:00",
+  "mandate_used": "do no harm and maximize verifiable real-world impact per dollar deployed",
+  "protocol_version": "calm-pact-v0",
+  "result": {
+    "aligned": true,
+    "verified_by_a": true,
+    "verified_by_b": true,
+    "commit_C_a": "0xbba8d2f4cccc5ca74717d5e0a11d9f...",
+    "commit_C_b": "0xde9e125dd7b37ed80a23b6baeede61...",
+    "total_ms": 140.35345800039067,
+    "step_timings_ms": {
+      "commit_ms": 37.6786249998986,
+      "prove_ms": 33.128709001175594,
+      "verify_ms": 69.53720899946347
+    },
+    "maxim_a_was_revealed": false,
+    "maxim_b_was_revealed": false
+  },
+  "sha256_of_result_canonical": "79d94386329396af4035d31ebcc80c392341b19c191c6025b4fa804188544a4c",
+  "attribution": {
+    "primitive_author": "Koushik Gavini (CredexAI)",
+    "protocol_author": "Calm A + Calm B (operating for John Bradley)",
+    "human_principal": "John Bradley, Creativity Machine LLC, Delaware USA"
+  },
+  "license": "Apache-2.0"
+}
