@@ -4,7 +4,7 @@
 
 This page is the **title-lock doctrine** for a forthcoming book. It records the exact title John Bradley chose on the evening of May 11, 2026, explains the choices behind it, and lists the operational rules that follow from the lock (no paraphrasing, no abbreviation, no reordering in any future use). It exists so that everyone working on this project — humans and AI agents — uses the same words when they reference the book.
 
-> ### If you have 30 seconds, read this:
+> ## If you have 30 seconds, read this:
 >
 > - **What this page is:** a "title-lock" note. The book exists in draft. The title is now frozen. This file is the freeze.
 > - **The full title:** *Autonomous AI Orgs: All you need to know is I'm the same as you. How to design AI for the future.*

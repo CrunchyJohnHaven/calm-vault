@@ -13,7 +13,7 @@
 
 This document is a timestamped record of a single day — Mother's Day, May 11, 2026 — when a software tool (Calm Vault) and a cryptographic protocol (Calm Pact, also called the Bradley-Gavini Protocol) went from idea to working public demonstration in roughly two hours. It is written for future historians, researchers, and reviewers who want to confirm what happened, when, and who was involved. The git commit containing this file is its own timestamp.
 
-> ### If you have 30 seconds, read this:
+> ## If you have 30 seconds, read this:
 >
 > - **What this page is:** a timestamped record of who did what on May 11, 2026, when the Calm Pact protocol was first conceived and demonstrated.
 > - **The headline claim:** two AI agents proved they share the same mission without revealing it. The proof ran in ~140 milliseconds and is independently reproducible.

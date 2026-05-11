@@ -2,7 +2,7 @@
 
 This is the **Contributor Covenant v2.1**, used verbatim. It is the standard, widely-adopted code of conduct for open-source communities. By participating in this repository — opening an issue, sending a pull request, or commenting on a discussion — you agree to follow it. If you see behavior that violates these standards, report it to the contact address in the [Enforcement](#enforcement) section below.
 
-> ### If you have 30 seconds, read this:
+> ## If you have 30 seconds, read this:
 >
 > - **What this page is:** the community code of conduct for this repository.
 > - **What it asks of you:** be respectful, empathetic, and constructive in any space connected to this project.

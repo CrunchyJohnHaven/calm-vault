@@ -2,7 +2,7 @@
 
 This page **preserves verbatim** a private WhatsApp message that John Bradley sent to his immediate family on Mother's Day, May 11, 2026, at 5:52pm Eastern Time. The message is the first written record of the cryptographic protocol that this repository implements, and it names Koushik Gavini as the inventor of the underlying zero-trust verification technology. The rest of this page explains why that single text message is treated here as a historical primary source.
 
-> ### If you have 30 seconds, read this:
+> ## If you have 30 seconds, read this:
 >
 > - **What this page is:** a preserved family text message from John Bradley, dated May 11, 2026, 5:52pm ET, plus context for why it is preserved.
 > - **Why it's preserved:** it is the first written attribution by a co-author (John) to the inventor (Koushik Gavini) of the protocol described in this repository.

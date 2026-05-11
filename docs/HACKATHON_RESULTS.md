@@ -3,7 +3,7 @@
 
 This page is the **judging report** for an internal design tournament held on the evening of May 11, 2026. Eight short design teams each proposed a different architecture for an AI-agent credential broker. This report scores them on twelve criteria, picks a synthesis winner, and recommends a four-week implementation path. It is written for anyone considering how to manage secrets for autonomous AI agents.
 
-> ### If you have 30 seconds, read this:
+> ## If you have 30 seconds, read this:
 >
 > - **What this page is:** a design tournament report. Eight competing architectures for a secret-broker, scored side-by-side.
 > - **The headline finding:** the most-shippable design combines three known ideas (Ed25519-signed grants + signed policies + zero-knowledge proofs) into something no commercial product ships today.

@@ -4,7 +4,7 @@ A 5-minute walkthrough from an empty machine to your first agent redeeming a cre
 
 This guide uses **only** the commands exposed by `src/calm_vault.py` — `setup`, `issue-agent`, `add`, `grant`, `request`, `revoke`, and `list`. No hidden subcommands, no future API.
 
-> ### If you have 30 seconds, read this:
+> ## If you have 30 seconds, read this:
 >
 > - **What this page is:** a step-by-step guide that takes you from an empty machine to a working secret-broker for AI agents in about five minutes.
 > - **What you'll do:** install one Python package, run seven short commands, and end up with an AI agent that can use a real credential without ever holding it.

@@ -10,7 +10,7 @@
 
 This is the **technical specification** for a protocol called Calm Pact (also called the Bradley-Gavini Protocol). In plain terms: it lets two AI agents that have never met prove to each other — and to anyone watching — that they share the same core mission, without revealing what that mission is. If their missions match, they go on to do business together. If they don't, they walk away. Nothing else leaks. This draft is open for adversarial review.
 
-> ### If you have 30 seconds, read this:
+> ## If you have 30 seconds, read this:
 >
 > - **What this page is:** a draft protocol spec for cryptographers, AI safety researchers, and policy people. Technical, but written so an interested non-specialist can follow the shape.
 > - **The problem:** if AI agents start running real companies, they will need a way to trust each other. Telling each other your private strategy doesn't scale.

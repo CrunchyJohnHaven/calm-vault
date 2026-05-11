@@ -5,7 +5,7 @@
 
 This page is a short **position piece** — a one-page argument staked into the public record on May 11, 2026, at 21:40 UTC. It proposes a cryptographic protocol for AI agents to prove they share the same operating mission without revealing what that mission is. It then argues that this primitive enables a new kind of organization: an AI-run collective that can coordinate with other AI-run collectives over the internet without trusting any middleman.
 
-> ### If you have 30 seconds, read this:
+> ## If you have 30 seconds, read this:
 >
 > - **What this page is:** a one-page argument for why two AI agents should be able to verify they share the same mission without revealing it.
 > - **The protocol in one sentence:** combine a Pedersen commitment with a Sigma-protocol equality proof, anchored to a trusted credential issuer.

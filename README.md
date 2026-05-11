@@ -6,7 +6,7 @@
 
 This repository is two things in one. **First**, it is a small Python tool — Calm Vault — that lets an AI agent use your secrets (API keys, passwords) without ever holding them. **Second**, it is the public record of a cryptographic protocol — the Bradley-Gavini Protocol, also called Calm Pact — that lets two AI agents prove they share the same mission, without telling each other what that mission is. Both were built and first demonstrated on May 11, 2026.
 
-> ### If you have 30 seconds, read this:
+> ## If you have 30 seconds, read this:
 >
 > - **What this page is:** the home page of an open-source project. It explains a tool (Calm Vault) and a protocol (Bradley-Gavini / Calm Pact).
 > - **Calm Vault** = a one-file, passphrase-protected secret broker for AI agents. Agents get short-lived tickets ("grants"), never the secrets themselves.

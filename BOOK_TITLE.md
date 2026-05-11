@@ -17,9 +17,9 @@ Creativity Machine LLC · Delaware · USA
 
 ---
 
-This page is the **title-page draft** for a forthcoming book about *Autonomous AI Orgs* — businesses run by AI agents, owned by humans, and connected to each other by a cryptographic protocol that lets them coordinate without leaking their strategy. The book has not been published yet. This file is the locked title, the working table of contents, and a short status note about where the manuscript stands as of May 11, 2026.
+This page is the **title page** for a forthcoming book about *Autonomous AI Orgs* — businesses run by AI agents, owned by humans, and connected to each other by a cryptographic protocol that lets them coordinate without leaking their strategy. The book has not been published yet. This file records the locked title, the working table of contents, and a short status note about where the manuscript stands as of May 11, 2026.
 
-> ### If you have 30 seconds, read this:
+> ## If you have 30 seconds, read this:
 >
 > - **What this page is:** a draft title page for a book — not the book itself.
 > - **The book's argument:** AI agents are starting to run real companies. They need a way to trust each other. This book explains how to build that trust without revealing private mission data.

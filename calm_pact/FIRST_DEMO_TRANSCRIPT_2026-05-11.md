@@ -5,7 +5,7 @@
 
 This page is the **transcript** of the very first live run of the Calm Pact protocol. Two AI agents, operated by the same human owner, used the protocol to prove they share the same one-sentence mission. The proof took about 140 milliseconds. Both sides verified. Neither side revealed the mission inside the protocol itself. For this transcript only — so future readers can rerun the demonstration — the mission text is also written out below.
 
-> ### If you have 30 seconds, read this:
+> ## If you have 30 seconds, read this:
 >
 > - **What this page is:** a record of the first time the Calm Pact protocol was actually run between two AI agents on May 11, 2026.
 > - **The result:** both agents verified they share the same mission. The protocol took ~140 milliseconds end-to-end.

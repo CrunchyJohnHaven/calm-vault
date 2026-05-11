@@ -8,7 +8,7 @@
 
 This page is the **per-test report** for the foundational test suite. We ran 25 tests against the protocol, organized into six categories: does it work, does the math hold, does it resist attacks, does it handle edge cases, is it fast enough, and does it behave correctly over many random trials. Twenty-four tests passed. One performance test missed by about 5 milliseconds — a calibration issue, not a security issue. The rest of this page lists every test, its result, and an honest interpretation.
 
-> ### If you have 30 seconds, read this:
+> ## If you have 30 seconds, read this:
 >
 > - **What this page is:** a row-by-row table of the 25-test foundational suite for the Calm Pact protocol.
 > - **The score:** 24 of 25 passed.

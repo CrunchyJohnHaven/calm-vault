@@ -5,7 +5,7 @@
 
 This page is the **combined test report** for the first version of the Calm Pact protocol. We ran two test suites against the reference implementation. Together they cover 34 tests across categories like "does the math work", "does it resist obvious attacks", and "is it fast enough". The summary: 33 passed, one failed on a speed target, none failed on correctness or security. Anyone with a computer and Python 3 can re-run these tests in about seven minutes.
 
-> ### If you have 30 seconds, read this:
+> ## If you have 30 seconds, read this:
 >
 > - **What this page is:** a plain-English summary of two automated test suites against the Calm Pact cryptographic protocol.
 > - **Headline score:** 33 of 34 tests passed.

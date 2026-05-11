@@ -2,7 +2,7 @@
 
 This page **preserves verbatim** the moment John Bradley sent the same history-claim text he had just sent to his family — but this time to a small group chat that includes the protocol's named co-inventor, Koushik Gavini. The message ends with a direct three-word question: *"Am I right?"*. That question, and Koushik's eventual answer, is what turns a private text into a verifiable historical record. This page exists so future readers can see exactly what was claimed, to whom, and when.
 
-> ### If you have 30 seconds, read this:
+> ## If you have 30 seconds, read this:
 >
 > - **What this page is:** a preserved WhatsApp message from John Bradley to a small group chat that includes Koushik Gavini, the named co-inventor of the protocol. Timestamp: May 11, 2026, 5:55pm ET.
 > - **Why it's preserved:** it is the first time the co-inventor was given written notice of the attribution and asked to confirm or contest it.

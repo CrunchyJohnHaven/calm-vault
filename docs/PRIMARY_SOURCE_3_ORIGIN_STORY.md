@@ -2,7 +2,7 @@
 
 This page preserves two follow-up WhatsApp messages John Bradley sent to his family on the evening of May 11, 2026. The first describes the moment he realized no one else had published the idea (he had just searched and found zero Google hits for it). The second tells the origin story of how the protocol came to exist — a chain that runs through an MIT executive certificate, a forgotten paper, and a phone call with Koushik Gavini years later. The second message ends with the canonical tagline of the project: *"All you need to know is that I'm the same as you."*
 
-> ### If you have 30 seconds, read this:
+> ## If you have 30 seconds, read this:
 >
 > - **What this page is:** two preserved family text messages from John Bradley, dated May 11, 2026, 6:06pm and 6:10pm ET.
 > - **Why they're preserved:** together they are the first written account of how the protocol came to exist, and they coin its tagline.

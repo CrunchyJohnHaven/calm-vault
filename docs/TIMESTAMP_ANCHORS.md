@@ -4,12 +4,12 @@ Independent third-party witnesses to the May 11, 2026 priority date.
 
 This page is a short list of **outside services** that recorded the existence of this work on May 11, 2026 — a GitHub Gist, Internet Archive snapshots, a repository creation event, and email message IDs from a sending service. Each row is a link you can click yourself. Together they make it hard to back-date the claim. They do not prove the protocol works; they prove it existed on the date stated.
 
-> ### If you have 30 seconds, read this:
+> ## If you have 30 seconds, read this:
 >
 > - **What this page is:** a list of independent timestamps from neutral third parties (GitHub, Internet Archive, an email service) confirming when this work was first published.
 > - **Why it exists:** so anyone evaluating the May 11, 2026 priority claim can verify it without trusting us.
 > - **What it does NOT prove:** that the protocol is correct or useful. It only proves the publication date.
-> - **What's missing here:** two private WhatsApp threads (also preserved verbatim) — see the [`PRIMARY_SOURCE_*.md`](.) files alongside this one.
+> - **What's missing here:** two private WhatsApp threads (also preserved verbatim) — see [`PRIMARY_SOURCE_1_FAMILY.md`](./PRIMARY_SOURCE_1_FAMILY.md), [`PRIMARY_SOURCE_2_KOUSHIK.md`](./PRIMARY_SOURCE_2_KOUSHIK.md), and [`PRIMARY_SOURCE_3_ORIGIN_STORY.md`](./PRIMARY_SOURCE_3_ORIGIN_STORY.md).
 > - **How to verify a row:** click the URL. If a link 404s, please open an issue — that is exactly the kind of bug we want flagged.
 
 ---
