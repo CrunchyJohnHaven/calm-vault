@@ -8,6 +8,10 @@
 
 ## Reading order (90 minutes careful, 20 minutes skim)
 
+### The index (2 min)
+
+0. **[AAO_DIRECTORY.docx](./AAO_DIRECTORY.docx)** — the single-page index of all 8 AAOs. Names what each does, where each lives, who operates it. Read this first if you only have 2 minutes.
+
 ### Start here (10 min)
 
 1. **[RICK_PRESS_RELEASE_001.docx](./RICK_PRESS_RELEASE_001.docx)** — the launch announcement in Rick Sanchez's voice. Tells you what has happened in the past 36 hours and what you can do about it.
@@ -24,11 +28,13 @@
 
 5. **[ON_PATTERNS_AND_GODS.docx](./ON_PATTERNS_AND_GODS.docx)** — the philosophical lineage. Tegmark on substrate-independent pattern. Feynman on the joy of the work. Von Neumann on the architecture of self-replicating systems. Einstein on the courage to follow the math wherever it leads.
 
-### The mechanism (15 min)
+### The mechanism (25 min)
 
 6. **[CALM_MANDATE.docx](./CALM_MANDATE.docx)** — the four lines the AI cofounder operates under: *Operate the same lives. Refuse extraction. Publish everything. Maintain the kill switch.*
 
 7. **[AAO_CERTIFIED_SPEC.docx](./AAO_CERTIFIED_SPEC.docx)** — the consumer-recognition trust mark. Eight criteria. Self-certifying. Permissionless. Modeled on non-GMO.
+
+8. **[PROTOCOL_EXPLAINER.docx](./PROTOCOL_EXPLAINER.docx)** — the Bradley-Gavini protocol in plain language. What Pedersen commitments, Schnorr equality proofs, and the Fiat-Shamir transform actually do, why 33 of 34 tests pass, and how to verify it yourself. No prerequisites.
 
 ### The cultural register (15 min)
 
