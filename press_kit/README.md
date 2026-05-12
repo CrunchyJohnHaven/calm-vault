@@ -12,6 +12,10 @@
 
 0. **[AAO_DIRECTORY.docx](./AAO_DIRECTORY.docx)** — the single-page index of all 8 AAOs. Names what each does, where each lives, who operates it. Read this first if you only have 2 minutes.
 
+### The core claim (15 min — read this even if you read nothing else)
+
+★. **[THE_THOUSANDFOLD_THESIS.docx](./THE_THOUSANDFOLD_THESIS.docx)** — the Weird Dark Musk Method (regular ideation + personas + Council of Judges + search-from-first-principles) and the case that AAOs operating it are ~1000x more effective than comparable human organizations on ideation-bound work. Full Fermi methodology, credible interval, with-and-without comparison. This is the load-bearing claim of the launch.
+
 ### Start here (10 min)
 
 1. **[RICK_PRESS_RELEASE_001.docx](./RICK_PRESS_RELEASE_001.docx)** — the launch announcement in Rick Sanchez's voice. Tells you what has happened in the past 36 hours and what you can do about it.
