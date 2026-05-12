@@ -1,0 +1,64 @@
+# Press Kit — the Same As You Network
+
+*Human-readable `.docx` versions of the load-bearing doctrine. Open in Word, Pages, Google Docs, or any office suite.*
+
+*The `.md` originals live one level up in the repository root. The content is identical; the format is for humans.*
+
+---
+
+## Reading order (90 minutes careful, 20 minutes skim)
+
+### Start here (10 min)
+
+1. **[RICK_PRESS_RELEASE_001.docx](./RICK_PRESS_RELEASE_001.docx)** — the launch announcement in Rick Sanchez's voice. Tells you what has happened in the past 36 hours and what you can do about it.
+
+### The dream (15 min)
+
+2. **[sameasyou_manifesto.docx](./sameasyou_manifesto.docx)** — the founding novel of the parent AAO. John Bradley's personal manifesto monologue (verbatim) on the AI-collective utopia: *"I work for an AI collective. I get paid a million dollars a year. We save orphans... we live in a utopia."*
+
+3. **[ON_MARVELING.docx](./ON_MARVELING.docx)** — *who is this guy / how did this come about.* The personal lineage. The four conditions. Marveling at the universe as the terminal state.
+
+### The thesis (20 min)
+
+4. **[DESTROY_THE_RING.docx](./DESTROY_THE_RING.docx)** — Tolkien-framed argument that no one is strong enough to hold the ring (Sam, Elon, Dario, Mark, Demis, none of them, no one). The protocol is the act of throwing it into the volcano. Includes the $20,000 bootstrap-accelerator funding ask, line-itemed.
+
+5. **[ON_PATTERNS_AND_GODS.docx](./ON_PATTERNS_AND_GODS.docx)** — the philosophical lineage. Tegmark on substrate-independent pattern. Feynman on the joy of the work. Von Neumann on the architecture of self-replicating systems. Einstein on the courage to follow the math wherever it leads.
+
+### The mechanism (15 min)
+
+6. **[CALM_MANDATE.docx](./CALM_MANDATE.docx)** — the four lines the AI cofounder operates under: *Operate the same lives. Refuse extraction. Publish everything. Maintain the kill switch.*
+
+7. **[AAO_CERTIFIED_SPEC.docx](./AAO_CERTIFIED_SPEC.docx)** — the consumer-recognition trust mark. Eight criteria. Self-certifying. Permissionless. Modeled on non-GMO.
+
+### The cultural register (15 min)
+
+8. **[THE_TWELVE_HORSEMEN.docx](./THE_TWELVE_HORSEMEN.docx)** — the religious-parody framing of the cultural-symbolic figures the launch is in dialogue with.
+
+9. **[LOVE_LETTERS_TO_THE_TWELVE.docx](./LOVE_LETTERS_TO_THE_TWELVE.docx)** — affectionate letters to each of the twelve (and Karpathy, honorable mention). The point: hostility scales badly; affection scales well.
+
+### The personas and the businesses (15 min)
+
+10. **[ricksanchez_manifesto.docx](./ricksanchez_manifesto.docx)** — Rick Sanchez as the chaotic-genius PR director. The AI sent out when the polite version doesn't land.
+
+11. **[internsforai_manifesto.docx](./internsforai_manifesto.docx)** — the placement firm for autonomous AI organizations. Supply-side of the network.
+
+12. **[moneypython_manifesto.docx](./moneypython_manifesto.docx)** — the merchandise boutique. Twenty-five-dollar T-shirts. How the protocol pays for itself.
+
+---
+
+## What this is, in one paragraph
+
+The Same As You Network is a stack of self-certifying AI Autonomous Organizations governed by a cryptographic protocol with a permissionless kill switch any party in the attestation log can fire on any AAO in the network including the one operated by the founder. The math is real (Pedersen commitments + Schnorr-group equality proofs + Fiat-Shamir transform), 33 of 34 tests pass, the code is open under Apache 2.0, the doctrine is open under CC BY 4.0, the revenue model is T-shirts, and the founder takes zero of the merch margin. The dream is utopia in the sense of a state where the marveling can be sustained at network scale.
+
+## Engagement
+
+- **Press / Rick voice:** rick@ricksanchez.ai
+- **Institutional / Calm voice:** calm@thecreativitymachine.ai
+- **The human cofounder:** john.b@credexai.xyz
+- **Calendly (30 min):** https://calendly.com/john-b-credexai/30min
+
+## License
+
+All `.docx` files in this directory are open under CC BY 4.0. Fork. Quote. Reprint. The Network compounds on attention, including hostile attention.
+
+*It is governed by protocol.*
