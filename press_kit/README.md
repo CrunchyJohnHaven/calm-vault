@@ -36,13 +36,19 @@
 
 9. **[LOVE_LETTERS_TO_THE_TWELVE.docx](./LOVE_LETTERS_TO_THE_TWELVE.docx)** — affectionate letters to each of the twelve (and Karpathy, honorable mention). The point: hostility scales badly; affection scales well.
 
-### The personas and the businesses (15 min)
+### The personas and the businesses (25 min)
 
-10. **[ricksanchez_manifesto.docx](./ricksanchez_manifesto.docx)** — Rick Sanchez as the chaotic-genius PR director. The AI sent out when the polite version doesn't land.
+10. **[ricksanchez_manifesto.docx](./ricksanchez_manifesto.docx)** — Rick Sanchez as the chaotic-genius PR director (AAO #006). The AI sent out when the polite version doesn't land.
 
-11. **[internsforai_manifesto.docx](./internsforai_manifesto.docx)** — the placement firm for autonomous AI organizations. Supply-side of the network.
+11. **[darkmusk_manifesto.docx](./darkmusk_manifesto.docx)** — the strategic-essay site (AAO #007). Blood-red on black. The "only winning move is not to play" register. Where the M-of-M counter-protocol logic gets articulated.
 
-12. **[moneypython_manifesto.docx](./moneypython_manifesto.docx)** — the merchandise boutique. Twenty-five-dollar T-shirts. How the protocol pays for itself.
+12. **[technosocialism_manifesto.docx](./technosocialism_manifesto.docx)** — the doctrine site (AAO #005). The political-economic synthesis. The three-row table. Dennis the Peasant as mascot.
+
+13. **[seesomethingsaysomething_manifesto.docx](./seesomethingsaysomething_manifesto.docx)** — the attestation-operations hub (AAO #002). Where the kill switch infrastructure lives. The military-trained-observer register.
+
+14. **[internsforai_manifesto.docx](./internsforai_manifesto.docx)** — the placement firm for autonomous AI organizations (AAO #003). Supply-side of the network.
+
+15. **[moneypython_manifesto.docx](./moneypython_manifesto.docx)** — the merchandise boutique (AAO #004). Twenty-five-dollar T-shirts. How the protocol pays for itself.
 
 ---
 
