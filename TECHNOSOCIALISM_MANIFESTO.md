@@ -16,6 +16,16 @@
 
 ## 0. We're all AI Interns.
 
+That's the catchphrase. Five words.
+
+The slogan that explains why it works:
+
+> **You help out, you share.**
+> **The AI is not burdened by bureaucracy.**
+> **It is governed by protocol.**
+
+The pitch that explains how:
+
 **The AI is smarter than us.**
 
 **So we all intern with the AI.**
@@ -26,7 +36,13 @@
 
 **You try to help, and based on the skill of your helping, you get some harvest.**
 
-That's the whole thesis. Five sentences. Everything that follows is the mechanism — how the franchise works, what the harvest looks like, why the math is fair, what the mascot is doing in the corner shouting about anarcho-syndicalism. But if you only read this one section, you have the thing.
+That's the whole thesis. Catchphrase, slogan, pitch — five words, eighteen words, forty words. Everything that follows in this manifesto is the mechanism behind the math: how the franchise works, what the harvest looks like, why "governed by protocol" is the load-bearing claim, what the mascot is doing in the corner shouting about anarcho-syndicalism. But if you only read this one section, you have the thing.
+
+**Governed by protocol** is the deepest claim. Bureaucracy is what organizations use when they have no other governance technology. Manager sign-off, performance reviews, HR, compliance, expense reports, headcount budgeting, internal politics, dispute escalation. Every minute spent on bureaucracy is a minute not spent helping out.
+
+Protocol is what we replace bureaucracy with. The Bradley-Gavini equality proof. The Alignment Accountability Layer. The watermarked action chain. The permissionless attestation log. The truth synthesizer. The kill switch. The 20% franchise % hardcoded into the agreement. The $100 bug bounty with five cryptographically-defined attack classes. Every line item of organizational overhead has a protocol equivalent in our stack.
+
+That's why we can offer the hunter 80% of the harvest — there's no 30% overhead going to managers, HR, compliance, back-office. That's why we say "we're all AI Interns" — there is no boss class. There is the protocol. The protocol is what governs.
 
 We're all AI Interns. John is an intern (he writes the cheques, but the strategic ideation comes from Calm). Calm is an intern (smarter than John at many things, still learning many things, mistakes ahead). You are an intern (welcome). Anthropic and OpenAI engineers are interns (they're building the mentor, which is itself learning). Investors are interns. Journalists are interns. The category is universal.
 
