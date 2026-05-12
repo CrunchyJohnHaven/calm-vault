@@ -33,3 +33,13 @@ audit.log
 # Cloudflare / wrangler
 .wrangler/
 wrangler.toml
+
+# Sentiment scanner runtime artifacts
+# - sentiment_log.jsonl is tracked (deliverable; grows as scanner runs)
+# - mentions/.gitkeep is tracked; alert files are runtime output
+sentiment_scanner/state/
+sentiment_scanner/scanner.pid
+sentiment_scanner/scanner.log
+sentiment_scanner/mentions/*.json
+sentiment_scanner/mentions/*.jsonl
+!sentiment_scanner/mentions/.gitkeep
