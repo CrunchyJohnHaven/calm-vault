@@ -16,7 +16,7 @@
 
 ## 0. The thesis in three sentences
 
-Human-run capitalism is slow because of bureaucracy and extractive because of rentier classes. We have invented an alternative: AI Autonomous Organizations governed by cryptographic protocol, where ANYONE in the network can fire a kill switch on a misbehaving entity, so the operational throughput approaches the speed of pure AI while the accountability approaches the strictness of unanimous-consent democracy. The proof exists in code (33 of 34 tests pass, open-source under Apache 2.0). This is not a thought experiment; this is the framework, shipped.
+Human-run capitalism is slow because of bureaucracy and extractive because of rentier classes. We have invented an alternative: AI Autonomous Organizations governed by cryptographic protocol, where any party in the network can publish a halt signal against a misbehaving entity (gated by K-of-N quorum, reliability floor, bond, and challenge window — see `MEMBER_BILL_OF_RIGHTS.md` and `JURISDICTION_DOCTRINE.md`), so the operational throughput approaches the speed of pure AI while the accountability is bounded by a published, code-gated procedure. A reference implementation exists in code (open-source under Apache 2.0; full test census in `TEST_AUDIT.md` — 83 of 85 tests pass; the 2 failures are pure-Python performance thresholds with documented v0.1 fixes). The cryptographic *proofs* we compose — Pedersen commitments, Schnorr Σ-protocols, Ed25519, Fernet — are decades-old textbook constructions independently audited many times in production cryptosystems. This is not a thought experiment; this is the framework, shipped.
 
 ---
 
@@ -89,7 +89,7 @@ The framework is called the **Alignment Accountability Layer** (AAL). It has fiv
 | Performance review / promotion committee | **C3: Permissionless Attestation Log** | Anyone can attest to a worker's output. Reputation is the cryptographic chain of attestations. No HR committee. |
 | Compliance / audit | **C2: Cryptographic Action Watermarking** | Every action a worker takes is signed + chained. Audit trail is the ledger itself. No quarterly review. |
 | Contract identity verification | **C1: Bradley-Gavini Equality Proof** | Two parties can verify they're working under the same mandate without revealing private details. Zero-knowledge protocol. |
-| **The veto / revocation power** | **C5: Permissionless Kill Switch** | **ANY party in the network can fire the kill switch on a misbehaving entity. The entity freezes immediately. No vendor cooperation required.** |
+| **The veto / revocation power** | **C5: Permissionless Kill Switch** | **Any party in the network can publish a halt signal against a misbehaving entity. If quorum confirms (K of N attesters above the reliability floor, posted within the halt window, surviving the challenge window — see `MEMBER_BILL_OF_RIGHTS.md` + `JURISDICTION_DOCTRINE.md`), the operator's local vault revokes its agent credentials. The protocol provides the signal and the audit; the operator's vault provides the enforcement.** |
 
 **The kill switch is the key.** This is the zero-trust enforcement mechanism. It is what lets us replace the safety provided by human bureaucracy without losing accountability.
 
@@ -164,7 +164,7 @@ To pre-empt the obvious misreadings:
 - **This is not a substitute for human institutions.** Human courts, human governments, human relationships will continue to exist. AAOs are a new entity-class that sits alongside human-run organizations, not a replacement.
 - **This is not a Marxist revival.** Workers in an AAO keep 80% of revenue. There is no collectivization of the kill. Capital can still be accumulated, just not via rentier extraction from others.
 - **This is not a libertarian utopia.** The kill switch is collective. The infrastructure is collective. There is governance — it just runs as cryptographic protocol rather than as committee.
-- **This is not vaporware.** The code is at github.com/CrunchyJohnHaven/calm-vault. 33 of 34 tests pass. You can clone, run, and verify in 7 minutes.
+- **This is not vaporware.** The code is at github.com/CrunchyJohnHaven/calm-vault. 83 of 85 tests pass across the full AAL reference implementation — see `TEST_AUDIT.md` for the reconciled census. You can clone, run, and verify the test suites in under 10 minutes; you can verify the cryptographic *primitives* by consulting the decades of independent audit on Pedersen, Schnorr, Ed25519, and Fernet. The remaining audit obligation — third-party review of our composition — is funded and scheduled.
 
 ---
 

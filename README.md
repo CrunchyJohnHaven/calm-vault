@@ -39,7 +39,7 @@ If you're a principal: you keep your mandate private while still proving you're 
 
 ### The first demonstration
 
-May 11, 2026, 21:55 UTC. Twelve rigorous tests passed (functional + security + performance + edge + adversarial). Working code. Public reference at `https://github.com/CrunchyJohnHaven/calm-vault`. Wayback Machine snapshots locked: see `docs/TIMESTAMP_ANCHORS.md`.
+May 11, 2026, 21:55 UTC. Twelve rigorous tests passed for the zk_alignment foundation (functional + security + performance + edge + adversarial). The full AAL reference now passes **83 of 85 tests** across five components (`calm_pact`, `zk_alignment`, `money_python` / OBAC + AVS + HARP, `calm_vault`, smoke transcript) — see [`TEST_AUDIT.md`](TEST_AUDIT.md) for the reconciled census, including the two named performance-threshold failures and their v0.1 fixes. Working code. Public reference at `https://github.com/CrunchyJohnHaven/calm-vault`. Wayback Machine snapshots locked: see `docs/TIMESTAMP_ANCHORS.md`.
 
 This is a **partial solution to the AI Alignment Problem** — specifically the coordination-failure subset (cross-agent collusion, deceptive cooperation, multi-agent race-to-the-bottom). It does not address inner alignment, corrigibility, or training-objective specification on its own. It addresses the question: *when two unaffiliated AI agents meet, can they coordinate on the basis of shared mandate without disclosing the mandate?* Now: yes.
 
