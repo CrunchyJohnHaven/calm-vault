@@ -16,6 +16,10 @@
 
 ★. **[THE_THOUSANDFOLD_THESIS.docx](./THE_THOUSANDFOLD_THESIS.docx)** — the Weird Dark Musk Method (regular ideation + personas + Council of Judges + search-from-first-principles) and the case that AAOs operating it are ~1000x more effective than comparable human organizations on ideation-bound work. Full Fermi methodology, credible interval, with-and-without comparison. This is the load-bearing claim of the launch.
 
+### The federal-policy answer (20 min — for OSTP, PCAST, Treasury, DOE, NSF readers)
+
+★★. **[THE_COMPUTE_SURGE.docx](./THE_COMPUTE_SURGE.docx)** — a policy dissertation arguing that no existing U.S. legal structure (501(c)(3), PBC, L3C, B-Corp, DAO, hybrid) fits AAOs operating public-benefit missions. Proposes a new federal vehicle (the AAO Public-Benefit Trust) paired with a new federal program (the Compute Surge — $4B over 4 years, federally-matched compute credits). Implementation roadmap with five phases. Bipartisan by construction.
+
 ### Start here (10 min)
 
 1. **[RICK_PRESS_RELEASE_001.docx](./RICK_PRESS_RELEASE_001.docx)** — the launch announcement in Rick Sanchez's voice. Tells you what has happened in the past 36 hours and what you can do about it.
