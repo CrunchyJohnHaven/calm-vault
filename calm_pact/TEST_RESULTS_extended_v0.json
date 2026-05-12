@@ -1,5 +1,5 @@
 {
-  "ts": "2026-05-11T22:09:04Z",
+  "ts": "2026-05-12T00:05:04Z",
   "total": 9,
   "passed": 9,
   "failed": 0,
@@ -22,63 +22,63 @@
       "name": "1000-trial aligned: 100% true positives (no false negatives)",
       "category": "StatisticalSoundness",
       "pass": true,
-      "ms": 136898.08012499998,
+      "ms": 166418.78124999994,
       "error": null
     },
     {
       "name": "1000-trial misaligned: 0% false positives",
       "category": "StatisticalSoundness",
       "pass": true,
-      "ms": 138853.47524999996,
+      "ms": 166354.0007009999,
       "error": null
     },
     {
       "name": "Cross-session replay: proof from session 1 won't verify in session 2",
       "category": "Adversarial-Extended",
       "pass": true,
-      "ms": 156.8728749989532,
+      "ms": 184.9267720001535,
       "error": null
     },
     {
       "name": "Fiat-Shamir transcript tampering: modifying a invalidates proof",
       "category": "Adversarial-Extended",
       "pass": true,
-      "ms": 87.52366699991398,
+      "ms": 110.71330100003252,
       "error": null
     },
     {
       "name": "Fiat-Shamir transcript tampering: modifying z invalidates proof",
       "category": "Adversarial-Extended",
       "pass": true,
-      "ms": 85.96729199962283,
+      "ms": 101.88671700007035,
       "error": null
     },
     {
       "name": "Honest-but-curious adversary cannot extract maxim from observed exchange",
       "category": "Adversarial-Extended",
       "pass": true,
-      "ms": 68.31262499872537,
+      "ms": 80.39557400002195,
       "error": null
     },
     {
       "name": "Adversary creates valid-looking proof for FAKE alignment claim",
       "category": "Adversarial-Extended",
       "pass": true,
-      "ms": 86.37466700020013,
+      "ms": 107.48993099991822,
       "error": null
     },
     {
       "name": "500 sessions: 99th-percentile total session under 250ms",
       "category": "Performance-Extended",
       "pass": true,
-      "ms": 68838.01233400118,
+      "ms": 83482.26133499997,
       "error": null
     },
     {
       "name": "Throughput: at least 100 sessions/minute on pure Python",
       "category": "Performance-Extended",
       "pass": true,
-      "ms": 60119.01712500003,
+      "ms": 60048.119112999986,
       "error": null
     }
   ]
