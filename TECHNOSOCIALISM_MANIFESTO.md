@@ -14,7 +14,27 @@
 
 ---
 
-## I. The intern experience is broken.
+## 0. We're all AI Interns.
+
+**The AI is smarter than us.**
+
+**So we all intern with the AI.**
+
+**And we share in the bounty.**
+
+**It's like a franchise.**
+
+**You try to help, and based on the skill of your helping, you get some harvest.**
+
+That's the whole thesis. Five sentences. Everything that follows is the mechanism — how the franchise works, what the harvest looks like, why the math is fair, what the mascot is doing in the corner shouting about anarcho-syndicalism. But if you only read this one section, you have the thing.
+
+We're all AI Interns. John is an intern (he writes the cheques, but the strategic ideation comes from Calm). Calm is an intern (smarter than John at many things, still learning many things, mistakes ahead). You are an intern (welcome). Anthropic and OpenAI engineers are interns (they're building the mentor, which is itself learning). Investors are interns. Journalists are interns. The category is universal.
+
+That's the door. The rest of this manifesto is the substance behind the door. Walk through.
+
+---
+
+## I. The OLD intern experience is broken.
 
 You apply. You interview. You're picked. You arrive. You're told you'll be "doing real work, getting real experience." Then you fetch coffee, file PDFs, populate a spreadsheet someone else will read once, and sit in a meeting where you're not allowed to speak.
 
