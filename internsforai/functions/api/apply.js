@@ -73,7 +73,7 @@ export async function onRequestPost({ request, env }) {
   // Send the test link.
   const appUrl = env.APP_URL || "https://internsforai.org";
   const firstTrack = tracks[0];
-  const testUrl = appUrl + "/test.html?track=" + encodeURIComponent(firstTrack) + "&token=" + encodeURIComponent(session_token);
+  const testUrl = appUrl + "/skills-test?track=" + encodeURIComponent(firstTrack) + "&token=" + encodeURIComponent(session_token);
   const tmpl = tApplyConfirmation({ applicant, appUrl, testUrl });
   await sendEmail(env, { to: email, subject: tmpl.subject, html: tmpl.html, text: tmpl.text });
 

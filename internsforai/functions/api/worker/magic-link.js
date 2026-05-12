@@ -17,7 +17,7 @@ export async function onRequestPost({ request, env }) {
     "INSERT INTO magic_links (created_at, applicant_id, token, expires_at) VALUES (?, ?, ?, ?)"
   ).bind(Date.now(), a.id, tok, expires).run();
   const appUrl = env.APP_URL || "https://internsforai.org";
-  const magicUrl = appUrl + "/worker.html?token=" + encodeURIComponent(tok);
+  const magicUrl = appUrl + "/worker?token=" + encodeURIComponent(tok);
   const tmpl = tMagicLink({ applicant: a, magicUrl });
   await sendEmail(env, { to: email, subject: tmpl.subject, html: tmpl.html, text: tmpl.text });
   return ok({ sent: true });

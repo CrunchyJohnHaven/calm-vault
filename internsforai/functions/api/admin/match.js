@@ -35,7 +35,7 @@ export async function onRequestPost({ request, env }) {
   ).bind(now, applicant_id, magic, expires).run();
 
   const appUrl = env.APP_URL || "https://internsforai.org";
-  const workerUrl = appUrl + "/worker.html?token=" + encodeURIComponent(magic);
+  const workerUrl = appUrl + "/worker?token=" + encodeURIComponent(magic);
   const tmpl = tMatchInvite({
     applicant, project,
     match: { franchise_percent, brief_override },

@@ -176,7 +176,7 @@ async function boot() {
   const tp = $('#tests-pane');
   const tests = me.tests || [];
   if (tests.length === 0) {
-    tp.innerHTML = '<p class="muted">You have not taken a skills test yet. <a href="/test.html?track=light_judgment&token=' + encodeURIComponent(tok()) + '">Take the light-judgment test →</a></p>';
+    tp.innerHTML = '<p class="muted">You have not taken a skills test yet. <a href="/skills-test?track=light_judgment&token=' + encodeURIComponent(tok()) + '">Take the light-judgment test →</a></p>';
   } else {
     tp.innerHTML = tests.map(t =>
       '<div class="card"><h3>' + esc(t.track) + '</h3>' +

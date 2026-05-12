@@ -68,7 +68,7 @@
 
   const nextTitle = document.getElementById('next-step-title');
   const nextBody = document.getElementById('next-step-body');
-  document.getElementById('worker-link').href = '/worker.html?token=' + encodeURIComponent(token);
+  document.getElementById('worker-link').href = '/worker?token=' + encodeURIComponent(token);
 
   if (verdict === 'PASS') {
     card.style.borderColor = 'var(--ok)';

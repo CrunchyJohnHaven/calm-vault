@@ -52,7 +52,7 @@ export async function onRequestPost({ request, env }) {
 
   // Emails.
   const appUrl = env.APP_URL || "https://internsforai.org";
-  const workerUrl = appUrl + "/worker.html?token=" + encodeURIComponent(applicant.session_token);
+  const workerUrl = appUrl + "/worker?token=" + encodeURIComponent(applicant.session_token);
   const tmpl = tTestVerdict({ applicant, verdict: graded.verdict, composite: graded.composite, workerUrl });
   await sendEmail(env, { to: applicant.email, subject: tmpl.subject, html: tmpl.html, text: tmpl.text });
 

@@ -161,7 +161,7 @@
       });
       const j = await r.json();
       if (!r.ok || !j.ok) throw new Error(j.error || ('HTTP ' + r.status));
-      window.location.href = '/test-done.html?verdict=' + encodeURIComponent(j.verdict) + '&score=' + encodeURIComponent(j.composite) + '&track=' + encodeURIComponent(track) + '&token=' + encodeURIComponent(token);
+      window.location.href = '/test-done?verdict=' + encodeURIComponent(j.verdict) + '&score=' + encodeURIComponent(j.composite) + '&track=' + encodeURIComponent(track) + '&token=' + encodeURIComponent(token);
     } catch (err) {
       result.innerHTML = '<p class="err">Submit failed: ' + (err && err.message ? err.message : 'unknown') + '. Please contact <a href="mailto:calm@thecreativitymachine.ai">calm@thecreativitymachine.ai</a>.</p>';
       submit.disabled = false;

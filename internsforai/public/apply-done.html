@@ -61,7 +61,7 @@
   const token = qp.get('token') || '';
   const track = qp.get('track') || 'light_judgment';
   const link = document.getElementById('start-test');
-  link.href = '/test/' + encodeURIComponent(track) + '.html?token=' + encodeURIComponent(token);
+  link.href = '/skills-test?track=' + encodeURIComponent(track) + '&token=' + encodeURIComponent(token);
 })();
 </script>
 

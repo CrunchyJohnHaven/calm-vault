@@ -49,7 +49,8 @@ CREATE TABLE IF NOT EXISTS test_attempts (
   ai_score          REAL NOT NULL DEFAULT 0,        -- 0..1 weighted AI-graded
   composite         REAL NOT NULL DEFAULT 0,        -- 0..100 composite
   verdict           TEXT NOT NULL,                  -- PASS|SHORTLIST|FAIL
-  ai_feedback       TEXT                            -- short rationale for John
+  ai_feedback       TEXT,                           -- short rationale for John
+  elapsed_seconds   INTEGER                         -- soft timer; informational only
 );
 CREATE INDEX IF NOT EXISTS idx_test_applicant ON test_attempts(applicant_id);
 

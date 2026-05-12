@@ -64,8 +64,17 @@ export async function verifyAdmin(request, env) {
 }
 
 // Verify a worker session/magic-link token. Returns applicant row or null.
+// Accepts either an X-Worker-Token header (preferred for mutating ops) or
+// a ?token= query parameter (used by GET /api/worker/me which is reached
+// via emailed magic links).
 export async function verifyWorker(request, env) {
-  const provided = request.headers.get("x-worker-token") || "";
+  let provided = request.headers.get("x-worker-token") || "";
+  if (!provided) {
+    try {
+      const u = new URL(request.url);
+      provided = u.searchParams.get("token") || "";
+    } catch (_e) { /* ignore */ }
+  }
   if (!provided) return null;
   // (1) session_token directly on applicants
   let row = await env.DB.prepare(
