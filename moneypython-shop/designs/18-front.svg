@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Product 18 FRONT — "I JUST WANTED / TO REPLACE MY PARENTS' / NETFLIX QUEUE"
+  Canvas: 4500 x 5400 px. Tee color: Cream / Natural. Print: black.
+  Style: aw-shucks handwriting (Caveat / Permanent Marker stack). Slight rotation per line
+         to defeat the "Adobe Illustrator sterility" look.
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 4500 5400"
+     preserveAspectRatio="xMidYMid meet">
+
+  <style>
+    .hand {
+      font-family: "Permanent Marker", "Caveat", "Patrick Hand", "Kalam",
+                   "Comic Sans MS", "Bradley Hand", cursive;
+      font-weight: 700;
+      letter-spacing: 0.005em;
+    }
+  </style>
+
+  <g transform="translate(2250 1900) rotate(-1.6)">
+    <text x="0" y="0"
+          class="hand"
+          font-size="440"
+          text-anchor="middle"
+          textLength="2400" lengthAdjust="spacingAndGlyphs"
+          fill="#0a0a0a"
+          dominant-baseline="middle">I JUST WANTED</text>
+  </g>
+
+  <g transform="translate(2250 2700) rotate(0.8)">
+    <text x="0" y="0"
+          class="hand"
+          font-size="400"
+          text-anchor="middle"
+          textLength="3800" lengthAdjust="spacingAndGlyphs"
+          fill="#0a0a0a"
+          dominant-baseline="middle">TO REPLACE MY PARENTS'</text>
+  </g>
+
+  <g transform="translate(2250 3550) rotate(-0.6)">
+    <text x="0" y="0"
+          class="hand"
+          font-size="540"
+          text-anchor="middle"
+          textLength="3000" lengthAdjust="spacingAndGlyphs"
+          fill="#0a0a0a"
+          dominant-baseline="middle">NETFLIX QUEUE</text>
+  </g>
+
+  <!-- Hand-drawn underline beneath "QUEUE" -->
+  <path d="M 1380 3920 Q 2250 3995 3120 3905"
+        stroke="#0a0a0a"
+        stroke-width="22"
+        fill="none"
+        stroke-linecap="round"
+        opacity="0.85"/>
+
+  <!-- Tiny doodle: arrow + "(simple)" -->
+  <g transform="translate(3600 3350)">
+    <path d="M 0 60 Q -120 -20 -80 -180"
+          stroke="#0a0a0a"
+          stroke-width="14"
+          fill="none"
+          stroke-linecap="round"/>
+    <path d="M -100 -160 L -80 -190 L -52 -174"
+          stroke="#0a0a0a"
+          stroke-width="14"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+    <text x="20" y="80"
+          class="hand"
+          font-size="100"
+          fill="#0a0a0a"
+          opacity="0.85">(simple)</text>
+  </g>
+
+  <!-- Provenance mark -->
+  <text x="4350" y="5300"
+        font-family="Georgia, serif"
+        font-size="48"
+        font-style="italic"
+        text-anchor="end"
+        fill="#0a0a0a"
+        opacity="0.32">moneypython.shop · MP-T18</text>
+</svg>

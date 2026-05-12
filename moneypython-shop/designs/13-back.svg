@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Product 13 BACK — "BUT ALL I GOT WAS THE MERCHANDISING RIGHTS"
+  Canvas: 4500 x 5400 px. White print on black tee. textLength forces predictable sizing.
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 4500 5400"
+     preserveAspectRatio="xMidYMid meet">
+
+  <style>
+    .heavy {
+      font-family: Impact, "Anton", "Oswald", "Bebas Neue", "Helvetica Inserat",
+                   "Arial Black", sans-serif;
+      font-weight: 900;
+      font-stretch: condensed;
+      letter-spacing: -0.02em;
+    }
+  </style>
+
+  <!-- "BUT ALL I GOT WAS" -->
+  <text x="2250" y="1800"
+        class="heavy"
+        font-size="640"
+        text-anchor="middle"
+        textLength="3800" lengthAdjust="spacingAndGlyphs"
+        fill="#ffffff"
+        dominant-baseline="middle">BUT ALL I GOT WAS</text>
+
+  <!-- "THE" -->
+  <text x="2250" y="2600"
+        class="heavy"
+        font-size="640"
+        text-anchor="middle"
+        textLength="1100" lengthAdjust="spacingAndGlyphs"
+        fill="#ffffff"
+        dominant-baseline="middle">THE</text>
+
+  <!-- "MERCHANDISING" -->
+  <text x="2250" y="3500"
+        class="heavy"
+        font-size="780"
+        text-anchor="middle"
+        textLength="3800" lengthAdjust="spacingAndGlyphs"
+        fill="#ffffff"
+        dominant-baseline="middle">MERCHANDISING</text>
+
+  <!-- "RIGHTS" -->
+  <text x="2250" y="4400"
+        class="heavy"
+        font-size="900"
+        text-anchor="middle"
+        textLength="2200" lengthAdjust="spacingAndGlyphs"
+        fill="#ffffff"
+        dominant-baseline="middle">RIGHTS</text>
+
+  <!-- Provenance mark -->
+  <text x="4350" y="5300"
+        font-family="Georgia, serif"
+        font-size="48"
+        font-style="italic"
+        text-anchor="end"
+        fill="#ffffff"
+        opacity="0.32">moneypython.shop · MP-T13</text>
+</svg>

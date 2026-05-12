@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Product 13 FRONT — "I REINVENTED CAPITALISM"
+  Canvas: 4500 x 5400 px (15" x 18" at 300 DPI), Printful DTG max print area.
+  Color: white print on black tee (default). For cream tee, change fill to #0a0a0a.
+  Font: Impact-style heavy condensed sans-serif. Convert text to paths before
+        uploading to Printful (see README). Web font stack used here for preview.
+        textLength keeps the design rendering-stable across fallback fonts.
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 4500 5400"
+     preserveAspectRatio="xMidYMid meet">
+
+  <style>
+    .heavy {
+      font-family: Impact, "Anton", "Oswald", "Bebas Neue", "Helvetica Inserat",
+                   "Arial Black", sans-serif;
+      font-weight: 900;
+      font-stretch: condensed;
+      letter-spacing: -0.02em;
+    }
+  </style>
+
+  <!-- Line 1: "I REINVENTED" -->
+  <text x="2250" y="2300"
+        class="heavy"
+        font-size="900"
+        text-anchor="middle"
+        textLength="3800" lengthAdjust="spacingAndGlyphs"
+        fill="#ffffff"
+        dominant-baseline="middle">I REINVENTED</text>
+
+  <!-- Line 2: "CAPITALISM" -->
+  <text x="2250" y="3500"
+        class="heavy"
+        font-size="1200"
+        text-anchor="middle"
+        textLength="3800" lengthAdjust="spacingAndGlyphs"
+        fill="#ffffff"
+        dominant-baseline="middle">CAPITALISM</text>
+
+  <!-- Provenance mark -->
+  <text x="4350" y="5300"
+        font-family="Georgia, serif"
+        font-size="48"
+        font-style="italic"
+        text-anchor="end"
+        fill="#ffffff"
+        opacity="0.32">moneypython.shop · MP-T13</text>
+</svg>
