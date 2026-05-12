@@ -1,0 +1,61 @@
+DENNIS THE PEASANT — placeholder ASCII mark
+pinned 2026-05-12 ~01:30 ET — supersede when Fiverr commission lands (FIRE_006)
+============================================================
+
+VARIANT A — 4-LINE MINIMAL (email signatures, terminal headers)
+
+    ,_,
+   ( o )---,  "i'm being repressed!"
+    \_/    `,
+     |      \
+    / \      o
+
+
+VARIANT B — 8-LINE STANDARD (footers, sticky headers, sidebar marks)
+
+       _____
+      /     \
+     |  > o  |---,
+     |   _   |   `,
+      \_____/     \
+        | |        \
+       /| |\        o
+      / | | \
+
+
+VARIANT C — 16-LINE SCENIC (page headers, README banners, book chapter dividers)
+
+         _,---._
+       ,'       `.
+      /     ___   \
+     |    /   \    |
+     |   |  >  |   |
+     |   |  O  |   |---,
+     |    \___/    |   '-,
+      \           /      `-,
+       `,___ ____,         `,
+            | |              \
+           /| |\              o
+          / | | \              "I'M BEING
+            | |                 REPRESSED!"
+           / \ \
+          /   \ \
+         /     \ \
+    ~~~~~~~~~~~~~~~~~~~~~  (mud, of course)
+
+
+CANONICAL TAGLINE (use under any variant, monospace, all caps):
+
+    "WE TAKE IT IN TURNS TO ACT AS SORT OF EXECUTIVE OFFICER FOR THE WEEK"
+        — Dennis, the peasant. Holy Grail (1975). Used in commentary.
+
+
+USAGE RULES (binding until Fiverr v1 supersedes):
+- Variant A in email signatures, .txt headers, terminal output, dev READMEs
+- Variant B as footer mark on internsforai.org / technosocialism.ai / sameasyou.ai
+- Variant C as opening banner of marketing PDFs, book chapters, slide deck cover
+- All three may appear in the same document if scale demands it
+- Never modify the figure. Modify only the surrounding caption/tagline.
+- When Fiverr v1 lands, replace ASCII with vector mark on visual surfaces.
+  Retain ASCII for terminal / .txt / email-signature contexts forever.
+- This file is the source of truth. Do not duplicate in code; reference it.
