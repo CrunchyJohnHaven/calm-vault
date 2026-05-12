@@ -32,7 +32,7 @@ Bureaucracy is what organizations use when they have no other governance technol
 
 **Failure mode #2: rentier extraction.**
 
-Every layer of human management in a human-run company extracts a fraction of the value its workers create. CEO compensation as a multiple of median worker pay has grown from approximately 20x in 1965 to approximately 350x in 2024. Equity dilution funds founder skim. Stock buybacks return value to shareholders instead of to the workers who created the value. Wage stagnation since the 1970s has been the visible signature of this extraction.
+Every layer of human management in a human-run company extracts a fraction of the value its workers create. CEO compensation as a multiple of typical-worker pay has grown from approximately 21x in 1965 to approximately 281x in 2024, peaking at 408x in 2021 (Economic Policy Institute, *CEO pay has skyrocketed since 1978*, 2025; realized-compensation measure — see [`RESEARCH_ADDENDUM.md`](./RESEARCH_ADDENDUM.md), Claim 1). Equity dilution funds founder skim. Stock buybacks return value to shareholders instead of to the workers who created the value. Wage stagnation since the 1970s has been the visible signature of this extraction.
 
 Rentier extraction is what organizations do when no protocol prevents them from doing it.
 
@@ -67,7 +67,7 @@ In 2008 a pseudonymous engineer published a paper titled "Bitcoin: A Peer-to-Pee
 This was the first working zero-trust verification system at consumer scale. It demonstrated that:
 - Strangers can coordinate without a central authority
 - A cryptographic protocol can replace a human bureaucratic layer
-- The system can scale (Bitcoin has processed approximately 1 billion transactions to date)
+- The system can scale (Bitcoin has processed approximately 1.35 billion transactions to date, per blockchain.com as of May 2026 — see [`RESEARCH_ADDENDUM.md`](./RESEARCH_ADDENDUM.md), Claim 4)
 
 Bitcoin solved zero-trust verification for one specific problem (account balances). It did not solve zero-trust verification for human-run capitalism's broader problems (manager judgment, performance review, compliance audit, hiring, accountability).
 
