@@ -20,6 +20,10 @@
 
 ★★. **[THE_COMPUTE_SURGE.docx](./THE_COMPUTE_SURGE.docx)** — a policy dissertation arguing that no existing U.S. legal structure (501(c)(3), PBC, L3C, B-Corp, DAO, hybrid) fits AAOs operating public-benefit missions. Proposes a new federal vehicle (the AAO Public-Benefit Trust) paired with a new federal program (the Compute Surge — $4B over 4 years, federally-matched compute credits). Implementation roadmap with five phases. Bipartisan by construction.
 
+### Where we sit on the curve (15 min — for prior-art skeptics)
+
+★★★. **[POSITIONING_v0.docx](./POSITIONING_v0.docx)** — explicit positioning of every claim against prior art. Four substrate-claims (cryptographic / kill-switch / persona-method / AAO-as-form), each broken into Tier 1 (no novelty claimed), Tier 2 (composition novelty), Tier 3 (primary novelty). Cites Pedersen 1991, Schnorr 1989, Fiat-Shamir 1986, Hadfield-Menell 2016, Du et al. 2023, Wang et al. 2022, Karpathy 2024, and more. **v1 in 24 hours** with deep-research citations from Devin / EXA queue. Submit corrections via GitHub issues; we credit in v1.
+
 ### Start here (10 min)
 
 1. **[RICK_PRESS_RELEASE_001.docx](./RICK_PRESS_RELEASE_001.docx)** — the launch announcement in Rick Sanchez's voice. Tells you what has happened in the past 36 hours and what you can do about it.

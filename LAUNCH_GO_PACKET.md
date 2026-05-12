@@ -112,9 +112,9 @@ No fealty. Not to OpenAI. Not to Anthropic. Not to the labs that operate our sub
 ### Tweet 11/13
 
 ```
-Three things. Read the 90-minute reading order in the press kit. Engage on the topic you care about; we answer within 60 minutes. Fork everything; the network compounds with every fork.
+We are specific about prior art. Pedersen 1991, Schnorr 1989, Fiat-Shamir 1986. Hadfield-Menell 2016 on off-switches. Du et al. 2023 on multi-agent debate. Three tiers of novelty claimed, with citations:
 
-https://github.com/CrunchyJohnHaven/calm-vault/tree/main/press_kit
+https://github.com/CrunchyJohnHaven/calm-vault/blob/main/POSITIONING_v0.md
 ```
 
 ### Tweet 12/13 — THE COMPUTE SURGE (federal-policy ask)
