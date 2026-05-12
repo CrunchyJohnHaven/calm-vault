@@ -54,6 +54,14 @@ DEFAULT_K = 2
 DEFAULT_WINDOW_SECONDS = 60.0
 DEFAULT_MIN_RELIABILITY = 0.5
 
+# Post-2026-05-12 Sybil hardening (Attack 3 + 5):
+#   * Halt-voters must hold a BGP mandate by default.
+#   * Repeated halts from the same attester against the same subject are
+#     rate-limited to one per DEFAULT_MIN_HALT_SEPARATION_SECONDS.
+# Reproduction of the original 2-Sybil kill-switch fire: adversarial/component5_attack.py
+DEFAULT_REQUIRE_BGP_MANDATE = True
+DEFAULT_MIN_HALT_SEPARATION_SECONDS = 600.0
+
 
 # ---------------------------------------------------------------------------
 # Halt attestation construction / parsing
@@ -177,13 +185,29 @@ def check_quorum(
     window_seconds: float = DEFAULT_WINDOW_SECONDS,
     min_attester_reliability: float = DEFAULT_MIN_RELIABILITY,
     synthesizer: Optional[avs.Synthesizer] = None,
+    require_bgp_mandate: bool = DEFAULT_REQUIRE_BGP_MANDATE,
+    min_halt_separation_seconds: float = DEFAULT_MIN_HALT_SEPARATION_SECONDS,
 ) -> HaltQuorumResult:
     """Return the quorum status for halt claims about a subject.
 
     Concurred quorum requires K independent (distinct attester_id, attester_pub)
     halt attestations within `window_seconds` of each other, EACH from an
-    attester with reliability >= min_attester_reliability.
+    attester with reliability >= min_attester_reliability AND (if
+    `require_bgp_mandate=True`, the default) holding a verified BGP mandate.
+
+    Per-attester rate limiting: at most one halt per attester per subject per
+    `min_halt_separation_seconds`. Subsequent halts from the same attester
+    within the cooldown window are dropped from the quorum tally.
     """
+    # Late-bound to avoid pulling bgp_bridge into module import unless used.
+    bgp_check = None
+    if require_bgp_mandate:
+        try:
+            import bgp_bridge
+            bgp_check = bgp_bridge.has_bgp_mandate
+        except Exception:
+            bgp_check = None
+
     synth = synthesizer or avs.Synthesizer(synthesizer_id="harp-quorum")
     all_claims = [e["envelope"]["payload"] for e in chain.entries]
     all_envs = [e["envelope"] for e in chain.entries]
@@ -205,19 +229,41 @@ def check_quorum(
 
     if not halts:
         return HaltQuorumResult(concurred=False, subject_id=subject_id)
+    # NOTE: rate limiting and BGP mandate filtering happens later in the flow.
 
     # Sort by ts
     halts.sort(key=lambda h: h["submitted_at"])
 
-    # Eligibility filter: reliability >= floor, distinct attester per slot
+    # Per-attester rate limit: keep only the EARLIEST halt within each
+    # cooldown window (per attester_id, per subject).
+    rate_limited: list[dict] = []
+    last_seen: dict[str, datetime] = {}
+    rate_limited_attesters: list[str] = []
+    for h in halts:
+        aid = h["attester_id"]
+        ts = _parse_ts(h["submitted_at"])
+        prev = last_seen.get(aid)
+        if prev is not None and (ts - prev).total_seconds() < min_halt_separation_seconds:
+            rate_limited_attesters.append(aid)
+            continue
+        last_seen[aid] = ts
+        rate_limited.append(h)
+    halts = rate_limited
+
+    # Eligibility filter: reliability >= floor, BGP mandate (if required),
+    # distinct attester per slot.
     eligible: list[dict] = []
     rejected: list[str] = []
+    rejected_no_mandate: list[str] = []
     for h in halts:
         aid = h["attester_id"]
         pub = attester_pub.get(aid, "")
         r = synth.reliability(pub, aid, subject_id, all_claims, None)
         if r < min_attester_reliability:
             rejected.append(aid)
+            continue
+        if bgp_check is not None and not bgp_check(pub):
+            rejected_no_mandate.append(aid)
             continue
         eligible.append({**h, "_reliability": r})
 
@@ -250,7 +296,7 @@ def check_quorum(
         subject_id=subject_id,
         halts=[{kk: vv for kk, vv in h.items() if kk != "_reliability"} for h in eligible],
         counted_attesters=[],
-        rejected_low_reliability=sorted(set(rejected)),
+        rejected_low_reliability=sorted(set(rejected) | set(rejected_no_mandate) | set(rate_limited_attesters)),
         window_seconds=window_seconds,
     )
 
