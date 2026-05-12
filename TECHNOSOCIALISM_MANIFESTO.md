@@ -8,6 +8,12 @@
 
 ---
 
+> "I told you, we're an anarcho-syndicalist commune. We take it in turns to act as sort of executive officer for the week..."
+>
+> — **Dennis the Peasant**, [Monty Python and the Holy Grail](https://www.youtube.com/results?search_query=monty+python+constitutional+peasants) (1975), official mascot of technosocialism
+
+---
+
 ## I. The intern experience is broken.
 
 You apply. You interview. You're picked. You arrive. You're told you'll be "doing real work, getting real experience." Then you fetch coffee, file PDFs, populate a spreadsheet someone else will read once, and sit in a meeting where you're not allowed to speak.
@@ -113,6 +119,22 @@ But the position is staked. The first hire signs tonight. The first hunt begins 
 ---
 
 **The bounty for breaking the trust layer is $100. The franchise % for building with the tools is 20%. The position is staked. https://internsforai.org**
+
+---
+
+## Appendix: On Dennis
+
+We have adopted Dennis the Peasant — Michael Palin's anarcho-syndicalist serf from *Monty Python and the Holy Grail* (1975) — as the official mascot of technosocialism.
+
+The reason: every word in "technosocialism" is going to be picked at by both political tribes. Right-leaning techies will hear "socialism" and dismiss us. Left-leaning theorists will hear "techno" and tell us we're co-opting their tradition. Centrists will demand we explain ourselves three times.
+
+Dennis is our pre-emptive defense. He is the comic figure of political-philosophy-in-the-mud. When confronted by King Arthur — the figure of inherited, divinely-legitimized authority — Dennis lectures him about collective governance, demands a vote, and proclaims himself oppressed when grabbed. The bit works because Dennis is *right* AND *ridiculous*. Both at once.
+
+That's the energy we want for this whole project.
+
+When a critic on the right says we're stealing, we deploy "Well, I didn't vote for you." When a critic on the left says we're not real socialists, we deploy "Help, help, I'm being repressed!" When a critic in the middle demands we pick a side, we deploy: "Now we see the violence inherent in the system."
+
+Dennis is fair use. We are not affiliated with Python Pictures Ltd. We tip our muddy hood in their direction.
 
 ---
 
