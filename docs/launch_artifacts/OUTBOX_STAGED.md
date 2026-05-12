@@ -27,7 +27,7 @@
 | 15 | 07:15 ET | AWS Activate | Compute credits application (form-based) | ✅ Form fill |
 | 16 | 07:20 ET | GCP for Startups | Compute credits application (form-based) | ✅ Form fill |
 | 17 | 07:25 ET | Cloudflare for Startups | Workers + Pages free tier | ✅ Form fill |
-| 18 | 07:30 ET | Patrick Whelan | Deferred services pitch | ⏳ Pending 5-word relationship clarification |
+| 18 | 07:30 ET | **Patrick Whelan** (attorney; met Burning Man; John's lawyer) | IP / equity / law 30-min ask | ✅ Below — daily re-send until booked |
 | 19+ | 07:35+ | Other deferred-services vendors | Customized per relationship | ⏳ John identifies vendors |
 
 **Total Tuesday morning send time: ~90 min of John keystrokes.** Each email is paste-ready in the staged drafts.
@@ -225,6 +225,90 @@ Best,
 John Bradley
 john.b@credexai.xyz
 ```
+
+---
+
+### Email 18 — Patrick Whelan (daily re-send until booked)
+
+Hemingway register. Short. Direct. Re-send every 24 hours with a one-line variation until he books.
+
+**Day 1 send:**
+
+```
+Subject: 30 min — IP, equity, the law
+
+Patrick,
+
+We launched the Same As You Network on May 12.
+Cryptographic protocol. Open source. 33 of 34 tests pass.
+Veteran-founded.
+
+Need your eyes:
+1. AAO-Certified trademark filing
+2. No-equity, no-fealty structure for grants
+3. IP-backed loan feasibility against the trademark
+
+Free? Deferred? Case-study credit? Pick what works.
+
+30 min: https://calendly.com/john-b-credexai/30min
+
+— John
+github.com/CrunchyJohnHaven/calm-vault
+```
+
+**Day 2 send (if no reply):**
+
+```
+Subject: Still need you — 30 min on the protocol IP
+
+Patrick,
+
+Bumping yesterday's.
+
+The launch landed. People are reading. I need a lawyer who already knows
+me before someone asks me a hard question.
+
+You're him.
+
+30 min: https://calendly.com/john-b-credexai/30min
+
+— John
+```
+
+**Day 3 send:**
+
+```
+Subject: Day three — the trademark window is moving
+
+Patrick,
+
+Day three.
+
+USPTO filing window on AAO-Certified is moving. I will file with or without
+a lawyer; I'd rather it be you.
+
+Pick a time: https://calendly.com/john-b-credexai/30min
+
+— John
+```
+
+**Day 4 send:**
+
+```
+Subject: I will keep writing
+
+Patrick,
+
+I will keep writing every 24 hours.
+
+30 min, no fees: https://calendly.com/john-b-credexai/30min
+
+— John
+```
+
+**Day 5+ send (one-line variant each day):**
+
+Vary the subject line. Keep the body two sentences. Keep the calendar link. Stop when he books.
 
 ---
 
