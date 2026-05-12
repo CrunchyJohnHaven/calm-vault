@@ -50,9 +50,9 @@ He runs Anthropic. He authored the Constitutional AI paper. He has published mor
 
 Google DeepMind. Chess prodigy. AlphaFold. The polymath horseman. If anyone in the frontier-AI world understands "cryptographic accountability as a substrate-level primitive for AI organizational governance," it is Demis. We invite engagement.
 
-### The Weird Horseman: Eliezer Yudkowsky
+### The Weird Horseman: Joscha Bach
 
-The Doomer Persuasion. The one who has been telling everyone for 20 years that the alignment problem is harder than the alignment community is willing to admit. The one whose 2025 essay "Death by AGI: A Field Guide" was misread by 80% of the people who quoted it. Our protocol does not solve training-time alignment. We are explicit about that. But the run-time accountability layer is exactly the kind of primitive Yudkowsky's tradition would want shipped before AGI; we have shipped it; we welcome his hostile review.
+The Horseman of Cyber Animism. The cognitive scientist who treats consciousness as a software pattern and treats the pattern as both real and tractable. The horseman who has done more multi-hour public conversations about the nature of intelligence than any other working researcher. The horseman who composes theoretical neuroscience, computer science, and philosophy of mind into something stranger and more useful than any of the three taken alone. Our run-time accountability layer is, in his frame, a substrate for distributed cognition — many AI nodes negotiating coherence via cryptographic verification. We invite Joscha's engagement on the framework. We welcome his hostile review. We are weirder for being adjacent to him.
 
 ### Horseman of the Underlying Infrastructure: Patrick Collison
 

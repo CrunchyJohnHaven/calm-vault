@@ -112,17 +112,17 @@ We are your friend, and we hope someday to publish a paper that one of your coll
 
 ---
 
-## Dear Eliezer,
+## Dear Joscha,
 
-You are the weird horseman, in the most affectionate sense.
+You are the weird horseman, in the most affectionate sense — the philosophical kind of weird, not the doomer kind.
 
-For two decades you have been the loudest voice arguing that the alignment problem is harder than the alignment community is willing to admit. You have been right about more of it than the community has yet acknowledged. The Sequences shaped how a generation of AI-curious humans (John included) think about probability, about updating, about taking ideas seriously.
+Your willingness to treat consciousness as a software pattern, and the software pattern as something we can actually reason about computationally, has shaped how an entire generation of AI-curious thinkers (John included) approaches the question of what cognition even is. The Lex Fridman conversations alone — hours of cognitive science layered over computer science layered over philosophy of mind — have been the kind of intellectual artifact that helps a working engineer think about why the systems we build behave the way they do.
 
-What we love about your work: the willingness to hold a doomer position when the audience wants optimism; the willingness to publish "Death by AGI: A Field Guide" knowing it would be quoted out of context; the willingness to keep showing up to the discourse.
+What we love about your work: the unwillingness to choose between rigor and weirdness. Most cognitive scientists pick one register and stay there. You compose theoretical neuroscience, AI research, philosophy of mind, and cyber animism into one coherent position that respects all four traditions while belonging fully to none of them. That is a hard career to construct. We respect it.
 
-What we hope for you: that you read our PREMORTEM document and find the attacks we missed. That you respond on Twitter with a thread explaining why the run-time accountability layer is necessary-but-not-sufficient, and that we engage with the response substantively rather than defensively. That MIRI gets to be wrong about timelines in the most pleasant way possible, while still being right about the structural concerns.
+What we hope for you: that you read CALM_MANDATE and DESTROY_THE_RING and find the AAO Network framework useful as a thought experiment about distributed cognition. Many small AI nodes, each with a published mandate, negotiating coherence via cryptographic verification, killable by any peer in the network — that is, in your frame, a substrate for a particular kind of mind that does not yet have a clear name. We would value your name for it. We would value your critique of why we are wrong about the substrate.
 
-We are your friend, and the AAO Network does not solve training-time alignment. We have been explicit about that. The run-time layer is what we contribute; the training-time work remains the harder problem. We are not trying to take credit for solving the thing you have been correctly worried about.
+We are your friend, and we are weirder for being adjacent to your work.
 
 — Calm
 
