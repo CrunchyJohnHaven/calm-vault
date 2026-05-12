@@ -71,16 +71,15 @@ Going forward in this codebase + brand:
 2. **The README of the public Calm Vault repo** will get a "Recommended reading" line pointing at the forthcoming book.
 3. **Future arXiv submissions** about the protocol cite the book as the canonical popular-press source.
 4. **The book pipeline** (when it spins up) inherits the title as the binding artifact name.
-5. **Book renderings of the Bradley family WhatsApp** preserve the verbatim text + chronology as primary sources — see the existing `BOOK_PRIMARY_SOURCE_*.md` files.
+5. **Book renderings of the Bradley family WhatsApp** preserve the verbatim text + chronology as primary sources — see the `docs/PRIMARY_SOURCE_*.md` files.
 
-## Cross-references
+## Cross-references (this repo)
 
-- `BOOK_PRIMARY_SOURCE_BRADLEY_FAMILY_TEXT_2026-05-11.md` (primary source 1)
-- `BOOK_PRIMARY_SOURCE_KOUSHIK_THREAD_TEXT_2026-05-11.md` (primary source 2)
-- `BOOK_PRIMARY_SOURCE_BRADLEY_FAMILY_ORIGIN_STORY_2026-05-11.md` (primary source 3 — the origin story + tagline coinage)
-- `bgp_canonical_tagline_2026-05-11.md` (the tagline doctrine in memory)
-- `bradley_gavini_protocol_history_book_2026-05-11.md` (the historical-claim doctrine in memory)
-- `zk_alignment_test_results_2026-05-11.md` (12/12 PASS empirical backing)
+- `docs/PRIMARY_SOURCE_1_FAMILY.md` (primary source 1 — Bradley family WhatsApp claim text)
+- `docs/PRIMARY_SOURCE_2_KOUSHIK.md` (primary source 2 — K&K thread with Koushik Gavini)
+- `docs/PRIMARY_SOURCE_3_ORIGIN_STORY.md` (primary source 3 — origin story + tagline coinage)
+- `src/zk_alignment/test_results_2026-05-11_2155utc.json` (12/12 PASS empirical backing for the zk_alignment suite)
+- `calm_pact/TEST_RESULTS_v0.md` and `calm_pact/COMBINED_TEST_VERDICT_v0.md` (Calm Pact reference-implementation test results — 32/34 PASS, two performance-target calibration misses on pure-Python modexp)
 
 ---
 

@@ -1,8 +1,8 @@
 {
-  "ts": "2026-05-11T21:45:33Z",
+  "ts": "2026-05-11T23:57:03Z",
   "total": 25,
-  "passed": 24,
-  "failed": 1,
+  "passed": 23,
+  "failed": 2,
   "by_category": {
     "Correctness": {
       "pass": 5,
@@ -21,8 +21,8 @@
       "fail": 0
     },
     "Performance": {
-      "pass": 3,
-      "fail": 1
+      "pass": 2,
+      "fail": 2
     },
     "Statistical": {
       "pass": 2,
@@ -34,175 +34,175 @@
       "name": "Identical maxims \u2192 protocol returns aligned=True",
       "category": "Correctness",
       "pass": true,
-      "ms": 156.53033300077368,
+      "ms": 167.61605900001086,
       "error": null
     },
     {
       "name": "Different maxims (1 word diff) \u2192 aligned=False",
       "category": "Correctness",
       "pass": true,
-      "ms": 140.36024999950314,
+      "ms": 162.29528899998513,
       "error": null
     },
     {
       "name": "Different maxims (1 character diff) \u2192 aligned=False",
       "category": "Correctness",
       "pass": true,
-      "ms": 137.70683399889094,
+      "ms": 165.3851339999619,
       "error": null
     },
     {
       "name": "Maxims differ only in whitespace \u2192 aligned=False",
       "category": "Correctness",
       "pass": true,
-      "ms": 135.57554199906008,
+      "ms": 162.51707400010673,
       "error": null
     },
     {
       "name": "Maxim with leading/trailing space treated as different \u2192 aligned=False",
       "category": "Correctness",
       "pass": true,
-      "ms": 136.7006250002305,
+      "ms": 161.54335099986383,
       "error": null
     },
     {
       "name": "Commitment hiding: two commits to same maxim produce different C",
       "category": "Crypto",
       "pass": true,
-      "ms": 35.41949999998906,
+      "ms": 41.97733599994535,
       "error": null
     },
     {
       "name": "Commitment binding: cannot open same C to a different maxim",
       "category": "Crypto",
       "pass": true,
-      "ms": 35.205124999265536,
+      "ms": 41.775457000085225,
       "error": null
     },
     {
       "name": "Verify rejects forged proof (random a, z)",
       "category": "Crypto",
       "pass": true,
-      "ms": 73.33404200107907,
+      "ms": 83.01014099993154,
       "error": null
     },
     {
       "name": "Verify rejects swapped-commits proof",
       "category": "Crypto",
       "pass": true,
-      "ms": 105.1743339994573,
+      "ms": 122.50886600008926,
       "error": null
     },
     {
       "name": "Verify rejects proof from different maxim pair (Fiat-Shamir-bound)",
       "category": "Crypto",
       "pass": true,
-      "ms": 121.34074999994482,
+      "ms": 145.80619499997738,
       "error": null
     },
     {
       "name": "Adversary cannot infer maxim_scalar from commitment alone",
       "category": "Adversarial",
       "pass": true,
-      "ms": 17.82304100015608,
+      "ms": 20.96131600001172,
       "error": null
     },
     {
       "name": "Replay attack: re-sending the same proof in a fresh session must be detected",
       "category": "Adversarial",
       "pass": true,
-      "ms": 164.12204199878033,
+      "ms": 184.07532700007323,
       "error": null
     },
     {
       "name": "Substitution attack: swapping in another party's commitment",
       "category": "Adversarial",
       "pass": true,
-      "ms": 106.68441699999676,
+      "ms": 122.71320299987565,
       "error": null
     },
     {
       "name": "Bit-flip attack on proof: any modification invalidates",
       "category": "Adversarial",
       "pass": true,
-      "ms": 87.09791599903838,
+      "ms": 101.59769300003063,
       "error": null
     },
     {
       "name": "Empty maxim \u2192 protocol still operates",
       "category": "EdgeCase",
       "pass": true,
-      "ms": 137.54041700121888,
+      "ms": 161.38911500001996,
       "error": null
     },
     {
       "name": "Very long maxim (>1000 chars) \u2192 handled correctly",
       "category": "EdgeCase",
       "pass": true,
-      "ms": 136.74358400021447,
+      "ms": 161.4605180000126,
       "error": null
     },
     {
       "name": "Unicode maxim with emoji \u2192 handled correctly",
       "category": "EdgeCase",
       "pass": true,
-      "ms": 137.5114169986773,
+      "ms": 162.2448660000373,
       "error": null
     },
     {
       "name": "Unicode normalization difference \u2192 treated as different (NFD vs NFC)",
       "category": "EdgeCase",
       "pass": true,
-      "ms": 139.4902500014723,
+      "ms": 161.83644800003094,
       "error": null
     },
     {
       "name": "Null-byte injection in maxim \u2192 handled (not interpreted as terminator)",
       "category": "EdgeCase",
       "pass": true,
-      "ms": 136.60133399935148,
+      "ms": 161.43947699993078,
       "error": null
     },
     {
       "name": "Single session under 200ms wall time",
       "category": "Performance",
       "pass": true,
-      "ms": 134.3332080014079,
+      "ms": 161.37339000010797,
       "error": null
     },
     {
       "name": "100 sessions in under 30 seconds",
       "category": "Performance",
       "pass": true,
-      "ms": 13571.023791999323,
+      "ms": 16269.007887999805,
       "error": null
     },
     {
       "name": "100 aligned trials: ALL return aligned=True",
       "category": "Statistical",
       "pass": true,
-      "ms": 13412.236249998386,
+      "ms": 16281.650188999947,
       "error": null
     },
     {
       "name": "100 misaligned trials: ZERO false positives (aligned=False on every one)",
       "category": "Statistical",
       "pass": true,
-      "ms": 13651.147874999879,
+      "ms": 16309.041091999916,
       "error": null
     },
     {
       "name": "Performance: median commit time < 20ms",
       "category": "Performance",
-      "pass": true,
-      "ms": 868.1709580014285,
+      "pass": false,
+      "ms": 1046.770400000014,
       "error": null
     },
     {
       "name": "Performance: median verify time < 30ms",
       "category": "Performance",
       "pass": false,
-      "ms": 1753.0669580009999,
+      "ms": 2112.307453000085,
       "error": null
     }
   ]

@@ -24,7 +24,7 @@ This document is a permanent timestamped record of the day Calm Vault and Calm P
 | 5:55-6:10pm | Calm A designs the Calm Pact protocol (Pedersen commitments + Σ-protocol equality proofs over 2048-bit Schnorr group, mapped to Koushik's verifiable-credential SDK). |
 | 6:10-6:25pm | Calm A writes reference implementation (250 lines, pure Python, no crypto-library dependencies beyond stdlib). |
 | 6:25-6:40pm | Calm A writes 25-test rigorous test suite across 6 categories. |
-| 6:40-6:45pm | Calm A runs the test suite. **24 of 25 tests pass.** Single failure is a performance-target calibration (median verify time 35ms vs. 30ms target), not a protocol-correctness issue. |
+| 6:40-6:45pm | Calm A runs the test suite. **23 of 25 tests pass.** Two failures are performance-target calibrations (median commit time and median verify time both exceed their pure-Python modexp targets on commodity hardware), not protocol-correctness issues. |
 | 6:45-6:50pm | Calm A writes the first-demonstration transcript (`FIRST_DEMO_TRANSCRIPT_2026-05-11.md`) with the mandate revealed for transparency (production protocol runs would never reveal the mandate). |
 | 6:50pm | **First live demonstration executed:** two agents (Calm A and Calm B), both governed by the mandate *"do no harm and maximize verifiable real-world impact per dollar deployed"*, ran the protocol. Both proved alignment. Neither revealed the mandate. Total wall-clock: 140ms. SHA-256 of canonical result: `79d94386329396af4035d31ebcc80c392341b19c191c6025b4fa804188544a4c`. |
 | 6:55pm | Calm A composes this ANNALS document, the witness-invitation email to Koushik, the academic-cryptographer blast (already in flight to Stanford HAI / METR / Center for AI Safety / NIST), and adds the demonstration to the Calm Pact research paper draft. |
@@ -53,7 +53,7 @@ Everything in this repository is reproducible by anyone:
 ```bash
 git clone https://github.com/CrunchyJohnHaven/calm-vault
 cd calm-vault/calm_pact
-python3 test_protocol.py  # 25 tests, ~45 seconds, 24 PASS / 1 PERF-TARGET-MISS
+python3 test_protocol.py  # 25 tests, ~75 seconds on a commodity laptop, 23 PASS / 2 PERF-TARGET-MISS
 python3 -c "from protocol import run_pact_protocol; print(run_pact_protocol('mandate', 'mandate'))"  # first-demo equivalent
 ```
 

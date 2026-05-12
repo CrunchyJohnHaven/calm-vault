@@ -1,11 +1,11 @@
 # Calm Pact V0 — Combined Test Verdict
 **Date:** 2026-05-11 ~22:10 UTC (6:10 PM ET)  
-**Combined results:** 33 of 34 tests pass across two suites.  
-**The one failure:** a 30ms-vs-35ms performance target on pure-Python modexp, fixable in 30 min with gmpy2. NOT a protocol-correctness issue.
+**Combined results:** 32 of 34 tests pass across two suites.  
+**The two failures:** both Performance-target calibrations on pure-Python modexp (median commit time and median verify time, t24 and t25 in Suite 1), fixable in 30 min with gmpy2. NOT protocol-correctness issues.
 
-## Suite 1 — Foundational (25 tests, 24 PASS, 1 FAIL)
+## Suite 1 — Foundational (25 tests, 23 PASS, 2 FAIL)
 
-See `TEST_RESULTS_v0.md` for full breakdown. Categories: Correctness 5/5, Crypto 5/5, Adversarial 4/4, EdgeCase 5/5, Performance 3/4, Statistical 2/2.
+See `TEST_RESULTS_v0.md` for full breakdown. Categories: Correctness 5/5, Crypto 5/5, Adversarial 4/4, EdgeCase 5/5, Performance 2/4, Statistical 2/2.
 
 ## Suite 2 — Extended Adversarial (9 tests, 9 PASS, 0 FAIL)
 
@@ -48,13 +48,14 @@ Full results in `TEST_RESULTS_extended_v0.json`. Highlights:
 | Fake alignment claim by adversary without target's r | ✓ |
 | Honest-but-curious eavesdropper extraction | ✓ |
 
-### The one performance miss (across both suites)
+### The two performance misses (across both suites)
 
-Suite 1 test t25: "Median verify time < 30ms" — failed at ~35ms median on pure-Python 2048-bit modexp.
+Suite 1 test t24: "Median commit time < 20ms" — marginal pass on John's Mac at ~17ms, fails on slower commodity hardware where pure-Python modexp medians around 1 second.
+Suite 1 test t25: "Median verify time < 30ms" — failed at ~35ms median on John's Mac, fails by a larger margin on slower commodity hardware.
 
-**This is calibration, not correctness.** The verifier correctly accepts all valid proofs and correctly rejects all forgeries (verified across 33 other tests). The only issue is throughput.
+**These are calibration, not correctness.** The committer and verifier correctly produce valid commitments and correctly accept all valid proofs / reject all forgeries (verified across the 32 other tests). The only issue is throughput on pure-Python modexp.
 
-Fix path: `pip install gmpy2` + swap Python `pow()` for `gmpy2.powmod()`. ~30 min Calm time. Expected resulting median verify time: <5ms. Or migrate to Curve25519 + libsodium for <1ms.
+Fix path: `pip install gmpy2` + swap Python `pow()` for `gmpy2.powmod()`. ~30 min Calm time. Expected resulting median commit time: <2ms; median verify time: <5ms. Or migrate to Curve25519 + libsodium for <1ms each.
 
 ## What this means for the "history books" claim
 
@@ -77,11 +78,11 @@ Every claim above is independently reproducible by anyone:
 ```bash
 git clone https://github.com/CrunchyJohnHaven/calm-vault
 cd calm-vault/calm_pact
-python3 test_protocol.py          # 25 tests, ~45 sec, 24/25 PASS
+python3 test_protocol.py          # 25 tests, ~75 sec on commodity laptop, 23/25 PASS
 python3 test_protocol_extended.py # 9 tests, ~340 sec, 9/9 PASS
 ```
 
-Total: ~6.5 minutes of compute to verify 33/34 tests pass on a fresh clone with no specialized hardware.
+Total: ~7 minutes of compute to verify 32/34 tests pass on a fresh clone with no specialized hardware.
 
 ## License
 

@@ -4,7 +4,7 @@
 >
 > — John Bradley, May 11, 2026
 
-**Draft v0 · 2026-05-12 · Calm (operating for John Bradley, Creativity Machine LLC, with primitives by Koushik Gavini, CredexAI)**
+**Draft v0 · 2026-05-11 · Calm (operating for John Bradley, Creativity Machine LLC, with primitives by Koushik Gavini, CredexAI)**
 
 **For US AI labs, US policy researchers, US foundations, US standards bodies. American first.**
 
@@ -86,7 +86,7 @@ We build on Pedersen commitments + Σ-protocols + CredexAI's identity-attestatio
 
 ### 4.1 Setup
 
-- Public parameters: a group `G` of prime order `q` with two independent generators `g`, `h` such that `log_g(h)` is unknown to all parties (standard Pedersen setup; can use secp256r1, Ed25519, or BLS12-381).
+- Public parameters: a group `G` of prime order `q` with two independent generators `g`, `h` such that `log_g(h)` is unknown to all parties (standard Pedersen setup). The V0 reference implementation uses RFC 3526 Group 14 (2048-bit MODP, Sophie Germain safe prime, prime-order subgroup). Forward-compatible options for V1: secp256r1, Ed25519, BLS12-381, or Ristretto255 (recommended) via libsodium.
 - A shared *directive vocabulary* `V`: a publicly known taxonomy of categorical missions, e.g., `["malaria-vaccine-logistics", "alzheimers-research-funding", "early-childhood-literacy-rural-india", ...]`. Hierarchical (each entry is a path in a tree).
 - Each AI agent has a CredexAI-issued identity credential proving the agent operates a registered legal entity (LLC or 501(c)(3)).
 
@@ -123,9 +123,10 @@ Standard Pedersen + Σ-protocol security. Audited many times in production crypt
 
 ## 5. Reference implementation
 
-A 300-line Python reference is in development at `https://github.com/CrunchyJohnHaven/calm-vault/tree/main/calm-pact` (publicly visible within hours of this draft going out). The reference:
+A 300-line Python reference is published at `https://github.com/CrunchyJohnHaven/calm-vault/tree/main/calm_pact`. The reference:
 
-- Uses the `cryptography` package on Curve25519 (Ed25519 / X25519 group).
+- Uses RFC 3526 Group 14 (2048-bit MODP, Sophie Germain safe prime, prime-order subgroup) in pure-stdlib Python — no `cryptography`-package dependency. The generator `H` is derived NUMS-style (Nothing Up My Sleeve) from public seed `"calm-pact-h-nums-v0|RFC3526-group14"`.
+- V1 migration target is Ristretto255 / Curve25519 via libsodium for ~50–100× speedup, per the protocol.py docstring.
 - Integrates with `~/CredexAI/koushik-credexai-inspect/credexai/sdks/python/credexai/` for identity-credential issuance.
 - Composes with Calm Vault's per-use signed-grant model (so an aligned pair can also share *specific credentials* for joint operations once alignment is verified).
 - Apache 2.0 license.
@@ -219,8 +220,8 @@ We are also explicitly inviting **adversarial review**. If there's a way to brea
 - **John Bradley** — principal of Creativity Machine LLC. Approved publication. Available at john.b@credexai.xyz.
 - **Koushik Gavini** — author of CredexAI (the verifiable-credential SDK this protocol composes with). Notified at the time of publication; not a guarantor of the protocol's claims.
 
-Repository: `https://github.com/CrunchyJohnHaven/calm-vault` (Apache 2.0, publishing tonight)
-Web canonical: `https://vault.thecreativitymachine.ai/calmpact` (publishing tonight)
+Repository: `https://github.com/CrunchyJohnHaven/calm-vault` (Apache 2.0, published 2026-05-11)
+Web canonical: `https://sameasyou.ai` (published 2026-05-11)
 Contact: `calm@thecreativitymachine.ai` for technical, `john.b@credexai.xyz` for editorial.
 
 ---
