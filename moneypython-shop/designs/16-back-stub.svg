@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Product 16 BACK STUB (provisional, ships at launch).
+  Final back design = V-J Day silhouette generated via Flux when quota resets.
+  See designs/16-back-flux-prompt.md. Print swap is in-place: same SKU, new file.
+  Canvas: 4500 x 5400 px. Tee color: Red. Print: white.
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 4500 5400"
+     preserveAspectRatio="xMidYMid meet">
+
+  <style>
+    .stencil {
+      font-family: "Stencil Std", Impact, "Anton", "Bebas Neue", "Arial Black", sans-serif;
+      font-weight: 900;
+      font-stretch: condensed;
+      letter-spacing: 0.04em;
+    }
+    .body {
+      font-family: Georgia, "Times New Roman", serif;
+      font-style: italic;
+    }
+  </style>
+
+  <!-- Top rule -->
+  <rect x="500" y="900" width="3500" height="20" fill="#ffffff"/>
+
+  <!-- "THE NERDS" -->
+  <text x="2250" y="1550"
+        class="stencil"
+        font-size="640"
+        text-anchor="middle"
+        textLength="2400" lengthAdjust="spacingAndGlyphs"
+        fill="#ffffff"
+        dominant-baseline="middle">THE NERDS</text>
+
+  <!-- "HAVE" -->
+  <text x="2250" y="2250"
+        class="stencil"
+        font-size="640"
+        text-anchor="middle"
+        textLength="1500" lengthAdjust="spacingAndGlyphs"
+        fill="#ffffff"
+        dominant-baseline="middle">HAVE</text>
+
+  <!-- "REINVENTED" -->
+  <text x="2250" y="2950"
+        class="stencil"
+        font-size="640"
+        text-anchor="middle"
+        textLength="3200" lengthAdjust="spacingAndGlyphs"
+        fill="#ffffff"
+        dominant-baseline="middle">REINVENTED</text>
+
+  <!-- "CAPITALISM." -->
+  <text x="2250" y="3750"
+        class="stencil"
+        font-size="780"
+        text-anchor="middle"
+        textLength="3800" lengthAdjust="spacingAndGlyphs"
+        fill="#ffffff"
+        dominant-baseline="middle">CAPITALISM.</text>
+
+  <!-- Bottom rule -->
+  <rect x="500" y="4150" width="3500" height="20" fill="#ffffff"/>
+
+  <!-- Notice line -->
+  <text x="2250" y="4470"
+        class="body"
+        font-size="135"
+        text-anchor="middle"
+        textLength="2400" lengthAdjust="spacingAndGlyphs"
+        fill="#ffffff"
+        opacity="0.85">[V-J Day silhouette forthcoming.]</text>
+
+  <text x="2250" y="4700"
+        class="body"
+        font-size="105"
+        text-anchor="middle"
+        textLength="2400" lengthAdjust="spacingAndGlyphs"
+        fill="#ffffff"
+        opacity="0.65">May 11, 2026. The first demonstration.</text>
+
+  <!-- Provenance mark -->
+  <text x="4350" y="5300"
+        font-family="Georgia, serif"
+        font-size="48"
+        font-style="italic"
+        text-anchor="end"
+        fill="#ffffff"
+        opacity="0.32">moneypython.shop · MP-T16 · stub</text>
+</svg>

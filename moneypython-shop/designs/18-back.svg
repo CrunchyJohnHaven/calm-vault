@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Product 18 BACK — "AND I REINVENTED CAPITALISM."
+  Canvas: 4500 x 5400 px. Tee color: Cream. Print: black.
+  Style: grand Soviet-poster block type, double rule borders, emphatic terminal period.
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 4500 5400"
+     preserveAspectRatio="xMidYMid meet">
+
+  <style>
+    .stencil {
+      font-family: "Stencil Std", "Octin Stencil", Impact, "Anton", "Oswald",
+                   "Bebas Neue", "Arial Black", sans-serif;
+      font-weight: 900;
+      font-stretch: condensed;
+      letter-spacing: 0.04em;
+    }
+  </style>
+
+  <!-- Top architectural rule -->
+  <rect x="500" y="1480" width="3500" height="32" fill="#0a0a0a"/>
+  <rect x="500" y="1540" width="3500" height="12" fill="#0a0a0a"/>
+
+  <!-- "AND" -->
+  <text x="2250" y="2100"
+        class="stencil"
+        font-size="500"
+        text-anchor="middle"
+        textLength="1100" lengthAdjust="spacingAndGlyphs"
+        fill="#0a0a0a"
+        dominant-baseline="middle">AND</text>
+
+  <!-- "I REINVENTED" -->
+  <text x="2250" y="2850"
+        class="stencil"
+        font-size="680"
+        text-anchor="middle"
+        textLength="3800" lengthAdjust="spacingAndGlyphs"
+        fill="#0a0a0a"
+        dominant-baseline="middle">I REINVENTED</text>
+
+  <!-- "CAPITALISM." -->
+  <text x="2250" y="3800"
+        class="stencil"
+        font-size="950"
+        text-anchor="middle"
+        textLength="3800" lengthAdjust="spacingAndGlyphs"
+        fill="#0a0a0a"
+        dominant-baseline="middle">CAPITALISM.</text>
+
+  <!-- Bottom architectural rule -->
+  <rect x="500" y="4200" width="3500" height="12" fill="#0a0a0a"/>
+  <rect x="500" y="4240" width="3500" height="32" fill="#0a0a0a"/>
+
+  <!-- Provenance mark -->
+  <text x="4350" y="5300"
+        font-family="Georgia, serif"
+        font-size="48"
+        font-style="italic"
+        text-anchor="end"
+        fill="#0a0a0a"
+        opacity="0.32">moneypython.shop · MP-T18</text>
+</svg>

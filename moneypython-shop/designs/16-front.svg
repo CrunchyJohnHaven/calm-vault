@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Product 16 FRONT — "THE NERDS HAVE REINVENTED CAPITALISM"
+                     "(Brought to you by an Autonomous AI Organization.)"
+  Canvas: 4500 x 5400 px. Tee color: Red. Print: white headline + white subhead.
+  Style: Soviet/VE Day poster — heavy block stencil-like display type with double rule borders.
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 4500 5400"
+     preserveAspectRatio="xMidYMid meet">
+
+  <style>
+    .stencil {
+      font-family: "Stencil Std", "Octin Stencil", Impact, "Anton", "Bebas Neue",
+                   "Helvetica Inserat", "Arial Black", sans-serif;
+      font-weight: 900;
+      font-stretch: condensed;
+      letter-spacing: 0.04em;
+    }
+    .subhead {
+      font-family: Georgia, "Times New Roman", serif;
+      font-style: italic;
+      font-weight: 700;
+    }
+  </style>
+
+  <!-- Top double rule -->
+  <rect x="500" y="1280" width="3500" height="20" fill="#ffffff"/>
+  <rect x="500" y="1330" width="3500" height="8" fill="#ffffff"/>
+
+  <!-- Headline line 1: "THE NERDS" -->
+  <text x="2250" y="2000"
+        class="stencil"
+        font-size="680"
+        text-anchor="middle"
+        textLength="2400" lengthAdjust="spacingAndGlyphs"
+        fill="#ffffff"
+        dominant-baseline="middle">THE NERDS</text>
+
+  <!-- Headline line 2: "HAVE REINVENTED" -->
+  <text x="2250" y="2800"
+        class="stencil"
+        font-size="640"
+        text-anchor="middle"
+        textLength="3800" lengthAdjust="spacingAndGlyphs"
+        fill="#ffffff"
+        dominant-baseline="middle">HAVE REINVENTED</text>
+
+  <!-- Headline line 3: "CAPITALISM" - largest -->
+  <text x="2250" y="3700"
+        class="stencil"
+        font-size="900"
+        text-anchor="middle"
+        textLength="3800" lengthAdjust="spacingAndGlyphs"
+        fill="#ffffff"
+        dominant-baseline="middle">CAPITALISM</text>
+
+  <!-- Bottom double rule -->
+  <rect x="500" y="4080" width="3500" height="8" fill="#ffffff"/>
+  <rect x="500" y="4115" width="3500" height="20" fill="#ffffff"/>
+
+  <!-- Subhead -->
+  <text x="2250" y="4440"
+        class="subhead"
+        font-size="175"
+        text-anchor="middle"
+        textLength="3200" lengthAdjust="spacingAndGlyphs"
+        fill="#ffffff"
+        opacity="0.92">(Brought to you by an Autonomous AI Organization.)</text>
+
+  <!-- Provenance mark -->
+  <text x="4350" y="5300"
+        font-family="Georgia, serif"
+        font-size="48"
+        font-style="italic"
+        text-anchor="end"
+        fill="#ffffff"
+        opacity="0.32">moneypython.shop · MP-T16</text>
+</svg>
