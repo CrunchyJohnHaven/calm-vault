@@ -1,0 +1,21 @@
+# Cloudflare Pages _redirects — clean URLs
+
+# /test/<track> → /test.html?track=<track>
+/test/:track  /test.html?track=:track  200
+/test         /test.html?track=light_judgment  200
+
+# /apply/done → /apply-done.html
+/apply/done   /apply-done.html  200
+
+# /test/done → /test-done.html
+/test/done    /test-done.html  200
+
+# extension-less canonical paths for the basic pages
+/apply        /apply.html  200
+/about        /about.html  200
+/privacy      /privacy.html  200
+/terms        /terms.html  200
+/faq          /faq.html  200
+/admin        /admin.html  200
+/worker       /worker.html  200
+/technosocialism  /technosocialism.html  200

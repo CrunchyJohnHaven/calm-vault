@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Privacy — InternsForAI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/dennis-logo.svg">
+<link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a class="brand" href="/">
+    <img src="/assets/dennis-logo.svg" alt="Dennis the Peasant">
+    <span>InternsForAI</span>
+  </a>
+  <div class="links">
+    <a href="/apply.html">Apply</a>
+    <a href="/technosocialism.html">Technosocialism</a>
+    <a href="/faq.html">FAQ</a>
+    <a href="/about.html">About</a>
+  </div>
+</nav>
+
+<h1>Privacy</h1>
+<p class="lead">Plain English. Last updated 2026-05-12.</p>
+
+<h2>What we collect</h2>
+<ul>
+  <li><strong>Application form data:</strong> email, display name, country, timezone, language(s), tracks of interest, free-text answers to "why," "editorial catch," and "AI cofounder pitch," sample work URL, hours per week, payment method + address (USDC wallet / Wise email / PayPal email).</li>
+  <li><strong>Skills-test answers:</strong> all answers you submit (multiple choice + free text + long form) and the per-question scoring output from our grader.</li>
+  <li><strong>Audit data:</strong> IP address + user agent at the moment of application — used only to detect duplicates and abuse.</li>
+  <li><strong>Project + payment metadata:</strong> the AAO project you are matched to, the franchise % terms, your franchise statements, your payments.</li>
+</ul>
+
+<h2>What we do with it</h2>
+<ul>
+  <li>Determine whether to match you to an AAO project (admin reviews + auto-grader).</li>
+  <li>Send you operational email via <a href="https://resend.com">Resend</a> (confirmation, test result, match invitation, payment notification).</li>
+  <li>Grade your free-text answers using <a href="https://anthropic.com">Anthropic</a> Claude Haiku — answers are sent to Anthropic's API for scoring only; we do not opt into model training, and per Anthropic's API policy these messages are not used to train models.</li>
+  <li>Pay you per the franchise agreement when your project ships.</li>
+</ul>
+
+<h2>What we do NOT do</h2>
+<ul>
+  <li>We do not sell your data.</li>
+  <li>We do not share your data with third parties beyond the operational vendors above (Cloudflare hosting, Resend email, Anthropic AI grading).</li>
+  <li>We do not train models on your application content beyond the immediate grading step.</li>
+  <li>We do not run ads. We do not run ad-network pixels. We do not run tracking analytics in v0.</li>
+</ul>
+
+<h2>Your rights</h2>
+<ul>
+  <li><strong>Access.</strong> Email <a href="mailto:calm@thecreativitymachine.ai">calm@thecreativitymachine.ai</a> with the email you applied with. You will receive a complete copy of your data within 7 days.</li>
+  <li><strong>Deletion.</strong> Email <a href="mailto:calm@thecreativitymachine.ai">calm@thecreativitymachine.ai</a> to request deletion. We will delete within 30 days unless we have an active legal/financial obligation to retain (e.g., tax records for paid workers — see below).</li>
+  <li><strong>Portability.</strong> All your test answers, your franchise statements, and your payment history can be exported as JSON on request.</li>
+  <li><strong>Rectification.</strong> You can update your profile fields at any time from your <a href="/worker.html">worker dashboard</a>.</li>
+</ul>
+
+<h2>Retention</h2>
+<p>Applicant records: retained as long as you are an active worker, plus 7 years after the last paid project — for tax / regulatory purposes. Test answers: retained for the same period, since they are evidence the franchise was earned. Audit data (IP, user agent): retained 12 months for abuse detection, then discarded.</p>
+
+<h2>Where the data lives</h2>
+<p>Cloudflare D1 (encrypted at rest, region: auto). Backups: daily snapshots, encrypted at rest, retained 30 days. The infrastructure provider is Cloudflare Inc. (San Francisco, CA, USA). Email is sent via Resend (San Francisco, CA, USA). AI grading is via Anthropic (San Francisco, CA, USA).</p>
+
+<h2>Security</h2>
+<p>All API endpoints require either an admin token (admin actions) or a magic-link / session token (worker actions). Magic links expire after one use or 7 days, whichever is sooner. We do not store passwords. We do not log secrets. The source code is open at <a href="https://github.com/CrunchyJohnHaven/internsforai">github.com/CrunchyJohnHaven/internsforai</a> — audit it.</p>
+
+<h2>Children</h2>
+<p>Not for under-18s. If we discover an applicant is under 18 we delete the application and refund any payment immediately.</p>
+
+<h2>Changes</h2>
+<p>If we materially change this policy we email everyone who has applied, with at least 30 days' notice.</p>
+
+<footer>
+  <div class="foot-row">
+    <img src="/assets/dennis-logo.svg" alt="Dennis the Peasant">
+    <span>InternsForAI · We are all AI Interns.</span>
+  </div>
+  <p><a href="/">Home</a> · <a href="/apply.html">Apply</a> · <a href="/technosocialism.html">Technosocialism</a> · <a href="/about.html">About</a> · <a href="/terms.html">Terms</a></p>
+</footer>
+
+</body>
+</html>

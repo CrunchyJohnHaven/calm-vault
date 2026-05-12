@@ -1,0 +1,241 @@
+/* InternsForAI shared styles. Brutalist black/orange, matches the calm-vault aesthetic. */
+:root {
+  --bg: #0a0a0a;
+  --bg-2: #0f0f0f;
+  --bg-3: #161616;
+  --fg: #e8e8e8;
+  --accent: #ff4400;
+  --accent-soft: #ff6a33;
+  --muted: #888;
+  --border: #2a2a2a;
+  --ok: #54e08a;
+  --warn: #f3c64a;
+  --bad: #ff4d4d;
+  --maxw: 880px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { background: var(--bg); color: var(--fg); }
+
+body {
+  font-family: ui-monospace, "SF Mono", "Menlo", "Consolas", monospace;
+  line-height: 1.55;
+  font-size: 16px;
+  padding: 24px 16px 64px;
+  max-width: var(--maxw);
+  margin: 0 auto;
+}
+
+a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+a:hover { color: var(--accent-soft); }
+
+h1 { font-size: clamp(34px, 6vw, 52px); line-height: 1.05; letter-spacing: -0.02em; margin: 32px 0 16px; }
+h2 { font-size: clamp(20px, 3vw, 26px); margin: 48px 0 12px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.04em; }
+h3 { font-size: 18px; margin: 24px 0 8px; }
+h4 { font-size: 15px; margin: 16px 0 6px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+p { margin: 12px 0; }
+ul, ol { margin: 12px 0 12px 24px; }
+li { margin: 6px 0; }
+
+/* nav / masthead */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 0 16px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.nav .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  color: var(--fg);
+  text-decoration: none;
+}
+.nav .brand img { height: 40px; width: auto; }
+.nav .brand:hover { color: var(--accent); }
+.nav .links { margin-left: auto; display: flex; gap: 16px; font-size: 14px; flex-wrap: wrap; }
+.nav .links a { color: var(--muted); text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em; }
+.nav .links a:hover { color: var(--accent); }
+
+/* pill / tag */
+.pill {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--bg);
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.pill.outline {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+/* lead */
+.lead { font-size: clamp(17px, 2vw, 19px); color: #d8d8d8; margin: 12px 0 24px; }
+
+/* cta */
+.cta {
+  display: inline-block;
+  background: var(--accent);
+  color: var(--bg);
+  padding: 16px 28px;
+  font-weight: 700;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border: 2px solid var(--accent);
+  margin: 16px 0;
+  font-size: 16px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.cta:hover { background: var(--bg); color: var(--accent); }
+.cta.ghost { background: transparent; color: var(--accent); }
+.cta.ghost:hover { background: var(--accent); color: var(--bg); }
+
+/* card / column */
+.card {
+  border: 1px solid var(--border);
+  padding: 18px;
+  background: var(--bg-2);
+  margin: 16px 0;
+}
+.card h3 { color: var(--accent); margin-top: 0; }
+.card .meta { color: var(--muted); font-size: 13px; }
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+@media (min-width: 720px) { .grid-3 { grid-template-columns: 1fr 1fr 1fr; } }
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin: 24px 0;
+}
+@media (min-width: 720px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+
+/* table */
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
+th { background: var(--bg-3); color: var(--accent); font-weight: 700; }
+tr:hover td { background: #121212; }
+
+/* forms */
+form { border: 1px solid var(--border); padding: 24px; margin: 24px 0; background: var(--bg-2); }
+label { display: block; margin: 14px 0 4px; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+input[type="text"], input[type="email"], input[type="url"], input[type="password"], textarea, select {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  padding: 11px 12px;
+  font-family: inherit;
+  font-size: 15px;
+}
+input:focus, textarea:focus, select:focus { outline: 2px solid var(--accent); }
+textarea { min-height: 110px; resize: vertical; }
+fieldset { border: 1px solid var(--border); padding: 12px 16px; margin: 12px 0; }
+legend { padding: 0 8px; color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; }
+.checkrow { display: flex; align-items: flex-start; gap: 8px; margin: 6px 0; }
+.checkrow input { width: auto; }
+.help { color: var(--muted); font-size: 13px; margin-top: 4px; }
+.err { color: var(--bad); font-size: 14px; margin-top: 8px; }
+.ok  { color: var(--ok);  font-size: 14px; margin-top: 8px; }
+
+/* blockquote */
+blockquote {
+  border-left: 4px solid var(--accent);
+  padding: 14px 18px;
+  margin: 24px 0;
+  background: var(--bg-3);
+}
+blockquote cite {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  font-style: normal;
+}
+
+/* status badges */
+.badge { display: inline-block; padding: 2px 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.badge.pending      { background: #333; color: #ddd; }
+.badge.tested       { background: #283; color: #fff; }
+.badge.shortlist    { background: var(--warn); color: var(--bg); }
+.badge.matched      { background: var(--accent); color: var(--bg); }
+.badge.active       { background: var(--ok); color: var(--bg); }
+.badge.disqualified { background: var(--bad); color: var(--bg); }
+.badge.inactive     { background: #444; color: #aaa; }
+.badge.paused       { background: #555; color: #ddd; }
+
+/* progress / score bars */
+.bar { height: 8px; background: var(--bg-3); border: 1px solid var(--border); position: relative; }
+.bar > span { display: block; height: 100%; background: var(--accent); }
+
+/* footer */
+footer {
+  border-top: 1px solid var(--border);
+  margin-top: 64px;
+  padding-top: 24px;
+  color: var(--muted);
+  font-size: 13px;
+}
+footer .foot-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+footer .foot-row img { height: 24px; width: auto; }
+footer a { color: var(--muted); }
+footer a:hover { color: var(--accent); }
+
+/* utility */
+.muted { color: var(--muted); }
+.center { text-align: center; }
+.row    { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.spacer-l { height: 32px; }
+.spacer-m { height: 16px; }
+.hr      { border-top: 1px solid var(--border); margin: 32px 0; }
+.kbd     { font-family: inherit; background: var(--bg-3); padding: 2px 6px; border: 1px solid var(--border); }
+.mono    { font-family: ui-monospace, "SF Mono", monospace; }
+.strike  { text-decoration: line-through; color: var(--muted); }
+.small   { font-size: 13px; }
+.tiny    { font-size: 12px; }
+.right   { text-align: right; }
+.nowrap  { white-space: nowrap; }
+
+/* tracks panel */
+.track {
+  border: 1px solid var(--border);
+  padding: 14px 16px;
+  background: var(--bg-2);
+}
+.track h3 { color: var(--accent); margin: 0 0 6px; }
+.track .rate { color: var(--accent-soft); font-weight: 700; font-size: 14px; }
+
+/* question (test) */
+.q { border: 1px solid var(--border); background: var(--bg-2); padding: 16px; margin: 18px 0; }
+.q .num { color: var(--muted); font-size: 13px; }
+.q .stem { font-size: 16px; margin: 6px 0 10px; }
+.q .opt { display: block; margin: 6px 0; padding: 8px 10px; border: 1px solid var(--border); cursor: pointer; }
+.q .opt:hover { background: var(--bg-3); }
+.q .opt input { margin-right: 8px; }
+.q textarea { width: 100%; min-height: 90px; }
+
+/* page banner */
+.banner-dennis { display: flex; align-items: center; justify-content: center; padding: 32px 0; }
+.banner-dennis img { height: 200px; width: auto; }
+@media (max-width: 540px) { .banner-dennis img { height: 140px; } }

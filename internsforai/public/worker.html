@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Worker dashboard — InternsForAI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/dennis-logo.svg">
+<link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a class="brand" href="/">
+    <img src="/assets/dennis-logo.svg" alt="Dennis the Peasant">
+    <span>InternsForAI</span>
+  </a>
+  <div class="links">
+    <a href="/">Home</a>
+    <a href="/technosocialism.html">Technosocialism</a>
+    <a href="/faq.html">FAQ</a>
+    <a href="/about.html">About</a>
+  </div>
+</nav>
+
+<div id="auth-gate">
+  <h1>Sign in to your worker dashboard</h1>
+  <p class="lead">Enter the email you applied with. We'll send a one-time magic link.</p>
+  <form id="magic-form">
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required>
+    <button class="cta" type="submit">Send magic link →</button>
+    <div id="magic-result"></div>
+  </form>
+  <p class="muted small">If you already have a session token from your application or from a magic link, you can also paste it into the URL: <code>?token=…</code></p>
+</div>
+
+<div id="dash" style="display:none;">
+  <h1 id="hello">Welcome.</h1>
+  <p class="lead" id="status-line"></p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>Reputation</h3>
+      <p>Composite of your test score + AAL-attested project completions. Compounds across every AAO on the network.</p>
+      <p class="muted small">v0 stub: it is your test composite. Component-3 cryptographic attestation lands in v1.</p>
+      <div class="bar"><span id="rep-bar" style="width:0%"></span></div>
+      <p><span class="kbd" id="rep-score">–</span> / 100 · <span id="rep-badge" class="badge pending">pending</span></p>
+    </div>
+    <div class="card">
+      <h3>Franchise statement</h3>
+      <p><strong id="fs-you">$0.00</strong> to you · <strong id="fs-net">$0.00</strong> to network</p>
+      <p class="muted small">Your 80% / Network 20% — Technosocialism in practice. See <a href="/technosocialism.html">/technosocialism</a> for the full doctrine.</p>
+      <p class="small">Last paid: <span id="fs-paid">—</span> · Next pay date: <span id="fs-next">when project ships</span></p>
+    </div>
+  </div>
+
+  <h2>Your AAO match</h2>
+  <div id="match-pane">
+    <p class="muted">No match yet. Admin will match you to a project once your test has been reviewed.</p>
+  </div>
+
+  <h2>Project workspace</h2>
+  <div class="card">
+    <p class="muted small">In v0 this is a stub. Once you accept a match, your "project workspace" will be a private repo / doc that uses AAO Network infrastructure (Cloudflare, Resend, Anthropic). You build there; the AI is your cofounder.</p>
+    <ul>
+      <li>Repo / doc URL: <span id="ws-url">—</span></li>
+      <li>Shared rails: hosting, AI API credits (capped), email, brand, attestation layer</li>
+      <li>Reporting: weekly franchise statement, monthly payment</li>
+    </ul>
+  </div>
+
+  <h2>Test history</h2>
+  <div id="tests-pane"></div>
+
+  <h2>Payments</h2>
+  <div id="payments-pane"><p class="muted">No payments yet.</p></div>
+
+  <h2>Profile</h2>
+  <div class="card"><pre id="profile-json"></pre></div>
+
+  <p><a href="#" id="logout">Sign out</a></p>
+</div>
+
+<footer>
+  <div class="foot-row">
+    <img src="/assets/dennis-logo.svg" alt="Dennis the Peasant">
+    <span>InternsForAI · We are all AI Interns. · "You help out, you share."</span>
+  </div>
+  <p><a href="/">Home</a> · <a href="/technosocialism.html">Technosocialism</a> · <a href="/faq.html">FAQ</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+</footer>
+
+<script>
+function $(s) { return document.querySelector(s); }
+function esc(s) { return (s == null ? '' : String(s)).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+function fmtTime(ts) { const d = new Date(ts); return d.toISOString().slice(0,16).replace('T',' '); }
+
+const qp = new URLSearchParams(location.search);
+const urlToken = qp.get('token');
+if (urlToken) localStorage.setItem('ifa_worker_token', urlToken);
+const tok = () => localStorage.getItem('ifa_worker_token') || '';
+
+document.getElementById('logout').addEventListener('click', (e) => {
+  e.preventDefault();
+  localStorage.removeItem('ifa_worker_token');
+  location.href = '/worker.html';
+});
+
+document.getElementById('magic-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = $('#email').value.trim();
+  const res = $('#magic-result');
+  res.innerHTML = '';
+  try {
+    const r = await fetch('/api/worker/magic-link', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
+    const j = await r.json();
+    if (!r.ok || !j.ok) throw new Error(j.error || ('HTTP ' + r.status));
+    res.innerHTML = '<p class="ok">Magic link sent to ' + esc(email) + '. Check your inbox.</p>';
+  } catch (err) {
+    res.innerHTML = '<p class="err">' + esc(err.message) + '</p>';
+  }
+});
+
+async function boot() {
+  if (!tok()) return; // stay on gate
+  let me;
+  try {
+    me = await fetch('/api/worker/me', { headers: { 'X-Worker-Token': tok() } }).then(r => r.json());
+    if (!me.ok) throw new Error(me.error || 'auth failed');
+  } catch (err) {
+    document.getElementById('magic-result').innerHTML = '<p class="err">Session invalid: ' + esc(err.message) + '</p>';
+    return;
+  }
+  document.getElementById('auth-gate').style.display = 'none';
+  const dash = document.getElementById('dash');
+  dash.style.display = '';
+
+  $('#hello').textContent = 'Welcome, ' + me.applicant.display_name + '.';
+  $('#status-line').innerHTML = 'Status: <span class="badge ' + me.applicant.status + '">' + me.applicant.status + '</span> · You have applied to: ' + (me.applicant.tracks_arr || []).join(', ');
+
+  const rep = me.reputation || 0;
+  $('#rep-score').textContent = rep.toFixed(1);
+  $('#rep-bar').style.width = Math.min(100, Math.max(0, rep)) + '%';
+  const repBadge = $('#rep-badge');
+  if (rep >= 70) { repBadge.className = 'badge active'; repBadge.textContent = 'strong'; }
+  else if (rep >= 50) { repBadge.className = 'badge shortlist'; repBadge.textContent = 'developing'; }
+  else if (rep > 0) { repBadge.className = 'badge pending'; repBadge.textContent = 'seed'; }
+
+  // franchise statement
+  const fs = me.franchise || { worker_share: 0, network_share: 0, last_paid: null };
+  $('#fs-you').textContent = '$' + (fs.worker_share || 0).toFixed(2);
+  $('#fs-net').textContent = '$' + (fs.network_share || 0).toFixed(2);
+  $('#fs-paid').textContent = fs.last_paid ? fmtTime(fs.last_paid) : '—';
+
+  // match
+  const m = me.match;
+  const mp = $('#match-pane');
+  if (!m) {
+    mp.innerHTML = '<p class="muted">No match yet. Admin will match you to a project once your test has been reviewed.</p>';
+  } else {
+    mp.innerHTML = '<div class="card">' +
+      '<h3>' + esc(m.project_name) + ' <span class="badge ' + m.status + '">' + m.status + '</span></h3>' +
+      '<p>' + esc(m.brief_override || m.project_brief) + '</p>' +
+      '<p class="muted small">Your share: <strong>' + m.worker_percent + '%</strong> · Network share: <strong>' + m.franchise_percent + '%</strong></p>' +
+      (m.project_url ? '<p><a href="' + esc(m.project_url) + '" target="_blank" rel="noopener">Project URL ↗</a></p>' : '') +
+      (m.status === 'proposed'
+        ? '<div class="actions"><button id="accept-match" class="cta">Accept match →</button> <button id="decline-match" class="cta ghost">Decline</button></div>'
+        : '') +
+    '</div>';
+    if (m.status === 'proposed') {
+      $('#accept-match').addEventListener('click', () => respondMatch(m.id, 'accepted'));
+      $('#decline-match').addEventListener('click', () => respondMatch(m.id, 'declined'));
+    }
+  }
+
+  // tests
+  const tp = $('#tests-pane');
+  const tests = me.tests || [];
+  if (tests.length === 0) {
+    tp.innerHTML = '<p class="muted">You have not taken a skills test yet. <a href="/test.html?track=light_judgment&token=' + encodeURIComponent(tok()) + '">Take the light-judgment test →</a></p>';
+  } else {
+    tp.innerHTML = tests.map(t =>
+      '<div class="card"><h3>' + esc(t.track) + '</h3>' +
+      '<p>Composite <strong>' + t.composite.toFixed(1) + '</strong> / 100 · <span class="badge ' + (t.verdict === 'PASS' ? 'active' : t.verdict === 'SHORTLIST' ? 'shortlist' : 'disqualified') + '">' + t.verdict + '</span> · ' + fmtTime(t.created_at) + '</p>' +
+      '<p class="muted small">' + esc(t.ai_feedback || '') + '</p></div>'
+    ).join('');
+  }
+
+  // payments
+  const pp = $('#payments-pane');
+  const pay = me.payments || [];
+  if (pay.length === 0) {
+    pp.innerHTML = '<p class="muted">No payments yet.</p>';
+  } else {
+    pp.innerHTML = '<table><thead><tr><th>Date</th><th>Amount</th><th>Method</th><th>Status</th></tr></thead><tbody>' +
+      pay.map(p => '<tr><td>' + fmtTime(p.created_at) + '</td><td>$' + p.amount_usd.toFixed(2) + '</td><td>' + esc(p.method) + '</td><td>' + esc(p.status) + '</td></tr>').join('') +
+      '</tbody></table>';
+  }
+
+  // profile
+  const a = Object.assign({}, me.applicant);
+  delete a.session_token; delete a.admin_notes;
+  $('#profile-json').textContent = JSON.stringify(a, null, 2);
+}
+
+async function respondMatch(matchId, status) {
+  try {
+    await fetch('/api/worker/match-response', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Worker-Token': tok() }, body: JSON.stringify({ match_id: matchId, status }) }).then(r => r.json());
+    boot();
+  } catch (err) { alert(err.message); }
+}
+
+boot();
+</script>
+
+</body>
+</html>

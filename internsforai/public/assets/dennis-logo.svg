@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Dennis the Peasant — official mascot of the AAO Network / technosocialism.
+v0: hand-drafted hood silhouette, geometrically simple. Refined in v1+.
+
+Inspired by Dennis the Peasant, Michael Palin, Monty Python and the Holy
+Grail (1975). Transformative derivative work; we are not affiliated with
+Python Pictures Ltd. We tip our muddy hood in their direction.
+
+Designed to render at all sizes from 16x16 favicon to 1500x500 banner.
+The ambiguity of the silhouette (medieval-peasant / monk / balaclava /
+hooded-revolutionary) is intentional and on-brand.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" width="200" height="240">
+  <title>Dennis the Peasant — mascot of the AAO Network</title>
+  <desc>An outline silhouette of a hooded figure, mid-shout. Official mascot of technosocialism.</desc>
+
+  <!-- HOOD SILHOUETTE — the core mark, recognizable at 16px -->
+  <!-- Crown shape: rounded peak at top, narrowing slightly then widening to gathered shoulders -->
+  <path d="
+    M 100 8
+    C 65 8, 38 22, 32 48
+    C 28 64, 30 80, 34 96
+    L 36 130
+    C 36 155, 44 175, 60 195
+    L 70 215
+    C 75 222, 80 226, 90 230
+    L 110 230
+    C 120 226, 125 222, 130 215
+    L 140 195
+    C 156 175, 164 155, 164 130
+    L 166 96
+    C 170 80, 172 64, 168 48
+    C 162 22, 135 8, 100 8
+    Z
+  " fill="#0a0a0a" stroke="#0a0a0a" stroke-width="1"/>
+
+  <!-- FACE OPENING — negative space inside the hood -->
+  <path d="
+    M 100 38
+    C 78 38, 64 52, 62 72
+    C 62 90, 66 108, 76 124
+    L 84 138
+    C 88 145, 95 150, 100 150
+    L 100 150
+    C 105 150, 112 145, 116 138
+    L 124 124
+    C 134 108, 138 90, 138 72
+    C 136 52, 122 38, 100 38
+    Z
+  " fill="#f5f5f5"/>
+
+  <!-- MOUTH OPENING — the shout, the defiance -->
+  <ellipse cx="100" cy="108" rx="6" ry="11" fill="#0a0a0a"/>
+
+  <!-- EYES — minimal, almost slits, to keep the silhouette readable at small sizes -->
+  <ellipse cx="86" cy="82" rx="2.5" ry="3" fill="#0a0a0a"/>
+  <ellipse cx="114" cy="82" rx="2.5" ry="3" fill="#0a0a0a"/>
+
+  <!-- BROW LINE — gives expression, slightly furrowed -->
+  <path d="M 80 72 L 92 75" stroke="#0a0a0a" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  <path d="M 108 75 L 120 72" stroke="#0a0a0a" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+</svg>

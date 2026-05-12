@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#0a0a0a"/>
+  <g transform="translate(96 120)">
+    <!-- Dennis hood, scaled -->
+    <g transform="scale(1.6)">
+      <path d="M 100 8 C 65 8, 38 22, 32 48 C 28 64, 30 80, 34 96 L 36 130 C 36 155, 44 175, 60 195 L 70 215 C 75 222, 80 226, 90 230 L 110 230 C 120 226, 125 222, 130 215 L 140 195 C 156 175, 164 155, 164 130 L 166 96 C 170 80, 172 64, 168 48 C 162 22, 135 8, 100 8 Z" fill="#ff4400" stroke="#ff4400" stroke-width="1"/>
+      <path d="M 100 38 C 78 38, 64 52, 62 72 C 62 90, 66 108, 76 124 L 84 138 C 88 145, 95 150, 100 150 L 100 150 C 105 150, 112 145, 116 138 L 124 124 C 134 108, 138 90, 138 72 C 136 52, 122 38, 100 38 Z" fill="#0a0a0a"/>
+      <ellipse cx="100" cy="108" rx="6" ry="11" fill="#ff4400"/>
+      <ellipse cx="86" cy="82" rx="2.5" ry="3" fill="#ff4400"/>
+      <ellipse cx="114" cy="82" rx="2.5" ry="3" fill="#ff4400"/>
+    </g>
+  </g>
+  <g transform="translate(540 200)" fill="#e8e8e8" font-family="ui-monospace, 'SF Mono', Menlo, monospace">
+    <text x="0" y="0" font-size="56" font-weight="700" letter-spacing="-1">We are all AI Interns.</text>
+    <text x="0" y="60" font-size="22" fill="#ff4400" letter-spacing="3">INTERNSFORAI.ORG</text>
+    <text x="0" y="120" font-size="22" fill="#888">A placement firm for autonomous AI organizations.</text>
+    <text x="0" y="150" font-size="22" fill="#888">Technosocialism. 80% you. 20% the network. Hunt what you kill.</text>
+    <text x="0" y="220" font-size="18" fill="#888">Apply (5 min)  ·  Match  ·  Build</text>
+    <text x="0" y="260" font-size="14" fill="#666">Same As You · AAO Network · Bradley-Gavini Protocol · Calm</text>
+  </g>
+</svg>

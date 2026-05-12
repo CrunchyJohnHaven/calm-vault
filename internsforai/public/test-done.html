@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Test verdict — InternsForAI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/dennis-logo.svg">
+<link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a class="brand" href="/">
+    <img src="/assets/dennis-logo.svg" alt="Dennis the Peasant">
+    <span>InternsForAI</span>
+  </a>
+  <div class="links">
+    <a href="/apply.html">Apply</a>
+    <a href="/technosocialism.html">Technosocialism</a>
+    <a href="/faq.html">FAQ</a>
+    <a href="/about.html">About</a>
+  </div>
+</nav>
+
+<h1>Skills test — verdict</h1>
+
+<div class="card" id="verdict-card">
+  <h3 id="verdict-headline">Loading…</h3>
+  <p id="verdict-body" class="muted">Reading your result.</p>
+  <p class="muted small">Composite score: <span id="verdict-score" class="kbd">…</span> / 100</p>
+  <div class="bar"><span id="verdict-bar" style="width:0%"></span></div>
+</div>
+
+<h2 id="next-step-title">Next step</h2>
+<div id="next-step-body"></div>
+
+<div class="hr"></div>
+
+<h2>What you can do right now</h2>
+<ul>
+  <li><a href="#" id="worker-link">Go to your worker dashboard →</a></li>
+  <li><a href="/technosocialism.html">Read the technosocialism manifesto →</a></li>
+  <li><a href="/about.html">Read about the AAO Network →</a></li>
+</ul>
+
+<footer>
+  <div class="foot-row">
+    <img src="/assets/dennis-logo.svg" alt="Dennis the Peasant">
+    <span>InternsForAI · We are all AI Interns.</span>
+  </div>
+  <p><a href="/">Home</a> · <a href="/technosocialism.html">Technosocialism</a> · <a href="/faq.html">FAQ</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+</footer>
+
+<script>
+(function () {
+  const qp = new URLSearchParams(window.location.search);
+  const verdict = (qp.get('verdict') || 'UNKNOWN').toUpperCase();
+  const score = parseFloat(qp.get('score') || '0') || 0;
+  const track = qp.get('track') || '';
+  const token = qp.get('token') || '';
+
+  const card = document.getElementById('verdict-card');
+  const headline = document.getElementById('verdict-headline');
+  const body = document.getElementById('verdict-body');
+  const bar = document.getElementById('verdict-bar');
+  document.getElementById('verdict-score').textContent = score.toFixed(1);
+  bar.style.width = Math.min(100, Math.max(0, score)) + '%';
+
+  const nextTitle = document.getElementById('next-step-title');
+  const nextBody = document.getElementById('next-step-body');
+  document.getElementById('worker-link').href = '/worker.html?token=' + encodeURIComponent(token);
+
+  if (verdict === 'PASS') {
+    card.style.borderColor = 'var(--ok)';
+    headline.innerHTML = 'PASS — <span class="badge active">Matched-ready</span>';
+    body.textContent = "You're through. Admin (John) will match you to a project inside an AAO within 24h. We've emailed you a magic-link to your worker dashboard where the match will appear.";
+    nextTitle.textContent = 'Your match is queued';
+    nextBody.innerHTML = '<p>You will get an email when an AAO project is open and your reviewer has signed it. In the meantime, your worker dashboard shows your test result + reputation seed.</p>';
+  } else if (verdict === 'SHORTLIST') {
+    card.style.borderColor = 'var(--warn)';
+    headline.innerHTML = 'SHORTLIST — <span class="badge shortlist">Admin review</span>';
+    body.textContent = "Strong but not automatic. John will review your test answers and the cofounder pitch you submitted. We'll email you a decision within 24h.";
+    nextTitle.textContent = 'Awaiting admin review';
+    nextBody.innerHTML = '<p>No further action needed from you for now. You can take another track\'s test if you applied for multiple tracks.</p>';
+  } else if (verdict === 'FAIL') {
+    card.style.borderColor = 'var(--bad)';
+    headline.innerHTML = 'FAIL — <span class="badge disqualified">Not this round</span>';
+    body.textContent = "We aren't going to match you to a project this round. This isn't personal; we are calibrating the test on the strictest end so the first cohort is unimpeachable. You can re-apply in 90 days.";
+    nextTitle.textContent = 'What you can do';
+    nextBody.innerHTML = '<p>Read the <a href="/technosocialism.html">manifesto</a>, read about the <a href="/about.html">AAO Network</a>, and apply again in 90 days. We are aiming for a 30%+ pass rate within a few weeks once calibration settles.</p>';
+  } else {
+    card.style.borderColor = 'var(--border)';
+    headline.textContent = 'Result not found';
+    body.textContent = 'Your verdict was not in the URL. Please contact calm@thecreativitymachine.ai.';
+  }
+})();
+</script>
+
+</body>
+</html>
