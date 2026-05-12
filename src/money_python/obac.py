@@ -232,34 +232,64 @@ def entry_hash_for(entry: dict) -> str:
 
 # ---------------------------------------------------------------------------
 # Merkle root over entry_hash values
+#
+# Domain separation prevents the CVE-2012-2459-family duplicate-last-leaf
+# collision: leaves are hashed with tag 0x00, internal nodes with tag 0x01,
+# and the chain length is committed into the final root under tag 0x02.
+#
+# Reproduction of the pre-2026-05-12 collision is at
+# `adversarial/component2_attack.py`.
 # ---------------------------------------------------------------------------
+
+_MERKLE_LEAF_TAG = b"\x00"
+_MERKLE_NODE_TAG = b"\x01"
+_MERKLE_ROOT_TAG = b"\x02"
+
+
+def _merkle_leaf_digest(entry_hash_hex: str) -> bytes:
+    return hashlib.sha256(_MERKLE_LEAF_TAG + bytes.fromhex(entry_hash_hex)).digest()
+
+
+def _merkle_node_digest(left: bytes, right: bytes) -> bytes:
+    return hashlib.sha256(_MERKLE_NODE_TAG + left + right).digest()
+
+
+def _merkle_root_commit(length: int, raw_root: bytes) -> bytes:
+    return hashlib.sha256(_MERKLE_ROOT_TAG + length.to_bytes(8, "big") + raw_root).digest()
 
 
 def merkle_root(entry_hashes: list[str]) -> str:
-    """Binary Merkle root over hex hashes. Duplicates last leaf if odd."""
+    """Binary Merkle root over hex entry hashes.
+
+    Length-committed and domain-separated to defeat the duplicate-last-leaf
+    collision. The wire format of v1 (pre-fix) is incompatible; chains that
+    relied on the old root must be re-anchored after upgrade.
+    """
     if not entry_hashes:
         return GENESIS_PREV_HASH
-    level = [bytes.fromhex(h) for h in entry_hashes]
+    level = [_merkle_leaf_digest(h) for h in entry_hashes]
     while len(level) > 1:
         if len(level) % 2 == 1:
             level.append(level[-1])
         next_level = []
         for i in range(0, len(level), 2):
-            next_level.append(hashlib.sha256(level[i] + level[i + 1]).digest())
+            next_level.append(_merkle_node_digest(level[i], level[i + 1]))
         level = next_level
-    return level[0].hex()
+    return _merkle_root_commit(len(entry_hashes), level[0]).hex()
 
 
 def merkle_proof(entry_hashes: list[str], index: int) -> list[tuple[str, str]]:
     """Inclusion proof for entry_hashes[index].
 
     Returns a list of (sibling_hash, side) where side is 'L' or 'R' (sibling is
-    on the left or right when hashing).
+    on the left or right when hashing). The first element of the returned
+    list carries the encoded chain length at sentinel side 'N': callers MUST
+    pass it through `verify_merkle_proof` unchanged.
     """
     if index < 0 or index >= len(entry_hashes):
         raise IndexError("index out of range")
     proof: list[tuple[str, str]] = []
-    level = [bytes.fromhex(h) for h in entry_hashes]
+    level = [_merkle_leaf_digest(h) for h in entry_hashes]
     idx = index
     while len(level) > 1:
         if len(level) % 2 == 1:
@@ -269,24 +299,42 @@ def merkle_proof(entry_hashes: list[str], index: int) -> list[tuple[str, str]]:
         proof.append((level[sibling_idx].hex(), side))
         next_level = []
         for i in range(0, len(level), 2):
-            next_level.append(hashlib.sha256(level[i] + level[i + 1]).digest())
+            next_level.append(_merkle_node_digest(level[i], level[i + 1]))
         level = next_level
         idx //= 2
+    # Sentinel encoding chain length so the verifier can rebuild the root
+    # commitment without taking length as an extra argument.
+    proof.insert(0, (len(entry_hashes).to_bytes(8, "big").hex(), "N"))
     return proof
 
 
 def verify_merkle_proof(
     leaf_hash: str, proof: list[tuple[str, str]], root: str
 ) -> bool:
-    """Verify a Merkle inclusion proof."""
-    cur = bytes.fromhex(leaf_hash)
-    for sibling_hex, side in proof:
+    """Verify a Merkle inclusion proof produced by `merkle_proof`.
+
+    Backwards-compatible for callers that pass proofs without the leading
+    length sentinel: such proofs are treated as v1 and ALWAYS REJECTED
+    against a v2 root (defence in depth).
+    """
+    if not proof or proof[0][1] != "N":
+        # No length sentinel — legacy v1 proof. Reject against v2 roots.
+        return False
+    length_hex, _ = proof[0]
+    try:
+        length = int.from_bytes(bytes.fromhex(length_hex), "big")
+    except Exception:
+        return False
+    cur = _merkle_leaf_digest(leaf_hash)
+    for sibling_hex, side in proof[1:]:
         sib = bytes.fromhex(sibling_hex)
         if side == "L":
-            cur = hashlib.sha256(sib + cur).digest()
+            cur = _merkle_node_digest(sib, cur)
+        elif side == "R":
+            cur = _merkle_node_digest(cur, sib)
         else:
-            cur = hashlib.sha256(cur + sib).digest()
-    return cur.hex() == root
+            return False
+    return _merkle_root_commit(length, cur).hex() == root
 
 
 # ---------------------------------------------------------------------------
