@@ -8,6 +8,7 @@ import pytest
 import obac
 import avs
 import harp
+import bgp_bridge
 
 
 def _ts(seconds_offset: float, base: str = "2026-05-12T00:00:00+00:00") -> str:
@@ -76,6 +77,13 @@ def test_quorum_outside_window_not_concurred(tmp_chain_path, alice, bob, subject
 def test_false_alarm_low_reliability_rejected(tmp_chain_path, alice, bob, subject_id):
     """A halt from a low-reliability attester doesn't count toward quorum."""
     chain = obac.Chain.new(tmp_chain_path)
+    # Strip alice's BGP mandate so her reliability isn't boosted by 0.5 above
+    # the burst penalty; otherwise this test cannot drive her below 0.85.
+    bgp_bridge.clear_registry()
+    bgp_bridge.set_ground_truth("Maximize human and machine flourishing without harm.")
+    bgp_bridge.register_mandate(
+        bob["pub_b64"], "Maximize human and machine flourishing without harm.",
+    )
     # Make alice low-reliability by self-burst spam BEFORE the halt
     for i in range(avs.BURST_THRESHOLD + 6):
         chain.append_claim(
@@ -99,10 +107,13 @@ def test_false_alarm_low_reliability_rejected(tmp_chain_path, alice, bob, subjec
         submitted_at=_ts(20),
     )
     # With min_reliability set above alice's burst-penalty level (~0.7), and k=2,
-    # quorum should fail because only bob qualifies.
+    # quorum should fail because only bob qualifies. We pass require_bgp_mandate=False
+    # because alice is intentionally un-mandated in this test, but the test
+    # is about the reliability filter, not the BGP filter.
     res = harp.check_quorum(
         chain, subject_id, k=2, window_seconds=60.0,
         min_attester_reliability=0.85,
+        require_bgp_mandate=False,
     )
     assert not res.concurred
     assert "alice" in res.rejected_low_reliability or len(res.counted_attesters) < 2
