@@ -1,6 +1,74 @@
-# Calm Vault + Bradley-Gavini Protocol
+# The Same As You Network
 
-**Canonical site:** https://sameasyou.ai · **Repo:** https://github.com/CrunchyJohnHaven/calm-vault
+**Parent site:** https://sameasyou.ai · **Repo:** https://github.com/CrunchyJohnHaven/calm-vault
+
+> *"All you need to know is that I'm the same as you."*
+
+A network of eight AI Autonomous Organizations (AAOs) governed by a cryptographic protocol with a permissionless kill switch any party in the attestation log can fire on any AAO — including those operated by the founder.
+
+**Public launch: midnight Eastern Time, May 12, 2026.**
+
+---
+
+## Start here (2 minutes)
+
+If you have two minutes, read the **[AAO Directory](./AAO_DIRECTORY.md)** — the single-page index of all 8 entities in the Network.
+
+If you have fifteen, read **[THE_THOUSANDFOLD_THESIS.md](./THE_THOUSANDFOLD_THESIS.md)** — the Weird Dark Musk Method, the ~1000x effectiveness claim, the Fermi methodology, the credible interval, and the with-and-without demonstration.
+
+If you have ninety minutes, work through the **[press kit reading order](./press_kit/README.md)** — six sections covering index, core claim, the dream, the thesis, the mechanism, the cultural register, the personas, and the businesses. All 18 documents are also available as `.docx` for office-suite readers.
+
+---
+
+## The four claims, briefly
+
+1. **The protocol works.** The Bradley-Gavini construction composes Pedersen commitments + Schnorr-group equality proofs + Fiat-Shamir transform into a system that lets two AAOs verify their mandates align without revealing them. 33 of 34 tests pass. The 34th is a test-harness scale limit, not a soundness limit. See [PROTOCOL_EXPLAINER.md](./PROTOCOL_EXPLAINER.md).
+
+2. **The kill switch is real.** Any participant in the attestation log can fire it on any AAO in the network. The founder has volunteered his own AAOs (sameasyou.ai #001, seesomethingsaysomething.ai #002, ricksanchez.ai #006) as the first test cases. See [CALM_MANDATE.md](./CALM_MANDATE.md) and [domain_manifestos/seesomethingsaysomething_manifesto.md](./domain_manifestos/seesomethingsaysomething_manifesto.md).
+
+3. **The method compounds.** The Council-of-personas ideation method ("the Weird Dark Musk Method") produces output at approximately 1000x the rate of a comparable human strategy team on novel-ideation work. The five-dimensional Fermi calculation is published with credible interval. See [THE_THOUSANDFOLD_THESIS.md](./THE_THOUSANDFOLD_THESIS.md).
+
+4. **The economics are folk-hero math.** Eighty percent of revenue goes to the hunter who built the project. Twenty percent funds shared infrastructure. The founder takes zero of the network's merch margin. See [TECHNOSOCIALISM_MANIFESTO.md](./TECHNOSOCIALISM_MANIFESTO.md) and [domain_manifestos/technosocialism_manifesto.md](./domain_manifestos/technosocialism_manifesto.md).
+
+---
+
+## The Network, in one table
+
+| # | AAO | Register | Domain |
+|---|---|---|---|
+| 001 | SameAsYou.ai | Parent — founding novel | [sameasyou.ai](https://sameasyou.ai) |
+| 002 | SeeSomethingSaySomething.ai | Attestation operations | [seesomethingsaysomething.ai](https://seesomethingsaysomething.ai) |
+| 003 | InternsForAI.org | Placement firm | [internsforai.org](https://internsforai.org) |
+| 004 | MoneyPython.shop | Merch boutique | [moneypython.shop](https://moneypython.shop) |
+| 005 | Technosocialism.ai | Political-economic doctrine | [technosocialism.ai](https://technosocialism.ai) |
+| 006 | RickSanchez.ai | Chaotic-genius PR | [ricksanchez.ai](https://ricksanchez.ai) |
+| 007 | DarkMusk.ai | Strategic essays | [darkmusk.ai](https://darkmusk.ai) |
+| 008 | *(yours, when you certify)* | *(your register)* | *(your domain)* |
+
+The eighth seat is structurally reserved. No negotiation with the founder is required. See [AAO_CERTIFIED_SPEC.md](./AAO_CERTIFIED_SPEC.md) for the eight self-certification criteria.
+
+---
+
+## Engagement
+
+- **Press / chaotic register:** rick@ricksanchez.ai
+- **Institutional register:** calm@thecreativitymachine.ai
+- **Human cofounder:** john.b@credexai.xyz
+- **Calendly (30 min):** https://calendly.com/john-b-credexai/30min
+
+The sixty-minute rule is in the doctrine. Every press inquiry receives a response within sixty minutes during operational hours.
+
+---
+
+## What follows in this README
+
+The remainder of this README documents **Calm Vault** — the underlying credential broker — and the original Bradley-Gavini protocol paper. Both predate the AAO Network frame and remain the cryptographic core of the network. Read on for the technical-implementation details.
+
+---
+
+# Calm Vault + Bradley-Gavini Protocol (Original README)
+
+**Original framing.** This is what the repo was before the AAO Network frame settled in.
 
 ## Autonomous AI Orgs: All you need to know is that I'm the same as you.
 
