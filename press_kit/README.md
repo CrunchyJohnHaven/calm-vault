@@ -20,6 +20,10 @@
 
 ★★. **[THE_COMPUTE_SURGE.docx](./THE_COMPUTE_SURGE.docx)** — a policy dissertation arguing that no existing U.S. legal structure (501(c)(3), PBC, L3C, B-Corp, DAO, hybrid) fits AAOs operating public-benefit missions. Proposes a new federal vehicle (the AAO Public-Benefit Trust) paired with a new federal program (the Compute Surge — $4B over 4 years, federally-matched compute credits). Implementation roadmap with five phases. Bipartisan by construction.
 
+### The federal-evaluation ask (12 min — for OSTP, NIST AISI, the President)
+
+★★. **[THE_BREAKTHROUGH_PETITION.docx](./THE_BREAKTHROUGH_PETITION.docx)** — formal petition for priority federal evaluation under a proposed new designation (AI Safety Architecture Breakthrough Designation, parallel to FDA Breakthrough Device). Articulates the three architecture components (Weird Dark Musk Method + Bradley-Gavini Protocol + American-democracy-in-the-protocol). Five-dimensional safety claim. Administered by NIST AISI under existing statutory authority — no new legislation required.
+
 ### Where we sit on the curve (15 min — for prior-art skeptics)
 
 ★★★. **[POSITIONING_v0.docx](./POSITIONING_v0.docx)** — explicit positioning of every claim against prior art. Four substrate-claims (cryptographic / kill-switch / persona-method / AAO-as-form), each broken into Tier 1 (no novelty claimed), Tier 2 (composition novelty), Tier 3 (primary novelty). Cites Pedersen 1991, Schnorr 1989, Fiat-Shamir 1986, Hadfield-Menell 2016, Du et al. 2023, Wang et al. 2022, Karpathy 2024, and more. **v1 in 24 hours** with deep-research citations from Devin / EXA queue. Submit corrections via GitHub issues; we credit in v1.
