@@ -1,0 +1,64 @@
+{
+  "environment": {
+    "python": "3.12.8",
+    "platform": "Linux-5.15.200-x86_64-with-glibc2.35",
+    "machine": "x86_64",
+    "hostname": "devin-box",
+    "timestamp_utc": "2026-05-12T01:02:27Z"
+  },
+  "c1_bradley_gavini": {
+    "iterations": 1000,
+    "prover": {
+      "mean_ms": 19.518950154999402,
+      "p50_ms": 19.490258000018912,
+      "p99_ms": 19.969164809999427,
+      "min_ms": 19.330577999994603,
+      "max_ms": 23.704731999998785
+    },
+    "verifier": {
+      "mean_ms": 41.964102833000254,
+      "p50_ms": 41.89801750000299,
+      "p99_ms": 43.42237601999898,
+      "min_ms": 41.650513999996974,
+      "max_ms": 50.592608000016526
+    },
+    "total": {
+      "mean_ms": 61.483052987999656,
+      "p50_ms": 61.38797500000237,
+      "p99_ms": 63.207477609990974,
+      "min_ms": 61.057926000017915,
+      "max_ms": 74.29734000001531
+    },
+    "raw_csv": "/home/ubuntu/repos/calm-vault/benchmarks/data/c1_bradley_gavini.csv"
+  },
+  "c3_attestation_log": {
+    "iterations": 1000,
+    "write": {
+      "mean_ms": 0.12134397499977467,
+      "p50_ms": 0.12029849999350972,
+      "p99_ms": 0.12889310999895542,
+      "min_ms": 0.117211000002726,
+      "max_ms": 0.3654259999734677
+    },
+    "read": {
+      "mean_ms": 0.0005273119999742448,
+      "p50_ms": 0.0004899999908047903,
+      "p99_ms": 0.0009643099804179652,
+      "min_ms": 0.0002660000006926566,
+      "max_ms": 0.008318999988432552
+    },
+    "chain_integrity_ok": true,
+    "raw_csv": "/home/ubuntu/repos/calm-vault/benchmarks/data/c3_attestation_log.csv"
+  },
+  "c5_kill_switch": {
+    "iterations": 100,
+    "fire_to_freeze": {
+      "mean_ms": 0.12067973999933201,
+      "p50_ms": 0.11913650000394682,
+      "p99_ms": 0.13593434999819487,
+      "min_ms": 0.11607900000853988,
+      "max_ms": 0.17972699998836106
+    },
+    "raw_csv": "/home/ubuntu/repos/calm-vault/benchmarks/data/c5_kill_switch.csv"
+  }
+}
