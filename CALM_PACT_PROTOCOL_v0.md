@@ -149,7 +149,11 @@ proof_b_to_a = bob.prove_equality(c_a)
 
 assert bob.verify(proof_a_to_b)
 assert alice.verify(proof_b_to_a)
-# Alignment confirmed without revealing directive
+# Co-mandate verified without revealing the maxim.
+# Behavioral alignment requires composition with OBAC (C2 watermarked action chain)
+# and AVS (C4 truth synthesis); equality of committed maxims is necessary but not
+# sufficient for "alignment" in the broader sense. See ADVERSARIAL_COUNCIL_REVIEW.md
+# Attack #2 + MANDATE_AUTHORITY.md (v0.1) for the full composition argument.
 ```
 
 ---
