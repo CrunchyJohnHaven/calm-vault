@@ -1,0 +1,19 @@
+# Cloudflare Pages _redirects — clean URLs.
+#
+# Pages serves /foo.html at /foo automatically, so we do NOT need rewrites
+# like "/foo /foo.html 200" — they cause an infinite 308 loop because Pages
+# normalizes .html away before applying _redirects.
+#
+# Only paths whose source AND destination differ in a non-trivial way need
+# entries. Each destination MUST normalize to a different path than the source,
+# otherwise the loop returns.
+#
+# /apply/done → /apply-done   (different filename, safe)
+/apply/done   /apply-done.html  200
+#
+# /test/done → /test-done   (different filename, safe)
+/test/done    /test-done.html  200
+#
+# /test/<track> → /skills-test?track=<track>   (different filename, safe)
+/test/:track  /skills-test.html?track=:track  200
+/test         /skills-test.html?track=light_judgment  200

@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Admin — InternsForAI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/dennis-logo.svg">
+<link rel="stylesheet" href="/assets/styles.css">
+<style>
+  body { max-width: 1180px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin: 16px 0; }
+  .stats .stat { border: 1px solid var(--border); padding: 12px; background: var(--bg-2); }
+  .stats .stat .n { font-size: 26px; color: var(--accent); font-weight: 700; }
+  .stats .stat .l { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .filterbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: end; margin: 16px 0; }
+  .filterbar > div { min-width: 140px; }
+  table.applicants td { font-size: 13px; }
+  table.applicants tr.row-link { cursor: pointer; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+  .actions button, .actions a.btn { background: var(--bg-3); color: var(--fg); border: 1px solid var(--border); padding: 6px 10px; font-family: inherit; font-size: 13px; cursor: pointer; text-decoration: none; }
+  .actions button:hover, .actions a.btn:hover { background: var(--accent); color: var(--bg); }
+  details { border: 1px solid var(--border); background: var(--bg-2); padding: 10px 14px; margin: 8px 0; }
+  details summary { cursor: pointer; color: var(--accent); }
+  pre { background: var(--bg-3); padding: 12px; overflow-x: auto; font-size: 13px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="brand" href="/">
+    <img src="/assets/dennis-logo.svg" alt="Dennis the Peasant">
+    <span>InternsForAI · Admin</span>
+  </a>
+  <div class="links">
+    <a href="/">Public</a>
+    <a href="#" id="logout">Logout</a>
+  </div>
+</nav>
+
+<div id="auth-gate">
+  <h1>Admin login</h1>
+  <p class="lead">Paste the ADMIN_TOKEN that John set via <code>wrangler pages secret put ADMIN_TOKEN</code>. The token is stored client-side in localStorage and sent as a header on every request.</p>
+  <form id="login-form">
+    <label for="token">Admin token</label>
+    <input type="password" id="token" name="token" required>
+    <button class="cta" type="submit">Unlock →</button>
+    <div id="login-err"></div>
+  </form>
+</div>
+
+<div id="dashboard" style="display:none;">
+  <h1>Admin dashboard</h1>
+  <p class="lead">Disposition applicants, see test scores, match them to AAO projects.</p>
+
+  <div class="stats" id="stats">
+    <div class="stat"><div class="n" id="s_total">–</div><div class="l">Applicants</div></div>
+    <div class="stat"><div class="n" id="s_tested">–</div><div class="l">Tested</div></div>
+    <div class="stat"><div class="n" id="s_shortlist">–</div><div class="l">Shortlist</div></div>
+    <div class="stat"><div class="n" id="s_matched">–</div><div class="l">Matched</div></div>
+    <div class="stat"><div class="n" id="s_active">–</div><div class="l">Active</div></div>
+    <div class="stat"><div class="n" id="s_mean_score">–</div><div class="l">Mean score</div></div>
+  </div>
+
+  <div class="filterbar">
+    <div>
+      <label>Status</label>
+      <select id="f_status">
+        <option value="">(all)</option>
+        <option value="pending">pending</option>
+        <option value="tested">tested</option>
+        <option value="shortlist">shortlist</option>
+        <option value="matched">matched</option>
+        <option value="active">active</option>
+        <option value="disqualified">disqualified</option>
+        <option value="inactive">inactive</option>
+      </select>
+    </div>
+    <div>
+      <label>Track</label>
+      <select id="f_track">
+        <option value="">(all)</option>
+        <option value="mechanical">mechanical</option>
+        <option value="light_judgment">light_judgment</option>
+        <option value="heavy_judgment">heavy_judgment</option>
+        <option value="specialized">specialized</option>
+        <option value="domain_expert">domain_expert</option>
+      </select>
+    </div>
+    <div>
+      <label>Country</label>
+      <input type="text" id="f_country" placeholder="e.g. India">
+    </div>
+    <div>
+      <label>&nbsp;</label>
+      <button class="cta ghost" id="apply-filters">Apply filters</button>
+    </div>
+  </div>
+
+  <div id="applicant-list-pane">
+    <h2>Applicants</h2>
+    <table class="applicants" id="applicant-table">
+      <thead>
+        <tr>
+          <th>#</th><th>Name</th><th>Email</th><th>Country</th><th>Tracks</th>
+          <th>Applied</th><th>Score</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="applicant-rows"></tbody>
+    </table>
+  </div>
+
+  <div id="applicant-detail-pane" style="display:none;">
+    <a href="#" id="back-to-list">← Back to list</a>
+    <h2 id="detail-name">…</h2>
+    <p class="muted small" id="detail-meta"></p>
+
+    <div class="actions">
+      <button data-status="shortlist">Move to shortlist</button>
+      <button data-status="matched">Mark matched</button>
+      <button data-status="active">Mark active</button>
+      <button data-status="disqualified">Disqualify</button>
+      <button data-status="paused">Pause</button>
+    </div>
+
+    <h3>Match to AAO project</h3>
+    <form id="match-form" class="card">
+      <label for="project_id">AAO project</label>
+      <select id="project_id" name="project_id" required></select>
+
+      <label for="franchise_percent">Franchise % to network</label>
+      <input type="text" id="franchise_percent" name="franchise_percent" value="20">
+
+      <label for="brief_override">Brief override <span class="muted small">(optional)</span></label>
+      <textarea id="brief_override" name="brief_override" rows="3"></textarea>
+
+      <p class="help">By matching, you create a proposed match. The worker is emailed and sees it in their dashboard. They have to accept it to start.</p>
+      <button class="cta" type="submit">Match to AAO project →</button>
+      <div id="match-result"></div>
+    </form>
+
+    <h3>Test transcript</h3>
+    <div id="test-transcript"></div>
+
+    <h3>Application</h3>
+    <pre id="application-json"></pre>
+
+    <h3>Admin notes</h3>
+    <form id="notes-form" class="card">
+      <textarea id="admin_notes" name="admin_notes" rows="4"></textarea>
+      <button class="cta ghost" type="submit">Save notes</button>
+      <span class="muted small" id="notes-status"></span>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-row">
+    <img src="/assets/dennis-logo.svg" alt="Dennis the Peasant">
+    <span>InternsForAI · Admin · "I told you, we're an anarcho-syndicalist commune."</span>
+  </div>
+</footer>
+
+<script>
+const adminApi = {
+  token() { return localStorage.getItem('ifa_admin_token') || ''; },
+  setToken(t) { localStorage.setItem('ifa_admin_token', t || ''); },
+  async fetch(path, opts = {}) {
+    opts.headers = Object.assign({}, opts.headers || {}, { 'X-Admin-Token': this.token() });
+    if (opts.body && typeof opts.body !== 'string') {
+      opts.body = JSON.stringify(opts.body);
+      opts.headers['Content-Type'] = 'application/json';
+    }
+    const r = await fetch(path, opts);
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || j.ok === false) {
+      const err = (j && j.error) ? j.error : ('HTTP ' + r.status);
+      throw new Error(err);
+    }
+    return j;
+  }
+};
+
+function $(sel) { return document.querySelector(sel); }
+function $$(sel) { return Array.from(document.querySelectorAll(sel)); }
+function fmtTime(ts) { const d = new Date(ts); return d.toISOString().slice(0,16).replace('T',' '); }
+
+const gate = $('#auth-gate');
+const dash = $('#dashboard');
+
+document.getElementById('logout').addEventListener('click', (e) => {
+  e.preventDefault();
+  adminApi.setToken('');
+  location.reload();
+});
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const t = $('#token').value.trim();
+  if (!t) return;
+  adminApi.setToken(t);
+  try {
+    await adminApi.fetch('/api/admin/applicants?limit=1');
+    boot();
+  } catch (err) {
+    $('#login-err').innerHTML = '<p class="err">' + err.message + '</p>';
+  }
+});
+
+if (adminApi.token()) { boot(); }
+
+let _projects = [];
+
+async function boot() {
+  gate.style.display = 'none';
+  dash.style.display = '';
+  await loadProjects();
+  refresh();
+}
+
+async function loadProjects() {
+  try {
+    const j = await adminApi.fetch('/api/admin/projects');
+    _projects = j.projects || [];
+    const sel = $('#project_id');
+    sel.innerHTML = '<option value="">Pick one</option>' + _projects.map(p => '<option value="' + p.id + '">' + p.name + ' — ' + p.slug + '</option>').join('');
+  } catch (err) { console.warn(err); }
+}
+
+async function refresh() {
+  const params = new URLSearchParams();
+  const st = $('#f_status').value;
+  const tr = $('#f_track').value;
+  const co = $('#f_country').value.trim();
+  if (st) params.set('status', st);
+  if (tr) params.set('track', tr);
+  if (co) params.set('country', co);
+  params.set('limit', '500');
+
+  const j = await adminApi.fetch('/api/admin/applicants?' + params.toString());
+  const rows = j.applicants || [];
+  // stats
+  $('#s_total').textContent     = j.stats.total ?? rows.length;
+  $('#s_tested').textContent    = j.stats.tested ?? '–';
+  $('#s_shortlist').textContent = j.stats.shortlist ?? '–';
+  $('#s_matched').textContent   = j.stats.matched ?? '–';
+  $('#s_active').textContent    = j.stats.active ?? '–';
+  $('#s_mean_score').textContent= (j.stats.mean_score != null ? j.stats.mean_score.toFixed(1) : '–');
+
+  const tbody = $('#applicant-rows');
+  tbody.innerHTML = '';
+  rows.forEach(a => {
+    const tr = document.createElement('tr');
+    tr.className = 'row-link';
+    tr.dataset.id = a.id;
+    tr.innerHTML = '<td>' + a.id + '</td>' +
+      '<td>' + esc(a.display_name) + '</td>' +
+      '<td>' + esc(a.email) + '</td>' +
+      '<td>' + esc(a.country) + '</td>' +
+      '<td>' + (a.tracks_arr || []).join(', ') + '</td>' +
+      '<td>' + fmtTime(a.created_at) + '</td>' +
+      '<td>' + (a.score != null ? a.score.toFixed(1) : '–') + '</td>' +
+      '<td><span class="badge ' + a.status + '">' + a.status + '</span></td>';
+    tr.addEventListener('click', () => showDetail(a.id));
+    tbody.appendChild(tr);
+  });
+}
+
+function esc(s) { return (s == null ? '' : String(s)).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+
+document.getElementById('apply-filters').addEventListener('click', (e) => { e.preventDefault(); refresh(); });
+
+document.getElementById('back-to-list').addEventListener('click', (e) => {
+  e.preventDefault();
+  $('#applicant-detail-pane').style.display = 'none';
+  $('#applicant-list-pane').style.display = '';
+});
+
+let _currentApplicantId = null;
+
+async function showDetail(id) {
+  _currentApplicantId = id;
+  $('#applicant-list-pane').style.display = 'none';
+  $('#applicant-detail-pane').style.display = '';
+  const j = await adminApi.fetch('/api/admin/applicants/' + id);
+  const a = j.applicant;
+  $('#detail-name').textContent = a.display_name + ' (#' + a.id + ')';
+  $('#detail-meta').textContent = a.email + ' · ' + a.country + ' · ' + (a.tracks_arr || []).join(', ') + ' · ' + fmtTime(a.created_at) + ' · ' + a.status;
+  $('#admin_notes').value = a.admin_notes || '';
+
+  // application JSON (everything minus internals)
+  const safe = Object.assign({}, a);
+  delete safe.session_token;
+  delete safe.admin_notes;
+  $('#application-json').textContent = JSON.stringify(safe, null, 2);
+
+  // test transcripts
+  const t = j.tests || [];
+  if (t.length === 0) {
+    $('#test-transcript').innerHTML = '<p class="muted small">No test submitted yet.</p>';
+  } else {
+    $('#test-transcript').innerHTML = t.map(att => {
+      const per = JSON.parse(att.per_question || '[]');
+      const raw = JSON.parse(att.raw_answers || '{}');
+      return '<details><summary>' + att.track + ' · composite ' + att.composite.toFixed(1) + ' · ' + att.verdict + '</summary>' +
+        '<pre>' + esc(JSON.stringify(per, null, 2)) + '</pre>' +
+        '<h4>Raw answers</h4>' +
+        '<pre>' + esc(JSON.stringify(raw, null, 2)) + '</pre>' +
+        '<h4>AI feedback</h4><pre>' + esc(att.ai_feedback || '') + '</pre>' +
+      '</details>';
+    }).join('');
+  }
+}
+
+document.querySelectorAll('.actions button[data-status]').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    if (!_currentApplicantId) return;
+    const status = btn.dataset.status;
+    if (!confirm('Set status to ' + status + '?')) return;
+    try {
+      await adminApi.fetch('/api/admin/disposition', { method: 'POST', body: { applicant_id: _currentApplicantId, status: status } });
+      await showDetail(_currentApplicantId);
+    } catch (err) { alert(err.message); }
+  });
+});
+
+document.getElementById('match-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!_currentApplicantId) return;
+  const project_id = parseInt($('#project_id').value, 10);
+  const franchise_percent = parseFloat($('#franchise_percent').value);
+  const brief_override = $('#brief_override').value.trim();
+  if (!project_id) { $('#match-result').innerHTML = '<p class="err">Pick a project.</p>'; return; }
+  try {
+    const j = await adminApi.fetch('/api/admin/match', { method: 'POST', body: { applicant_id: _currentApplicantId, project_id, franchise_percent, brief_override } });
+    $('#match-result').innerHTML = '<p class="ok">Matched. Worker share: ' + (100 - franchise_percent) + '%. Worker has been emailed.</p>';
+    await showDetail(_currentApplicantId);
+  } catch (err) {
+    $('#match-result').innerHTML = '<p class="err">' + err.message + '</p>';
+  }
+});
+
+document.getElementById('notes-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!_currentApplicantId) return;
+  try {
+    await adminApi.fetch('/api/admin/notes', { method: 'POST', body: { applicant_id: _currentApplicantId, admin_notes: $('#admin_notes').value } });
+    $('#notes-status').textContent = ' saved.';
+    setTimeout(() => $('#notes-status').textContent = '', 1500);
+  } catch (err) { alert(err.message); }
+});
+</script>
+
+</body>
+</html>

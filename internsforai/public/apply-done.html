@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Application received — InternsForAI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/dennis-logo.svg">
+<link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a class="brand" href="/">
+    <img src="/assets/dennis-logo.svg" alt="Dennis the Peasant">
+    <span>InternsForAI</span>
+  </a>
+  <div class="links">
+    <a href="/apply.html">Apply</a>
+    <a href="/technosocialism.html">Technosocialism</a>
+    <a href="/faq.html">FAQ</a>
+    <a href="/about.html">About</a>
+  </div>
+</nav>
+
+<div class="pill">Step 1 of 3 complete</div>
+<h1>Application received.</h1>
+
+<p class="lead">A confirmation email is on its way to you. The 30-minute skills test is the next step. You can take it now, or later from the link in that email.</p>
+
+<div class="card">
+  <h3>Take the 30-minute skills test now</h3>
+  <p>Auto-graded. Fair. Fast. You'll get a PASS / SHORTLIST / FAIL verdict within seconds of submitting.</p>
+  <p><a class="cta" id="start-test" href="#">Start the test →</a></p>
+  <p class="help">Tip: do this in one sitting. Use the bathroom first. Get a cup of tea. The test is 30 minutes and there is no save-and-resume in v0.</p>
+</div>
+
+<div class="card">
+  <h3>Or come back later</h3>
+  <p>We've emailed you a magic link that returns you to your worker dashboard at any time. Save the email; it's also your login for now.</p>
+</div>
+
+<h2>What happens next</h2>
+
+<ol>
+  <li><strong>Skills test</strong> (30 min, auto-graded incl. AI-scored long-form). You see your verdict on submission.</li>
+  <li><strong>Match</strong> — if you pass, admin routes you to a project inside an AAO that fits your track within 24h.</li>
+  <li><strong>Build</strong> — your first paid project this week. 80% of revenue to you. 20% to the AAO Network. See <a href="/technosocialism.html">technosocialism</a>.</li>
+</ol>
+
+<footer>
+  <div class="foot-row">
+    <img src="/assets/dennis-logo.svg" alt="Dennis the Peasant">
+    <span>InternsForAI · We are all AI Interns.</span>
+  </div>
+  <p><a href="/">Home</a> · <a href="/technosocialism.html">Technosocialism</a> · <a href="/faq.html">FAQ</a> · <a href="/about.html">About</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+</footer>
+
+<script>
+(function () {
+  const qp = new URLSearchParams(window.location.search);
+  const token = qp.get('token') || '';
+  const track = qp.get('track') || 'light_judgment';
+  const link = document.getElementById('start-test');
+  link.href = '/skills-test?track=' + encodeURIComponent(track) + '&token=' + encodeURIComponent(token);
+})();
+</script>
+
+</body>
+</html>

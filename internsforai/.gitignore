@@ -1,0 +1,7 @@
+# Wrangler / Cloudflare Pages local state
+.wrangler/
+.dev.vars
+.dev.vars.local
+node_modules/
+.DS_Store
+*.log

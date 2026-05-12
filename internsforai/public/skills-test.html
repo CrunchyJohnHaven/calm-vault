@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Skills test — InternsForAI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/dennis-logo.svg">
+<link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a class="brand" href="/">
+    <img src="/assets/dennis-logo.svg" alt="Dennis the Peasant">
+    <span>InternsForAI</span>
+  </a>
+  <div class="links">
+    <a href="/apply.html">Apply</a>
+    <a href="/technosocialism.html">Technosocialism</a>
+    <a href="/faq.html">FAQ</a>
+    <a href="/about.html">About</a>
+  </div>
+</nav>
+
+<h1 id="title">Skills test</h1>
+<p class="lead" id="intro"></p>
+
+<div class="card">
+  <p><strong>Rules.</strong> One sitting, no save-and-resume in v0. The free-text and long-form answers are graded by an AI (Anthropic Claude Haiku) immediately on submit. PASS / SHORTLIST / FAIL is shown to you and emailed to <em>you + admin</em> the moment you submit. Be substantive but be yourself; the AI is looking for thoughtfulness, not keyword stuffing.</p>
+  <p class="muted small">Approximate time: <span id="time"></span> min. <span id="timer-display" class="kbd">timer: 30:00</span></p>
+</div>
+
+<form id="test-form">
+  <div id="questions"></div>
+
+  <button class="cta" type="submit" id="submit-btn">Submit test →</button>
+  <div id="form-result"></div>
+</form>
+
+<footer>
+  <div class="foot-row">
+    <img src="/assets/dennis-logo.svg" alt="Dennis the Peasant">
+    <span>InternsForAI · We are all AI Interns.</span>
+  </div>
+</footer>
+
+<script src="/assets/test-banks.js"></script>
+<script>
+(function () {
+  const qp = new URLSearchParams(window.location.search);
+  const track = qp.get('track') || 'light_judgment';
+  const token = qp.get('token') || '';
+
+  const bank = window.IFA_TEST_BANKS[track];
+  if (!bank) {
+    document.getElementById('title').textContent = 'Unknown track: ' + track;
+    document.getElementById('intro').textContent = 'Valid tracks are: ' + Object.keys(window.IFA_TEST_BANKS).join(', ');
+    document.getElementById('test-form').style.display = 'none';
+    return;
+  }
+  document.getElementById('title').textContent = bank.title;
+  document.getElementById('intro').textContent = bank.intro;
+  document.getElementById('time').textContent = bank.time_minutes;
+  document.title = bank.title + ' — InternsForAI';
+
+  const wrap = document.getElementById('questions');
+  let curSection = null;
+  bank.questions.forEach((q, i) => {
+    if (q.section && q.section !== curSection) {
+      const h = document.createElement('h2');
+      h.textContent = q.section;
+      wrap.appendChild(h);
+      curSection = q.section;
+    }
+    const div = document.createElement('div');
+    div.className = 'q';
+    div.dataset.qid = q.id;
+    div.dataset.kind = q.kind;
+
+    const num = document.createElement('div');
+    num.className = 'num';
+    num.textContent = 'Q' + (i + 1) + ' · ' + (q.kind === 'mc' ? 'Multiple choice' : q.kind === 'text' ? 'Short text' : q.kind === 'summary' ? 'Summary' : 'Long-form');
+    div.appendChild(num);
+
+    if (q.passage) {
+      const pp = document.createElement('div');
+      pp.className = 'card';
+      pp.style.background = 'var(--bg-3)';
+      pp.style.margin = '8px 0';
+      pp.textContent = q.passage;
+      div.appendChild(pp);
+    }
+
+    const stem = document.createElement('div');
+    stem.className = 'stem';
+    stem.textContent = q.stem;
+    div.appendChild(stem);
+
+    if (q.kind === 'mc') {
+      (q.options || []).forEach((opt, oi) => {
+        const lab = document.createElement('label');
+        lab.className = 'opt';
+        const inp = document.createElement('input');
+        inp.type = 'radio';
+        inp.name = 'q_' + q.id;
+        inp.value = String(oi);
+        lab.appendChild(inp);
+        lab.appendChild(document.createTextNode(' ' + opt));
+        div.appendChild(lab);
+      });
+    } else {
+      const ta = document.createElement('textarea');
+      ta.name = 'q_' + q.id;
+      ta.placeholder = q.word_limit ? ('Up to ~' + q.word_limit + ' words.') : '';
+      div.appendChild(ta);
+    }
+    wrap.appendChild(div);
+  });
+
+  // soft timer (informational, not enforced)
+  const start = Date.now();
+  const total = bank.time_minutes * 60;
+  const tdisp = document.getElementById('timer-display');
+  setInterval(() => {
+    const elapsed = Math.floor((Date.now() - start) / 1000);
+    const left = Math.max(0, total - elapsed);
+    const mm = String(Math.floor(left / 60)).padStart(2, '0');
+    const ss = String(left % 60).padStart(2, '0');
+    tdisp.textContent = 'timer: ' + mm + ':' + ss;
+    if (left === 0) tdisp.style.color = 'var(--bad)';
+  }, 1000);
+
+  const form = document.getElementById('test-form');
+  const result = document.getElementById('form-result');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!token) {
+      result.innerHTML = '<p class="err">Missing session token. Apply first at <a href="/apply.html">/apply</a>.</p>';
+      return;
+    }
+    const answers = {};
+    bank.questions.forEach((q) => {
+      if (q.kind === 'mc') {
+        const sel = form.querySelector('input[name="q_' + q.id + '"]:checked');
+        answers[q.id] = sel ? parseInt(sel.value, 10) : null;
+      } else {
+        const ta = form.querySelector('textarea[name="q_' + q.id + '"]');
+        answers[q.id] = ta ? ta.value.trim() : '';
+      }
+    });
+    const submit = document.getElementById('submit-btn');
+    submit.disabled = true;
+    submit.textContent = 'Grading…';
+    result.innerHTML = '<p class="muted small">Auto-grading multiple-choice + sending free-text + long-form to Claude Haiku for scoring. This usually takes 5–15 seconds.</p>';
+
+    try {
+      const r = await fetch('/api/test-submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: token, track: track, answers: answers, elapsed_seconds: Math.floor((Date.now() - start) / 1000) })
+      });
+      const j = await r.json();
+      if (!r.ok || !j.ok) throw new Error(j.error || ('HTTP ' + r.status));
+      window.location.href = '/test-done?verdict=' + encodeURIComponent(j.verdict) + '&score=' + encodeURIComponent(j.composite) + '&track=' + encodeURIComponent(track) + '&token=' + encodeURIComponent(token);
+    } catch (err) {
+      result.innerHTML = '<p class="err">Submit failed: ' + (err && err.message ? err.message : 'unknown') + '. Please contact <a href="mailto:calm@thecreativitymachine.ai">calm@thecreativitymachine.ai</a>.</p>';
+      submit.disabled = false;
+      submit.textContent = 'Submit test →';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

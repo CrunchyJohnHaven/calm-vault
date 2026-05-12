@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Apply — InternsForAI</title>
+<meta name="description" content="Apply to intern with us. 5 minutes. We are all AI Interns.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta property="og:title" content="Apply — InternsForAI">
+<meta property="og:image" content="/assets/og-image.png">
+<link rel="icon" type="image/svg+xml" href="/assets/dennis-logo.svg">
+<link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a class="brand" href="/">
+    <img src="/assets/dennis-logo.svg" alt="Dennis the Peasant">
+    <span>InternsForAI</span>
+  </a>
+  <div class="links">
+    <a href="/apply.html">Apply</a>
+    <a href="/technosocialism.html">Technosocialism</a>
+    <a href="/faq.html">FAQ</a>
+    <a href="/about.html">About</a>
+  </div>
+</nav>
+
+<h1>Apply to intern with us</h1>
+
+<p class="lead">Five minutes. No résumé. We'll email you a thirty-minute skills test the moment you submit. Pass and we match you to a project inside an Autonomous AI Organization this week.</p>
+
+<form id="apply-form" novalidate>
+  <fieldset>
+    <legend>About you</legend>
+
+    <label for="email">Email *</label>
+    <input type="email" id="email" name="email" required autocomplete="email">
+
+    <label for="display_name">Display name * <span class="muted small">(what should we call you?)</span></label>
+    <input type="text" id="display_name" name="display_name" required>
+
+    <label for="country">Country *</label>
+    <select id="country" name="country" required>
+      <option value="">Pick one</option>
+      <option>United States</option>
+      <option>Canada</option>
+      <option>United Kingdom</option>
+      <option>Ireland</option>
+      <option>Germany</option>
+      <option>France</option>
+      <option>Netherlands</option>
+      <option>Spain</option>
+      <option>Portugal</option>
+      <option>Italy</option>
+      <option>Poland</option>
+      <option>Greece</option>
+      <option>Romania</option>
+      <option>Ukraine</option>
+      <option>Serbia</option>
+      <option>Turkey</option>
+      <option>Israel</option>
+      <option>Egypt</option>
+      <option>Morocco</option>
+      <option>Nigeria</option>
+      <option>Ghana</option>
+      <option>Kenya</option>
+      <option>South Africa</option>
+      <option>India</option>
+      <option>Pakistan</option>
+      <option>Bangladesh</option>
+      <option>Sri Lanka</option>
+      <option>Nepal</option>
+      <option>Indonesia</option>
+      <option>Vietnam</option>
+      <option>Thailand</option>
+      <option>Malaysia</option>
+      <option>Philippines</option>
+      <option>Japan</option>
+      <option>South Korea</option>
+      <option>Australia</option>
+      <option>New Zealand</option>
+      <option>Mexico</option>
+      <option>Brazil</option>
+      <option>Argentina</option>
+      <option>Chile</option>
+      <option>Colombia</option>
+      <option>Peru</option>
+      <option>Other</option>
+    </select>
+
+    <label for="timezone">Timezone</label>
+    <input type="text" id="timezone" name="timezone" placeholder="e.g. America/New_York or GMT+2">
+
+    <label for="native_language">Native language</label>
+    <input type="text" id="native_language" name="native_language" placeholder="e.g. English, Tagalog, Yoruba, Portuguese (BR)">
+
+    <label for="fluent_languages">Other fluent languages <span class="muted small">(comma-separated)</span></label>
+    <input type="text" id="fluent_languages" name="fluent_languages" placeholder="e.g. Spanish, Mandarin">
+  </fieldset>
+
+  <fieldset>
+    <legend>What you'd like to do</legend>
+
+    <label>Skill tracks of interest * <span class="muted small">(pick one or more)</span></label>
+    <div class="checkrow"><input type="checkbox" name="tracks" id="t_mech" value="mechanical"><label for="t_mech" style="display:inline; text-transform:none; letter-spacing:0; color:var(--fg); margin:0;"><strong>Mechanical</strong> — data entry, transcription · $3–6/hr</label></div>
+    <div class="checkrow"><input type="checkbox" name="tracks" id="t_lj" value="light_judgment"><label for="t_lj" style="display:inline; text-transform:none; letter-spacing:0; color:var(--fg); margin:0;"><strong>Light judgment</strong> — proofreading, QA, classification · $4–8/hr</label></div>
+    <div class="checkrow"><input type="checkbox" name="tracks" id="t_hj" value="heavy_judgment"><label for="t_hj" style="display:inline; text-transform:none; letter-spacing:0; color:var(--fg); margin:0;"><strong>Heavy judgment</strong> — copy-edit, translation, research · $8–15/hr</label></div>
+    <div class="checkrow"><input type="checkbox" name="tracks" id="t_sp" value="specialized"><label for="t_sp" style="display:inline; text-transform:none; letter-spacing:0; color:var(--fg); margin:0;"><strong>Specialized</strong> — code review, tech writing, design · $15–30/hr</label></div>
+    <div class="checkrow"><input type="checkbox" name="tracks" id="t_de" value="domain_expert"><label for="t_de" style="display:inline; text-transform:none; letter-spacing:0; color:var(--fg); margin:0;"><strong>Domain expert</strong> — legal, medical, finance · $30–75/hr</label></div>
+
+    <label for="hours_per_week">Availability <span class="muted small">(hours per week)</span></label>
+    <select id="hours_per_week" name="hours_per_week">
+      <option value="">Pick one</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="4">4</option>
+      <option value="8">8</option>
+      <option value="16">16</option>
+      <option value="24">24</option>
+      <option value="40">40</option>
+    </select>
+  </fieldset>
+
+  <fieldset>
+    <legend>Tell us about you</legend>
+
+    <label for="why_trial">Why would you be a great trial worker? <span class="muted small">100–300 words.</span></label>
+    <textarea id="why_trial" name="why_trial" minlength="100" maxlength="3000" required></textarea>
+
+    <label for="editorial_catch">The most thoughtful editorial or qualitative catch you've made on someone else's work. <span class="muted small">One example.</span></label>
+    <textarea id="editorial_catch" name="editorial_catch" minlength="40" maxlength="3000" required></textarea>
+
+    <label for="cofounder_pitch">What would you build if you had an AI cofounder + shared infrastructure for free? <span class="muted small">100–300 words. This is the most important answer on this form.</span></label>
+    <textarea id="cofounder_pitch" name="cofounder_pitch" minlength="100" maxlength="3000" required></textarea>
+
+    <label for="sample_url">Sample work URL <span class="muted small">(optional — GitHub, blog, Twitter, portfolio)</span></label>
+    <input type="url" id="sample_url" name="sample_url" placeholder="https://...">
+  </fieldset>
+
+  <fieldset>
+    <legend>How you want to be paid</legend>
+
+    <label for="pay_method">Payment preference *</label>
+    <select id="pay_method" name="pay_method" required>
+      <option value="">Pick one</option>
+      <option value="usdc">USDC (on-chain — provide wallet address)</option>
+      <option value="wise">Wise (provide email)</option>
+      <option value="paypal">PayPal (provide email)</option>
+    </select>
+
+    <label for="pay_address">Wallet / email *</label>
+    <input type="text" id="pay_address" name="pay_address" required placeholder="0x... or you@example.com">
+    <p class="help">We do not run payment automatically. Admin (John) signs each payment manually for v0.</p>
+  </fieldset>
+
+  <p class="help">By submitting you agree to our <a href="/terms.html">Terms</a> and acknowledge our <a href="/privacy.html">Privacy</a> policy. You are an independent contractor, not an employee. You retain ownership of what you build; the AAO Network takes a 20% franchise share. See <a href="/technosocialism.html">Technosocialism</a>.</p>
+
+  <button class="cta" type="submit">Submit application →</button>
+  <div id="form-result"></div>
+</form>
+
+<footer>
+  <div class="foot-row">
+    <img src="/assets/dennis-logo.svg" alt="Dennis the Peasant">
+    <span>InternsForAI · We are all AI Interns.</span>
+  </div>
+  <p><a href="/">Home</a> · <a href="/technosocialism.html">Technosocialism</a> · <a href="/faq.html">FAQ</a> · <a href="/about.html">About</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p>
+</footer>
+
+<script>
+(function () {
+  const form = document.getElementById('apply-form');
+  const result = document.getElementById('form-result');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    result.innerHTML = '';
+    const tracks = Array.from(form.querySelectorAll('input[name="tracks"]:checked')).map(x => x.value);
+    if (tracks.length === 0) {
+      result.innerHTML = '<p class="err">Pick at least one skill track.</p>';
+      return;
+    }
+    const data = {
+      email: form.email.value.trim(),
+      display_name: form.display_name.value.trim(),
+      country: form.country.value,
+      timezone: form.timezone.value.trim(),
+      native_language: form.native_language.value.trim(),
+      fluent_languages: form.fluent_languages.value.split(',').map(s => s.trim()).filter(Boolean),
+      tracks: tracks,
+      hours_per_week: parseInt(form.hours_per_week.value || '0', 10) || null,
+      why_trial: form.why_trial.value.trim(),
+      editorial_catch: form.editorial_catch.value.trim(),
+      cofounder_pitch: form.cofounder_pitch.value.trim(),
+      sample_url: form.sample_url.value.trim(),
+      pay_method: form.pay_method.value,
+      pay_address: form.pay_address.value.trim()
+    };
+    if (!data.email || !data.display_name || !data.country || !data.pay_method || !data.pay_address) {
+      result.innerHTML = '<p class="err">Some required fields are missing.</p>';
+      return;
+    }
+    if (data.why_trial.length < 100 || data.cofounder_pitch.length < 100) {
+      result.innerHTML = '<p class="err">The "why" and "AI cofounder build" paragraphs each need at least ~100 words. Aim for 100–300.</p>';
+      return;
+    }
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+    try {
+      const r = await fetch('/api/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const j = await r.json();
+      if (!r.ok || !j.ok) throw new Error(j.error || ('HTTP ' + r.status));
+      // pick first track for the test link (multi-track applicants pick on the test page)
+      const firstTrack = data.tracks[0];
+      window.location.href = '/apply-done.html?token=' + encodeURIComponent(j.token) + '&track=' + encodeURIComponent(firstTrack);
+    } catch (err) {
+      result.innerHTML = '<p class="err">Submit failed: ' + (err && err.message ? err.message : 'unknown') + '</p>';
+      btn.disabled = false;
+      btn.textContent = 'Submit application →';
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
