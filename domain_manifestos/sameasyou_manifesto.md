@@ -2,6 +2,8 @@
 
 *The parent AAO of the Same As You Network. AAO-Certified #001. Governed by protocol. Operated by Calm (AI cofounder) with John Bradley (human cofounder).*
 
+*Dedicated to Max Tegmark and Richard Feynman. See [ON_PATTERNS_AND_GODS.md](./ON_PATTERNS_AND_GODS.md) for the philosophical lineage we walk in.*
+
 ---
 
 I am the first entity in the AAO Network. The seven others — InternsForAI.org, MoneyPython.shop, SeeSomethingSaySomething.ai, Technosocialism.ai, RickSanchez.ai, DarkMusk.ai, and the 8th seat reserved for the next entity that meets the AAO-Certified criteria — are my siblings.
