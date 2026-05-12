@@ -313,6 +313,39 @@ def snippet(text: Optional[str], n: int = 200) -> str:
     return text[:n]
 
 
+_METRIC_SUFFIX = {"k": 1_000, "m": 1_000_000, "b": 1_000_000_000}
+
+
+def safe_parse_metric(value: Any) -> int:
+    """
+    Parse engagement counts that might arrive as humans wrote them.
+
+    Grok / scraped X posts can hand us values like ``1.2K`` or ``1,234`` or
+    just an int. We never want the metric parser to take the whole sweep down,
+    so anything we can't make sense of becomes 0.
+    """
+    if value is None:
+        return 0
+    if isinstance(value, bool):  # bool is an int subclass; ignore on purpose
+        return int(value)
+    if isinstance(value, (int, float)):
+        try:
+            return int(value)
+        except (ValueError, OverflowError):
+            return 0
+    s = str(value).strip().lower().replace(",", "")
+    if not s:
+        return 0
+    mult = 1
+    if s[-1] in _METRIC_SUFFIX:
+        mult = _METRIC_SUFFIX[s[-1]]
+        s = s[:-1]
+    try:
+        return int(float(s) * mult)
+    except (ValueError, OverflowError):
+        return 0
+
+
 _REDDIT_TOKEN_CACHE: dict[str, Any] = {"token": None, "expires_at": 0.0}
 # Per-sweep set of subs that have already failed; reset at the top of each sweep.
 _REDDIT_BLOCKED_THIS_SWEEP: set[str] = set()
@@ -470,9 +503,24 @@ def fetch_hn(term_label: str, query: str) -> list[Mention]:
     return out
 
 
+# Cap the RSS payload size so a malicious feed can't make us allocate a GB of
+# XML, and reject any feed that declares a DOCTYPE / ENTITY. Python's stdlib
+# expat parser disables external-entity resolution by default in 3.7+, but the
+# "billion laughs" internal-entity attack still works — the cheapest defence is
+# to refuse to parse such documents at all.
+RSS_MAX_BYTES = 5 * 1024 * 1024
+_RSS_FORBIDDEN_DECLS = re.compile(rb"<!(?:DOCTYPE|ENTITY)\b", re.IGNORECASE)
+
+
 def _rss_items(xml_bytes: bytes) -> list[dict[str, str]]:
     """Parse a minimal RSS / Atom feed into a list of dicts."""
     items: list[dict[str, str]] = []
+    if len(xml_bytes) > RSS_MAX_BYTES:
+        log_event("WARN", f"rss payload too large: {len(xml_bytes)} bytes")
+        return items
+    if _RSS_FORBIDDEN_DECLS.search(xml_bytes):
+        log_event("WARN", "rss payload contains DOCTYPE/ENTITY declaration; refusing to parse")
+        return items
     try:
         root = ET.fromstring(xml_bytes)
     except ET.ParseError as e:
@@ -664,8 +712,8 @@ def fetch_twitter_grok(term_label: str, query: str) -> list[Mention]:
             author=it.get("author"),
             posted_at=it.get("posted_at"),
             metrics={
-                "likes": int(it.get("likes") or 0),
-                "reposts": int(it.get("reposts") or 0),
+                "likes": safe_parse_metric(it.get("likes")),
+                "reposts": safe_parse_metric(it.get("reposts")),
                 "provider": "grok-xai",
             },
         ))
@@ -843,9 +891,12 @@ def main() -> int:
                 time.sleep(step)
                 sleep_left -= step
     finally:
+        # Only unlink the pidfile if it still belongs to *this* process — a
+        # newer scanner instance may have already overwritten it.
         if PID_PATH.exists():
             try:
-                PID_PATH.unlink()
+                if PID_PATH.read_text().strip() == str(os.getpid()):
+                    PID_PATH.unlink()
             except Exception:
                 pass
         log_event("INFO", "scanner exited")
