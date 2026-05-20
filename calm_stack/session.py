@@ -1,21 +1,23 @@
-"""calm_stack.session — the unified three-pillar handshake.
+"""calm_stack.session — the unified four-pillar handshake.
 
 A ``CalmSession`` represents one end-to-end interaction between two agents:
 the **operator** (e.g., Calm acting for John) and the **counterparty** (e.g., a
-peer-AI-collective's operator). The session runs in three sequential phases:
+peer-AI-collective's operator). The session runs in up to four sequential phases:
 
     Phase 1: Pact     — categorical directive equality
-    Phase 2: Witness  — user-state attestation (the bit that crosses)
-    Phase 3: Tenancy  — every reply and disclosure is logged + gated
+    Phase 2: Witness  — user-state attestation (the state bit)
+    Phase 3: Compass  — principal-authored values attestation (the values bit)
+    Phase 4: Tenancy  — every reply and disclosure is logged + gated
 
-A session that completes all three phases successfully produces a structured
-``SessionTranscript`` that any third party can later audit: who spoke to whom,
-under what directive class, with what user-state predicate, with what tenancy
-SLA — and never anything more.
+Compass is optional per session: not every counterparty class is authorized for
+values disclosure. The session transcript records which pillars actually ran.
 
-The transcript is the FIRST artifact in the project that demonstrates the three
-pillars composed. Until today they have been three separate documents; this
-module makes them a single object.
+A session that completes all enabled phases produces a structured
+``SessionTranscript`` any third party can later audit: who spoke to whom, under
+what directive class, with what user-state predicate, with what values predicate,
+with what tenancy SLA — and never anything more.
+
+The transcript is the artifact that demonstrates the four pillars composed.
 """
 from __future__ import annotations
 
@@ -34,6 +36,7 @@ _HERE = Path(__file__).resolve().parent
 _PARENT = _HERE.parent
 sys.path.insert(0, str(_PARENT / "calm_witness"))
 sys.path.insert(0, str(_PARENT / "calm_tenancy"))
+sys.path.insert(0, str(_PARENT / "calm_compass"))
 
 from disclosure import DisclosureRequest, respond, verify_response_binding  # noqa: E402
 from predicates import (                                                      # noqa: E402
@@ -44,6 +47,12 @@ from verify_chain import load_jsonl, verify_chain                              #
 
 from cringe_gate import cringe_check                                          # noqa: E402
 from classify import classify_and_route                                       # noqa: E402
+
+from aggregator import (                                                      # noqa: E402
+    CompassProof,
+    build_compass_proof,
+    verify_compass_proof,
+)
 
 
 PROTOCOL_VERSION = "calm-stack/v0"
@@ -57,6 +66,22 @@ class PactPhase:
     equality_proof: str
     verified: bool
     note: str = ""
+
+
+@dataclass
+class CompassPhase:
+    """Calm Compass values attestation."""
+    predicate_id: str
+    threshold: int
+    value: str
+    n_records_considered: int
+    classifier_hash_hex: str
+    aggregate_commitment_hex: str
+    range_proof_hex: str
+    chain_head: str
+    nonce: str
+    binding_errors: List[str]
+    verified: bool
 
 
 @dataclass
@@ -94,6 +119,7 @@ class SessionTranscript:
     counterparty_did: str
     pact: Optional[PactPhase] = None
     witness: Optional[WitnessPhase] = None
+    compass: Optional[CompassPhase] = None
     tenancy: Optional[TenancyPhase] = None
     outcome: str = "incomplete"               # complete | refused | failed | incomplete
     failure_reason: str = ""
@@ -217,6 +243,10 @@ def run_calm_session(
     inbound_text: Optional[str] = None,
     page_text: Optional[str] = None,
     forbidden_phrases: Optional[List[str]] = None,
+    compass_predicate_id: Optional[str] = None,
+    compass_threshold: int = 1,
+    compass_window_days: int = 180,
+    tribe_map: Optional[Dict[str, Any]] = None,
 ) -> SessionTranscript:
     """Run the three-phase Calm Session and produce a transcript."""
     transcript = SessionTranscript(
@@ -262,7 +292,46 @@ def run_calm_session(
         transcript.failure_reason = "Principal refused this disclosure class for this predicate."
         # Tenancy phase still runs — the refusal is a *valid* protocol output.
 
-    # Phase 3 — Tenancy
+    # Phase 3 — Compass (optional)
+    if compass_predicate_id:
+        from datetime import timedelta
+        records = load_jsonl(chain_path) if chain_path.exists() else []
+        now = datetime.now(timezone.utc)
+        try:
+            cproof = build_compass_proof(
+                chain=records,
+                predicate_id=compass_predicate_id,
+                threshold=compass_threshold,
+                window_start=now - timedelta(days=compass_window_days),
+                window_end=now + timedelta(hours=1),
+                operator_id_hash=operator_id_hash,
+                tribe_map=tribe_map,
+            )
+            cerrors = verify_compass_proof(
+                proof=cproof,
+                expected_threshold=compass_threshold,
+                expected_predicate_id=compass_predicate_id,
+            )
+            transcript.compass = CompassPhase(
+                predicate_id=cproof.predicate_id,
+                threshold=cproof.threshold,
+                value=cproof.value,
+                n_records_considered=cproof.n_records_considered,
+                classifier_hash_hex=cproof.classifier_hash_hex,
+                aggregate_commitment_hex=cproof.aggregate_commitment_hex,
+                range_proof_hex=cproof.range_proof_hex,
+                chain_head=cproof.chain_head,
+                nonce=cproof.nonce,
+                binding_errors=cerrors,
+                verified=not cerrors,
+            )
+        except Exception as exc:                                # noqa: BLE001
+            transcript.outcome = "failed"
+            transcript.failure_reason = f"Compass phase error: {exc}"
+            transcript.completed_at = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+            return transcript
+
+    # Phase 4 — Tenancy
     transcript.tenancy = _run_tenancy(
         operator_domain=operator_domain,
         inbound_text=inbound_text,

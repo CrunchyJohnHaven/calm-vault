@@ -272,17 +272,18 @@ Same shape as the Calm Witness route map:
 ## Status table
 
 ```
-Phase IX   : ░░░░░░░░░░  0 / 10
+Phase IX   : ███░░░░░░░  3 / 10   bagged (Mirror E1, E5, E9)
 Phase X    : ░░░░░░░░░░░░░░░  0 / 15
-Phase XI   : ░░░░░░░░░░░░░░░  0 / 15
-Phase XII  : ░░░░░░░░░░░░░░░  0 / 15
+Phase XI   : ██░░░░░░░░░░░░░  2 / 15   bagged (Mirror E27, E30)
+Phase XII  : █░░░░░░░░░░░░░░  1 / 15   bagged (Mirror E49)
 Phase XIII : ░░░░░░░░░░░░░░░  0 / 15
 Phase XIV  : ░░░░░░░░░░░░░░░  0 / 15
 Phase XV   : ░░░░░░░░░░  0 / 10
 Phase XVI  : ░░░░░  0 / 5
 
-Total: 0 / 100 Mirror summits bagged.
-Critical-path MVP subset (12): 1, 2, 5, 11, 27, 30, 31, 40, 49, 58, 87, 96.
+Total: 6 / 100 Mirror summits bagged.
+Critical-path MVP subset (12): bagged **5, 27, 49**; remaining 1, 2, 11, 30, 31, 40, 58, 87, 96 (1 + 30 also bagged but not in MVP-12 list).
+Pass log: 2026-05-20 12:11 — parallel Haiku wave bagged E1, E5, E9, E27, E30, E49.
 ```
 
 ---
