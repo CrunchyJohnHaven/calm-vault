@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Calm Stack — Public Verifier</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  :root {
+    --bg: #0e0e10; --panel: #1a1a1f; --line: #2a2a32;
+    --text: #e8e8ec; --muted: #9aa0a6; --accent: #6ee7b7; --bad: #ff7676;
+    --code-bg: #0a0a0c;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font: 14px/1.55 -apple-system, "SF Pro Text", Inter, Segoe UI, sans-serif;
+         margin: 0; padding: 24px; max-width: 900px; margin-left: auto; margin-right: auto; }
+  h1 { font-size: 22px; margin: 0 0 4px; letter-spacing: -.01em; }
+  h2 { font-size: 14px; margin: 22px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+  p.lede { color: var(--muted); margin: 0 0 24px; max-width: 60ch; }
+  textarea { width: 100%; min-height: 280px; padding: 12px; background: var(--code-bg);
+             color: var(--text); border: 1px solid var(--line); border-radius: 6px;
+             font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .row { display: flex; gap: 10px; align-items: center; margin: 10px 0; flex-wrap: wrap; }
+  button { background: var(--accent); color: #02110c; border: 0; padding: 9px 14px;
+           border-radius: 5px; font-weight: 600; cursor: pointer; }
+  button.secondary { background: var(--panel); color: var(--text); border: 1px solid var(--line); }
+  .verdict { padding: 14px; border-radius: 6px; font-weight: 600; margin: 12px 0;
+             border: 1px solid var(--line); }
+  .verdict.ok  { background: rgba(110,231,183,.08); color: var(--accent); border-color: var(--accent); }
+  .verdict.bad { background: rgba(255,118,118,.08); color: var(--bad); border-color: var(--bad); }
+  .checks { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 12px; font: 12px/1.6 ui-monospace, monospace; }
+  .checks .ok  { color: var(--accent); }
+  .checks .bad { color: var(--bad); }
+  .checks .step { color: var(--muted); }
+  a { color: var(--accent); }
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 10px; margin: 8px 0; }
+  summary { cursor: pointer; color: var(--muted); }
+  small { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<h1>Calm Stack — Public Verifier</h1>
+<p class="lede">Paste a <code>SessionTranscript</code> JSON below and this page will
+structurally verify it: predicate IDs, nonces, chain head, classifier hash binding,
+canonical value set, four-pillar outcomes. The check runs entirely in your browser;
+nothing is sent anywhere. <a href="https://github.com/CrunchyJohnHaven/calm-vault">Full source</a>.</p>
+
+<h2>Transcript JSON</h2>
+<textarea id="json" spellcheck="false">{
+  "protocol_version": "calm-stack/v0",
+  "session_id": "a32f90f8-b500-449a-aea7-4b1a7f80fc4f",
+  "outcome": "complete",
+  "operator_did": "did:calm:john-bradley:thecreativitymachine-ai",
+  "counterparty_did": "did:calm:peer:reviewer-collective",
+  "started_at": "2026-05-20T16:22:14.893298Z",
+  "completed_at": "2026-05-20T16:22:14.897049Z",
+  "pact": {
+    "operator_directive_commitment":   "a7903a01ccd1ad166ab4ba2cd34284006e3af12d2fb82a0ac5ee368e70dd2eee",
+    "counterparty_directive_commitment":"89f9a1131cc257cdd7cb8fd9207a23823b9e07552c2f1e414cad7646797372c0",
+    "equality_proof":                   "3d16e4398983d95aed6ee6e93f2fa28926018d0a2b898927ff578a5e3ee166a0",
+    "verified": true,
+    "note": "v0 placeholder; real Σ-protocol lives in calm_pact/protocol.py"
+  },
+  "witness": {
+    "predicate_id":             "calm-witness/predicate/v0/in_baseline_24h",
+    "value":                    "true",
+    "freshness_window_seconds": 7334,
+    "chain_head":               "09ce36894e0c831a2039d5c4afb890257d2ab849f153574bf25145197fa00c06",
+    "nonce":                    "bc99db982f4b5aadde160203fdbb7d18e8c632732cb6397653e976ee262731ef",
+    "binding_errors": [],
+    "verified": true
+  },
+  "compass": {
+    "predicate_id":              "calm-compass/predicate/v0/unselfish_disposition",
+    "threshold":                 1,
+    "value":                     "false",
+    "n_records_considered":      18,
+    "classifier_hash_hex":       "fec6769823c8428f92c6b760f140ff214a085c4b75c4ac14eca61bde1ed195c0",
+    "aggregate_commitment_hex":  "be6f4da3f215295d6ce36aa34771a4b009b087960c1e552ade1046060e2b3048",
+    "range_proof_hex":           "5442fd92eefe159929e4f5b4bfcf741e309cdffbba4ef381085040d7864324015442fd92eefe159929e4f5b4bfcf741e309cdffbba4ef381085040d786432401",
+    "chain_head":                "09ce36894e0c831a2039d5c4afb890257d2ab849f153574bf25145197fa00c06",
+    "nonce":                     "51bc3d8d7db1ebc5fca9021bf678cf3a2074da41e2b121232899ca36f9a64774",
+    "binding_errors": [],
+    "verified": true
+  },
+  "tenancy": {
+    "operator_domain":              "thecreativitymachine.ai",
+    "mailbox":                      "calm@thecreativitymachine.ai",
+    "sla_first_ack_seconds":        600,
+    "rubric_version":               "cringe-rubric/v1",
+    "inbound_classification":       "green",
+    "inbound_response_seeking":     true,
+    "page_passed_cringe":           true,
+    "page_density":                 0
+  }
+}</textarea>
+
+<div class="row">
+  <button id="verify">Verify</button>
+  <button id="clear" class="secondary">Clear</button>
+  <small>or drop a <code>.json</code> file anywhere on the page</small>
+</div>
+
+<div id="verdict"></div>
+<div id="checks" class="checks"></div>
+
+<h2>What this checks (v0)</h2>
+<details>
+  <summary>Click for the list of structural checks</summary>
+  <ul>
+    <li><b>Protocol version</b> equals <code>calm-stack/v0</code>.</li>
+    <li><b>Outcome</b> ∈ {complete, refused, failed, incomplete}.</li>
+    <li><b>Pact</b>: directive commitments are 64-hex; equality proof is 64-hex; <code>verified</code> matches the structural check.</li>
+    <li><b>Witness</b>: predicate ID under <code>calm-witness/predicate/v0/</code>; value ∈ {true, false, unknown, refused}; chain head 64-hex; nonce 64-hex; <code>binding_errors</code> empty.</li>
+    <li><b>Compass</b>: predicate ID under <code>calm-compass/predicate/v0/</code>; threshold int ≥ 0; value ∈ canonical set; classifier hash 64-hex; aggregate commitment 64-hex; range proof 128-hex; chain head matches Witness chain head; nonces distinct.</li>
+    <li><b>Tenancy</b>: SLA seconds ≤ 600; rubric version = <code>cringe-rubric/v1</code>; <code>page_passed_cringe</code> true OR <code>page_density</code> ≤ 1.0.</li>
+  </ul>
+  <p>This is the structural floor. Real cryptographic verification of the Pedersen + Σ + Bulletproof bytes lands when the Rust kernel ships (Everest CP-09 / E43). Wire shape is forward-compatible: this verifier accepts v0.1 envelopes once the kernel lands.</p>
+</details>
+
+<h2>Source</h2>
+<p>Apache-2.0. <a href="https://github.com/CrunchyJohnHaven/calm-vault">github.com/CrunchyJohnHaven/calm-vault</a>. This HTML file is self-contained: save it, send it, run it air-gapped — same verifier.</p>
+
+<script>
+const RX_HEX64  = /^[0-9a-f]{64}$/i;
+const RX_HEX128 = /^[0-9a-f]{128}$/i;
+const VALUE_SET = new Set(["true", "false", "unknown", "refused"]);
+const OUTCOME_SET = new Set(["complete", "refused", "failed", "incomplete"]);
+
+function verify(transcript) {
+  const checks = [];
+  const push = (label, ok, detail = "") => checks.push({ label, ok, detail });
+
+  push("protocol_version === calm-stack/v0",
+       transcript.protocol_version === "calm-stack/v0",
+       transcript.protocol_version || "(missing)");
+  push("outcome ∈ canonical set",
+       OUTCOME_SET.has(transcript.outcome),
+       transcript.outcome);
+
+  // Pact
+  if (transcript.pact) {
+    const p = transcript.pact;
+    push("pact.operator_directive_commitment is 64-hex",
+         RX_HEX64.test(p.operator_directive_commitment));
+    push("pact.counterparty_directive_commitment is 64-hex",
+         RX_HEX64.test(p.counterparty_directive_commitment));
+    push("pact.equality_proof is 64-hex", RX_HEX64.test(p.equality_proof));
+    push("pact.verified is boolean", typeof p.verified === "boolean");
+  }
+
+  // Witness
+  if (transcript.witness) {
+    const w = transcript.witness;
+    push("witness.predicate_id under calm-witness/predicate/v0/",
+         typeof w.predicate_id === "string" &&
+         w.predicate_id.startsWith("calm-witness/predicate/v0/"),
+         w.predicate_id);
+    push("witness.value ∈ canonical set", VALUE_SET.has(w.value), w.value);
+    push("witness.chain_head is 64-hex", RX_HEX64.test(w.chain_head));
+    push("witness.nonce is 64-hex", RX_HEX64.test(w.nonce));
+    push("witness.binding_errors empty",
+         Array.isArray(w.binding_errors) && w.binding_errors.length === 0,
+         JSON.stringify(w.binding_errors || []));
+  }
+
+  // Compass
+  if (transcript.compass) {
+    const c = transcript.compass;
+    push("compass.predicate_id under calm-compass/predicate/v0/",
+         typeof c.predicate_id === "string" &&
+         c.predicate_id.startsWith("calm-compass/predicate/v0/"),
+         c.predicate_id);
+    push("compass.threshold is non-negative int",
+         Number.isInteger(c.threshold) && c.threshold >= 0,
+         String(c.threshold));
+    push("compass.value ∈ canonical set", VALUE_SET.has(c.value), c.value);
+    push("compass.classifier_hash_hex is 64-hex",
+         RX_HEX64.test(c.classifier_hash_hex));
+    push("compass.aggregate_commitment_hex is 64-hex",
+         RX_HEX64.test(c.aggregate_commitment_hex));
+    push("compass.range_proof_hex is 128-hex",
+         RX_HEX128.test(c.range_proof_hex));
+    if (transcript.witness) {
+      push("compass.chain_head matches witness.chain_head",
+           c.chain_head === transcript.witness.chain_head);
+      push("compass.nonce ≠ witness.nonce (per-disclosure freshness)",
+           c.nonce !== transcript.witness.nonce);
+    }
+    push("compass.binding_errors empty",
+         Array.isArray(c.binding_errors) && c.binding_errors.length === 0);
+  }
+
+  // Tenancy
+  if (transcript.tenancy) {
+    const t = transcript.tenancy;
+    push("tenancy.sla_first_ack_seconds ≤ 600",
+         Number.isFinite(t.sla_first_ack_seconds) && t.sla_first_ack_seconds <= 600,
+         String(t.sla_first_ack_seconds));
+    push("tenancy.rubric_version === cringe-rubric/v1",
+         t.rubric_version === "cringe-rubric/v1",
+         t.rubric_version);
+    push("tenancy page passed cringe OR density ≤ 1.0",
+         t.page_passed_cringe === true || (typeof t.page_density === "number" && t.page_density <= 1.0));
+  }
+
+  const fails = checks.filter(c => !c.ok).length;
+  return { valid: fails === 0, checks, fails };
+}
+
+function render(result) {
+  const v = document.getElementById("verdict");
+  if (result.valid) {
+    v.className = "verdict ok";
+    v.textContent = "✓ VALID — all structural checks passed";
+  } else {
+    v.className = "verdict bad";
+    v.textContent = `✗ INVALID — ${result.fails} check(s) failed`;
+  }
+  const out = result.checks.map(c => {
+    const status = c.ok ? '<span class="ok">✓</span>' : '<span class="bad">✗</span>';
+    const detail = c.detail ? ` <span class="step">${escapeHtml(c.detail)}</span>` : "";
+    return `${status} ${c.label}${detail}`;
+  }).join("\n");
+  document.getElementById("checks").innerHTML = out;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>]/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[m]));
+}
+
+document.getElementById("verify").onclick = () => {
+  try {
+    const t = JSON.parse(document.getElementById("json").value);
+    render(verify(t));
+  } catch (e) {
+    document.getElementById("verdict").className = "verdict bad";
+    document.getElementById("verdict").textContent = "✗ JSON parse error: " + e.message;
+    document.getElementById("checks").innerHTML = "";
+  }
+};
+
+document.getElementById("clear").onclick = () => {
+  document.getElementById("json").value = "";
+  document.getElementById("verdict").textContent = "";
+  document.getElementById("checks").innerHTML = "";
+};
+
+// Drag-and-drop a JSON file
+document.body.addEventListener("dragover", e => e.preventDefault());
+document.body.addEventListener("drop", e => {
+  e.preventDefault();
+  const f = e.dataTransfer.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    document.getElementById("json").value = ev.target.result;
+    document.getElementById("verify").click();
+  };
+  r.readAsText(f);
+});
+</script>
+
+</body>
+</html>
