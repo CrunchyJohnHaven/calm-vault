@@ -118,15 +118,15 @@ The alternative — run the *predicate evaluation itself* as MPC over joined evi
 4. **External observer (traffic-analysis):** infers group membership from network patterns. Partially mitigated by routing MPC over the agent-discovery layer (ZKAC 67) + cover-traffic per E287.
 5. **Refusal-leak adversary** (member): tries to learn whether another member refused. Mitigated by §5 (uniform-silent-204 per E162; refusal indistinguishable from "no query was made").
 
-### Security claims
+### Security claims (sketch)
 
-| Claim | Defense | Argument |
-|---|---|---|
-| Joint output integrity under N-1 malicious members | SPDZ + MASCOT MACs + π_⋂ Σ-proof | SPDZ provides active-secure-with-abort against N-1 malicious; the public verification of π_⋂ catches dishonest joint output |
-| Per-member bit secrecy under N-1 malicious members | SPDZ secret-sharing + per-input π_i^wf | Each share leaks no information about the input; the well-formedness proof binds the input to the share without revealing it |
-| Refusal-invisibility | §5 protocol + E162 | Refusal protocol produces a network response shape indistinguishable from "no consensus query was made" |
-| Counterparty cannot learn individual bits via repeated queries | E155 freshness + E76-analog rate-limit + each session re-randomizes K_G's nonce | Each session's commitment includes fresh randomness; correlation requires breaking Pedersen hiding |
-| Cross-member unlinkability | Local evaluation only; no cross-pool leakage during MPC | Members' evidence pools never enter the MPC; only the post-evaluation bit does |
+| Claim | Defense |
+|---|---|
+| Joint-output integrity under N-1 malicious | SPDZ active-with-abort + MASCOT MACs + `π_⋂` public verification |
+| Per-member bit secrecy under N-1 malicious | SPDZ secret-sharing + π_i^wf binds input to share without revealing |
+| Refusal-invisibility | §5 + E162 (uniform-silent-204) |
+| No individual bit extraction by repeated counterparty queries | E155 freshness + Compass rate-limit + per-session K_G nonce re-randomization; correlation requires breaking Pedersen hiding |
+| Cross-member evidence unlinkability | Local-only evaluation; only post-evaluation bit enters MPC |
 
 ### Out-of-scope (acknowledged limits)
 
@@ -271,15 +271,15 @@ On abort: a 204-shaped response per E162, indistinguishable from "no session ope
 
 ## Privacy Properties (Summary)
 
-| Property | Holds against | Mechanism |
-|---|---|---|
-| **Cross-member unlinkability of evidence** | Other members, counterparty, external observer | Evidence stays in local vault; only committed bits enter MPC |
-| **Per-member bit secrecy** | Other members (N-1 malicious tolerable), counterparty | SPDZ secret-sharing + per-input π_i^wf |
-| **Count-only revelation of N** | Counterparty | N is published; *which* members participated is not |
-| **Refusal-invisibility** | Counterparty, other members | Uniform-silent-204 + timed rendezvous + coordinator rotation |
-| **Cross-session unlinkability** | Counterparty across sessions | Per-session re-randomization of K_G nonce; per-session pseudonym derivation |
-| **Group-membership privacy from external observer** | Network-traffic adversary | Cover-traffic + agent-discovery layer (ZKAC 67); group descriptor not broadcast |
-| **Forward secrecy** | Future compromise of `K_G` | Per-window K_G re-derivation; old session transcripts cannot be retroactively decrypted to reveal inputs (Pedersen is information-theoretically hiding under DL hardness)|
+| Property | Mechanism |
+|---|---|
+| Cross-member evidence unlinkability | Local-only evaluation; only committed bits enter MPC |
+| Per-member bit secrecy (N-1 malicious) | SPDZ secret-sharing + π_i^wf |
+| Count-only revelation of N | N published; *which* members participated is not |
+| Refusal-invisibility | Uniform-silent-204 + timed rendezvous + coordinator rotation |
+| Cross-session unlinkability | Per-session K_G-nonce re-randomization + per-session pseudonym derivation |
+| Group-membership privacy from external observer | Cover-traffic + agent-discovery layer (ZKAC 67); descriptor not broadcast |
+| Forward secrecy | Per-window K_G re-derivation; Pedersen is information-theoretically hiding under DL |
 
 **What is intentionally NOT private:** `b_⋂` (the point of disclosure), `predicate_id`, `N`, collective pseudonym for this counterparty, the window.
 
@@ -356,21 +356,21 @@ On abort: a 204-shaped response per E162, indistinguishable from "no session ope
 
 ## Open Questions
 
-1. **MPC efficiency at N > 10.** SPDZ online is ~`N-1` rounds; bandwidth `O(N²)` for share broadcasts. Projection: N=16 in <2 s online with overnight offline preprocessing on consumer laptops. Beyond N=16 needs parallelization (Mirror E57 batch OT extended N-party). *Action item:* empirical benchmarks at N ∈ {4, 8, 16, 32} on M-series.
+1. **MPC efficiency at N > 10.** SPDZ online ~`N-1` rounds; bandwidth `O(N²)` for share broadcasts. Projection: N=16 in <2 s online with overnight preprocessing on consumer laptops. Beyond N=16: needs parallelization (Mirror E57 batch OT extended N-party). *Action:* benchmarks at N ∈ {4, 8, 16, 32} on M-series before v1.
 
-2. **Preprocessing amortization.** MASCOT scales linearly in AND gates, quadratically in N for MAC distribution. N=32 preprocessing may take >1 hr per session-worth of triples. SPDZ preprocessing is input-independent so amortization across sessions is possible — but creates a stale-triple replay attack surface. Defer to v1.
+2. **Preprocessing amortization.** MASCOT scales linearly in AND gates, quadratically in N for MAC distribution. At N=32, preprocessing >1 hr per session-worth of triples. Amortization across sessions is possible (input-independent) but creates a stale-triple replay surface. Defer to v1.
 
-3. **Retroactive evidence contradiction.** If `P_k`'s evidence is later contradicted (per E119 counter-evidence), does the prior consensus proof retroactively mislead? **Decision:** the proof is a window-bounded claim, not eternal truth. We add explicit `window_end_ts` to §7.4. Consistent with Witness chain-state semantics. *Open:* should the protocol expose a voluntary `character_consensus_retraction` channel? Probably v1.
+3. **Retroactive evidence contradiction.** If `P_k`'s evidence is later contradicted (E119), does the prior proof retroactively mislead? **Decision:** the proof is window-bounded, not eternal truth; `window_end_ts` is explicit in §7.4. *Open:* voluntary `character_consensus_retraction` channel — probably v1.
 
-4. **Honest-input verification.** Protocol verifies honest MPC, not honest local evaluation. *Open:* add ZK consistency proof between `b_i` and a sampled subset of chain evidence per E122? Possible at compute cost. Tracked as `character_consensus_with_evidence_audit` (v1).
+4. **Honest-input verification.** Protocol verifies honest MPC, not honest local evaluation. *Open:* ZK consistency proof between `b_i` and sampled chain evidence (E122)? Possible at compute cost. Track as `character_consensus_with_evidence_audit` (v1).
 
-5. **Coordinator in adversarial conditions.** A malicious coordinator can selectively abort to leak refusal patterns. Mitigations: rotation, on-chain abort records (DERB-auditable), member-side timeout discipline. *Open:* eliminate the coordinator via leader-election-free MPC? Likely yes; defer to v1.
+5. **Coordinator under adversarial conditions.** Malicious coordinator can selectively abort to leak refusal patterns. Mitigations: rotation, on-chain audit (E129), timeout discipline. *Open:* eliminate the coordinator via leader-election-free MPC? Likely yes; v1.
 
-6. **Member churn mid-session.** A device crash aborts the session. *Open:* graceful retry with same group? Privacy concern: retries could leak member-state to a stalking counterparty. Flag for v1.
+6. **Member churn mid-session.** Crash aborts the session. *Open:* graceful-retry mode? Privacy concern: retries leak member-state to a stalking counterparty. Flag for v1.
 
-7. **Composition with ZKAC formation (E231).** Founding ZKACs will want `character_consensus`; group descriptor must be content-addressable compatible with the ZKAC formation chain. Cross-design with E231.
+7. **Composition with ZKAC formation (E231).** Founding ZKACs will want consensus; group descriptor must be content-addressable compatible with ZKAC formation chain. Cross-design with E231.
 
-8. **Formal security proof.** SPDZ-to-Σ bridge (§6.4) is described constructively; full UC-security proof (Canetti's framework) requires composition lemmas across SPDZ's existing proof and Σ-protocol's standard analysis. Research-grade item; track as `character_consensus_uc_proof`; defer to academic collaboration via E294.
+8. **Formal security proof.** §6.4 bridge described constructively; full UC-security (Canetti's framework) requires composition lemmas across SPDZ's existing proof and Σ-protocol's analysis. Research-grade; defer to E294 academic collaboration.
 
 ---
 

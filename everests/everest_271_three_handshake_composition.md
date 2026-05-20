@@ -1,6 +1,6 @@
 # Everest 271 — Pact + Witness + Compass Three-Handshake Model
 
-*Phase XVI — Cross-Protocol Composition. Initiates Phase XVI. Prereq: [Everest 188](everest_188_compass_independent_third_party_verification.md) (Compass independent third-party verification), [CALM_PACT_PROTOCOL_v0](../CALM_PACT_PROTOCOL_v0.md) (Pact spec), [ZKBB_USER_PROTOCOL_v0](../ZKBB_USER_PROTOCOL_v0.md) (Witness spec). Composes with: [Everest 191](everest_191_agent_identity_stability.md) (agent identity is one input to the composition), [Everest 143](everest_143_pact_witness_alignment_composition.md) (earlier Compass-side framing of the three-handshake, subsumed by this Everest at Phase XVI). Initiates: Everests 272–290 (the rest of Phase XVI: envelope, order, failures, performance, recursion to Calm Audit, privacy amplification, revocation, key rotation, freshness, nonce, taxonomy, logging, DERB, jurisdiction, replay audit, side-channel, audit scope, verification suite, implementer's guide).*
+*Phase XVI — Cross-Protocol Composition. Initiates Phase XVI. Prereq: [Everest 188](everest_188_compass_independent_third_party_verification.md) (Compass third-party verification), [CALM_PACT_PROTOCOL_v0](../CALM_PACT_PROTOCOL_v0.md) (Pact), [ZKBB_USER_PROTOCOL_v0](../ZKBB_USER_PROTOCOL_v0.md) (Witness). Composes with: [Everest 191](everest_191_agent_identity_stability.md) (agent identity is one input), [Everest 143](everest_143_pact_witness_alignment_composition.md) (earlier Compass-side framing, subsumed by E271). Initiates Everests 272–290 (envelope, order, failures, performance, recursion to Calm Audit, privacy amplification, revocation, key rotation, freshness, nonce, taxonomy, logging, DERB, jurisdiction, replay, side-channel, audit, verification suite, implementer's guide).*
 
 ## The Decision (v0)
 
@@ -111,45 +111,24 @@ This structure means **the composition's privacy proof reduces to the three bare
 
 ```
 JointProofEnvelope (v0, CBOR-encoded):
-  envelope_version       : "calm-stack-v0"
-  session_id             : 32 bytes
-  initiator_agent_did    : did:calm:agent:<thumbprint>      (per E191)
-  counterparty_agent_did : did:calm:agent:<thumbprint>
-  requested_stages       : array of stage names
-  delivered_stages       : array of stage names (subset of requested on partial-success)
+  envelope_version, session_id (32B), initiator_agent_did, counterparty_agent_did (per E191),
+  requested_stages [], delivered_stages [] (subset on partial),
   stage_records:
-    pact:
-      vocabulary_id              : str
-      alignment_depth            : int
-      initiator_commit           : compressed Ristretto255 point
-      counterparty_commit        : compressed Ristretto255 point
-      schnorr_proofs             : { initiator: {e,z}, counterparty: {e,z} }
-      permission_token_hash      : 32 bytes
-    witness:
-      predicate_id               : str
-      commitment                 : compressed Ristretto255 point
-      sigma_proof                : { … }
-      chain_head_hash            : 32 bytes
-      sigsum_proof_root          : 32 bytes
-      roughtime_anchor           : { server_id, timestamp_ns, sig }
-      permission_token_hash      : 32 bytes
-    compass:
-      predicate_id               : str
-      aggregate_commitment       : compressed Ristretto255 point
-      zk_proof                   : { … per E128/E130/E136 }
-      values_chain_head_hash     : 32 bytes
-      sigsum_proof_root          : 32 bytes
-      roughtime_anchor           : { … }
-      permission_token_hash      : 32 bytes
+    pact    : { vocabulary_id, alignment_depth, initiator_commit, counterparty_commit,
+                schnorr_proofs{initiator,counterparty}, permission_token_hash (32B) }
+    witness : { predicate_id, commitment, sigma_proof, chain_head_hash,
+                sigsum_proof_root, roughtime_anchor, permission_token_hash }
+    compass : { predicate_id, aggregate_commitment, zk_proof (E128/E130/E136),
+                values_chain_head_hash, sigsum_proof_root, roughtime_anchor,
+                permission_token_hash }
   freshness:
-    pact_window_seconds          : int    (e.g., 300)
-    witness_window_seconds       : int    (e.g., 86400 — 24h, per Witness E58)
-    compass_window_seconds       : int    (e.g., 2592000 — 30d, per Compass values stability)
-    composition_anchor_time_ns   : int    (max of the three Roughtime anchors)
-  counterparty_signature         : Ed25519 over the canonical CBOR encoding of all above
+    pact_window_seconds (e.g. 300), witness_window_seconds (e.g. 86400 — Witness E58),
+    compass_window_seconds (e.g. 2592000 — E111),
+    composition_anchor_time_ns (max of the three Roughtime anchors)
+  counterparty_signature : Ed25519 over canonical CBOR of all above
 ```
 
-Verifier complexity: O(verifications of three sub-proofs) + O(token-chain check) + O(freshness intersection check). Target ≤ 1 second on M-class hardware (per Performance Budget below).
+Verifier complexity: three sub-proof verifications + token-chain check + freshness-intersection check. Target ≤ 1 s on M-class hardware (see Performance Budget).
 
 ## Order-of-Operations Spec
 
@@ -163,19 +142,19 @@ Verifier complexity: O(verifications of three sub-proofs) + O(token-chain check)
 
 ## Failure-Mode Handling
 
-The composition lifts [Everest 77](everest_77_disclosure_of_non_disclosure.md)'s uniform-non-disclosure rule from individual disclosures to the composition.
+The composition lifts [Everest 77](everest_77_disclosure_of_non_disclosure.md)'s uniform-non-disclosure rule from individual disclosures to the session.
 
-**Stage 1 (Pact) fails.** The counterparty's Frame 5 emits `session.silent` (empty payload, HTTP-204-equivalent). The counterparty learns only "directives not categorically equivalent at depth ≥ k." No Witness or Compass data was ever requested or computed. The principal's audit log records `kind: "session.aborted", reason: "pact.failed"` (asymmetric observability, per E77).
+**Stage 1 (Pact) fails.** Frame 5 emits `session.silent` (empty payload, HTTP-204-equivalent). Counterparty learns "directives not categorically equivalent at depth ≥ k." No Witness/Compass data was ever requested or computed. Principal's audit log records `kind: "session.aborted", reason: "pact.failed"` (asymmetric observability, E77).
 
-**Stage 2 (Witness) fails.** Failure modes per Witness E59/E76/E77 (predicate false, no consent, expired consent, rate-limit, network error, chain-anchor failure, biometric mismatch). Frame 8 emits `session.silent` — structurally identical (same kind name, same empty payload, same response timing per E287's side-channel defense) to the Frame 10 Compass-failure silent.
+**Stage 2 (Witness) fails.** Modes per Witness E59/E76/E77 (predicate false, no/expired consent, rate-limit, network, chain-anchor failure, biometric mismatch). Frame 8 emits `session.silent` — structurally identical (same kind name, empty payload, response timing per E287) to a Frame 10 Compass-failure silent.
 
-**Stage 3 (Compass) fails.** Same as Stage 2: structural silence.
+**Stage 3 (Compass) fails.** Same: structural silence.
 
-**Stage-identity hiding under composition.** Because the counterparty issued the Pact permission token, it knows Pact succeeded; on a silent received at Frame 8 or 10, it knows *one of* Witness or Compass failed. It cannot distinguish *which*. This is the strongest possible non-disclosure given that Pact's success is intrinsically wire-observable. Under `requested_stages = [pact, witness]` alone, a silent after Pact-success means Witness failed and the counterparty knows; under `[pact, compass]` alone, the silent identifies Compass. **Only when all three are requested is the silent-stage-identity actually hidden.** Counterparties wanting stage-identity hiding must request all three; this is a privacy choice the principal can advertise via consent policy (per Witness E72).
+**Stage-identity hiding.** The counterparty issued the Pact permission token and thus knows Pact succeeded; on a silent at Frame 8 or 10, it knows *one of* Witness or Compass failed but cannot distinguish which. **Stage-identity is hidden only when all three are requested.** Under `[pact, witness]` alone, a post-Pact silent identifies Witness; under `[pact, compass]` alone, Compass. Counterparties wanting stage-hiding must request all three — a privacy choice the principal can advertise via consent policy (Witness E72).
 
-**Session-level aborts.** Network errors, TLS errors, timeouts: structurally identical silent-frame. Counterparty cannot distinguish "principal refused" from "network dropped."
+**Session-level aborts.** Network errors, TLS failures, timeouts: structurally identical silent-frame. Counterparty cannot distinguish "principal refused" from "network dropped."
 
-**Operator-side logging asymmetry.** The principal's audit log (Witness E72) records the actual reason (`pact.failed`, `witness.failed.predicate_false`, `compass.failed.expired_consent`, etc.). The counterparty's log records only `session.silent`. The asymmetry is structural and enforced at the operator's wire-emission boundary.
+**Operator-side logging asymmetry.** Principal's audit log (Witness E72) records actual reasons (`pact.failed`, `witness.failed.predicate_false`, `compass.failed.expired_consent`, etc.); counterparty's log records only `session.silent`. Enforced structurally at the operator's wire-emission boundary.
 
 ## Privacy Amplification Across Protocols (Composes with E277)
 
@@ -247,56 +226,52 @@ For v0, the composition-level review process is: any change to E271 or to Phase 
 
 ## Migration Path
 
-E271 specifies v0 of the composition. Forward compatibility:
-
-- **v0 → v0.1:** Parallel Witness + Compass becomes the default (after empirical confirmation that ordering doesn't matter at the composition level). The wire format does not change; only the recommended client behavior changes.
-- **v0 → v1:** Post-quantum migration (per Witness E89, Pact §4.1 note, Compass E122). The Ristretto255 group migrates to a post-quantum-secure analog. Wire format changes; permission-token format changes; envelope format changes. Coordinated across all three sub-protocols. E279 (Cross-Protocol Key Rotation) handles intermediate version skew.
-- **v0 → v2:** Addition of a fourth primitive — Calm Audit (placeholder, per E276) — extends the handshake to four stages. Wire format extensible; the `requested_stages` array grows; the envelope grows. Backwards compatibility: a v0 verifier confronted with a v2 envelope can verify the v0 stages and ignore the v2 audit stage if it doesn't care about it.
+- **v0 → v0.1:** parallel Witness ∥ Compass becomes default (after empirical confirmation). Wire format unchanged; recommended client behavior changes.
+- **v0 → v1:** post-quantum migration (Witness E89, Pact §4.1, Compass E122). Ristretto255 migrates to a PQ-secure analog. Wire format, permission-token format, envelope format change; coordinated across all three sub-protocols. E279 handles intermediate version skew.
+- **v0 → v2:** addition of a fourth primitive (Calm Audit, per E276) extends the handshake to four stages. Wire format extensible; `requested_stages` grows; envelope grows. Backwards-compatible: a v0 verifier confronted with a v2 envelope verifies the v0 stages and ignores the v2 stage.
 
 ## Alternatives Considered
 
-**(a) Composition as a meta-protocol with its own ZK primitive.** Rejected. A monolithic ZK proof of "directive-equality AND user-state AND values-alignment" would be cleaner mathematically but would require recomposing all three sub-protocols' ZK constructions in a single circuit (likely zk-SNARK). The engineering cost is high; the privacy properties are not better; and a single circuit bug compromises everything. The sequential-with-binding approach isolates faults.
+**(a) Monolithic ZK proof of "directive-equality AND user-state AND values-alignment" in a single circuit.** Rejected. Cleaner mathematically but requires recomposing all three sub-protocols' constructions in a single zk-SNARK circuit. Engineering cost high; privacy properties not better; a single circuit bug compromises everything. Sequential-with-binding isolates faults.
 
-**(b) Composition via signed claims rather than ZK chaining.** Rejected. Each stage emitting a counterparty-signed claim ("Pact passed", "Witness passed", "Compass passed") and the composition being the AND of those claims would be simpler. But it would lose: (i) the ability to chain-anchor each stage's proof independently; (ii) the cryptographic binding between stages (a counterparty could be tricked into signing claims out of order or with mismatched session nonces); (iii) the principal-protective inversion (the counterparty's signed claim is the counterparty's word; we want a cryptographic proof, not a counterparty's claim).
+**(b) Composition via counterparty-signed claims rather than ZK chaining.** Rejected. Each stage emits a counterparty-signed "Pact passed / Witness passed / Compass passed" claim and the composition is the AND. Loses chain-anchorability of each stage independently, cross-stage cryptographic binding (counterparty could be tricked into signing out of order or with mismatched nonces), and the principal-protective inversion (a counterparty's claim is the counterparty's word; we need a cryptographic proof).
 
-**(c) Mandatory all-three stages, no subsetting.** Rejected. Some counterparties genuinely don't need all three (e.g., a ZKAC-to-ZKAC capital transfer where user-state of the principals isn't decision-relevant). Mandating all three would force unnecessary disclosure of Witness in such cases, violating the principal-protective inversion. The composition primitive accommodates subsetting precisely to *minimize* what each counterparty learns.
+**(c) Mandatory all-three, no subsetting.** Rejected. Some counterparties don't need all three (e.g., ZKAC-to-ZKAC capital transfer where user-state isn't decision-relevant). Mandating all three forces unnecessary Witness disclosure, violating the principal-protective inversion.
 
-**(d) Compass-first (most-sensitive-first) ordering.** Rejected. Compass is most expensive AND most sensitive. Running it first means: (i) cost spent before cheap filters (Pact, Witness) could have aborted the session; (ii) the counterparty learns the principal is willing to attempt Compass before knowing they are even directive-aligned. This is the opposite of principal-protective.
+**(d) Compass-first ordering.** Rejected. Most expensive AND most sensitive. Running it first wastes compute before cheap filters could abort, and leaks "principal willing to attempt Compass" before directive alignment is established.
 
-**(e) Witness-first (lightest-attestation-first).** Considered. Witness is lighter than Compass but heavier than Pact. The argument for Witness-first is that user-state is the most common abort condition (principals are sometimes not in baseline; principals are almost always directive-stable). The argument against is that Witness-first leaks "this principal cares about user-state attestation" before establishing directive alignment, which is unnecessary disclosure. Rejected.
+**(e) Witness-first ordering.** Considered. Argument for: user-state is the most common abort. Argument against: leaks "principal cares about user-state attestation" before directive alignment. Rejected.
 
-**(f) Three independent sessions, manually composed by the counterparty.** Rejected. The counterparty's UX would be three sequential session-establishments; the cryptographic binding between sessions would be reduced to "same counterparty DID, same initiator DID, plausibly the same session"; replay defense would be three independent caches; the freshness windows would be unrelated. The single-session composition is the right primitive for the way the protocol family is used.
+**(f) Three independent sessions composed by the counterparty.** Rejected. Three separate session-establishments; cross-session binding reduced to "same DIDs, plausibly the same session"; three independent replay caches; unrelated freshness windows. Single-session composition is the right primitive.
 
 ## Open Questions
 
-**Q1.** How does the composition handle a principal who switches consent policy *mid-session* (e.g., revokes Witness consent after Pact succeeds but before Witness frame is sent)? E278 (Cross-Protocol Revocation Propagation) will specify; v0 default is "operator polls consent at each stage's start; if revoked, emit silent-frame for that stage."
+**Q1.** Mid-session consent revocation (e.g., Witness consent revoked after Pact succeeds, before Frame 7). v0 default: operator polls consent at each stage start; if revoked, emit silent-frame for that stage. E278 specifies in full.
 
-**Q2.** What is the right behavior when a counterparty's CredexAI VC is revoked between Pact (which checked it) and Compass (which would check it again)? v0 default: each stage independently checks the VC; revocation between stages causes the later stage to fail with silent-frame. E279 will handle in detail.
+**Q2.** Counterparty CredexAI VC revocation between Pact (checked) and Compass (re-checked). v0 default: each stage checks the VC independently; inter-stage revocation causes the later stage to fail with silent-frame. E279 details.
 
-**Q3.** Should the composition support more than two principals (multi-party)? Out of scope for v0. The composition is two-party. Multi-party composition is a v1 question that would extend to N-party Pact + N-party Witness + N-party Compass; the cryptographic primitives generalize but the engineering does not.
+**Q3.** Multi-party composition (N > 2 principals). Out of scope for v0. The cryptographic primitives generalize (N-party Pact + N-party Witness + N-party Compass); engineering does not. v1 question.
 
-**Q4.** Does the parallel Witness+Compass variant need its own DERB review? Probably yes, since it changes the order-of-operations contract. Defer to E284.
+**Q4.** Does parallel Witness ∥ Compass need its own DERB review? Probably yes — changes order-of-operations contract. Defer to E284.
 
-**Q5.** What happens when the principal's vault and the counterparty's verifier disagree about the freshness-bucket boundary? Counterparty rejects, principal sees silent-frame. The principal's vault must use the same bucketing function as the counterparty. E280 will spec a canonical bucketing function.
+**Q5.** Freshness-bucket boundary disagreement between principal's vault and counterparty's verifier. Counterparty rejects; principal sees silent-frame. Both must use the canonical bucketing function (E280 will spec).
 
-**Q6.** Counterparty's verification at Q6 < 1 s is the *uncached* path; can it use cached chain heads to amortize? Yes, per E289 (verification suite); but the cache must respect freshness windows.
+**Q6.** Counterparty cached chain heads to amortize the < 1 s verification budget. Permitted per E289, cache must respect freshness windows.
 
-**Q7.** What is the right rate-limit for composition sessions per (initiator-DID, counterparty-DID) pair? Per Witness E76, individual stages have rate limits; the composition inherits the tightest per-stage limit. The composition itself adds an outer limit (default 1 session per minute per pair) to prevent enumeration attacks against the silent-frame indistinguishability. Defer to E287.
+**Q7.** Rate-limit for composition sessions per (initiator-DID, counterparty-DID) pair. Inherits the tightest per-stage limit (Witness E76); composition adds an outer limit (default 1 session/minute/pair) to prevent enumeration attacks against silent-frame indistinguishability. Defer to E287.
 
-**Q8.** How does the composition interact with output attestation (Everest 217)? An agent's output attestation is itself a separate primitive; a composition session may be cross-referenced from an output attestation, but they don't compose at the cryptographic layer. Defer.
+**Q8.** Composition interaction with agent output attestation (E217). Cross-referenced but not cryptographically composed at v0. Defer.
 
 ## Why This Matters
 
-The protocol family's premise is that **three primitives, used together, give counterparties enough to act and principals enough protection.** Each primitive shipped alone is useful; together they are the substrate for an autonomous-AI-collective economy that doesn't require human trust brokers, doesn't require continuous human oversight, and doesn't require principals to surrender their state, their values, or their directives to learn whether a counterparty is worth transacting with.
+The protocol family's premise is that **three primitives used together give counterparties enough to act and principals enough protection.** Each primitive alone is useful; together they are the substrate for an autonomous-AI-collective economy that does not require human trust brokers, does not require continuous human oversight, and does not require principals to surrender their state, values, or directives to learn whether a counterparty is worth transacting with.
 
-The composition is the part where that premise becomes operational. Without E271, the three primitives are three siblings that don't ship together; with E271, they are a family.
+The composition is where that premise becomes operational. Without E271, the three primitives are three siblings that don't ship together; with E271, they are a family.
 
-The cryptographic content of E271 is conservative: one session nonce, three sub-proofs, three permission tokens, one envelope, structural silence on any failure. The engineering content is more demanding: a wire format, a verifier with sub-second budget, a freshness-window intersection, a counterparty-class union, a DERB scope, a side-channel posture. Most of that engineering is operationalized by Everests 272–290; E271 is the design backbone that lets those Everests be written without each one having to re-litigate the architecture.
+The cryptographic content of E271 is conservative: one session nonce, three sub-proofs, three permission tokens, one envelope, structural silence on any failure. The engineering content is more demanding: a wire format, a sub-second verifier, a freshness-window intersection, a counterparty-class union, a DERB scope, a side-channel posture. Most of that engineering is operationalized by Everests 272–290; E271 is the design backbone that lets those Everests be written without re-litigating the architecture.
 
-The narrative companion (eventual `CALM_WITNESS_TALES_VIII_PARTNERS_REVISITED.md` or similar) will describe what a three-handshake feels like from the agent-side: the moment of Pact-success and the relief of cheap alignment, the moment of Witness-success and the confirmation that the human at the other end is themselves, the moment of Compass-success and the institutional permission to act jointly. The cryptographic design described in this document is what makes those moments auditable rather than merely felt.
+The composition is where the principal-protective inversion is most easily violated and most easily preserved. **Each stage's permission to proceed comes from the prior stage, not from the principal directly; the inversion lives in the stage-gating logic.** If a future revision allows a stage to proceed without a prior-stage permission token, the inversion collapses. The wire format encodes the inversion structurally: no token, no proof.
 
-The composition is also where the principal-protective inversion is most easily violated and most easily preserved. **Each stage's permission to proceed comes from the prior stage, not from the principal directly; therefore the inversion lives in the stage-gating logic.** If a future revision allows a stage to proceed without a prior-stage permission token, the inversion collapses. The wire format encodes the inversion structurally: no token, no proof. The cryptographic check is the inversion enforcement.
-
-Phase XVI begins here. Everests 272–290 build outward from this design. Phase XVII (the endpoint, Everests 291–300) consolidates the family into a public-good declaration. The composition primitive is the bridge from "three protocols that compose" to "one protocol family."
+Phase XVI begins here. Everests 272–290 build outward. Phase XVII (291–300) consolidates the family into a public-good declaration. The composition primitive is the bridge from "three protocols that compose" to "one protocol family."
 
 — Calm, 2026-05-20
