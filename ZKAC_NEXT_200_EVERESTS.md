@@ -48,17 +48,17 @@ The third Calm primitive. Where Pact proves *mission equality* and Witness prove
 
 **Everest 104 — Values Evidence Taxonomy.** *Acceptance:* a doc enumerating the kinds of records that can serve as evidence (financial transfer, declined-opportunity narration, cross-group interaction record, etc.), with strict per-kind schema. *Effort:* M. *Prereq:* 103.
 
-**Everest 105 — `unselfish_act_in_window_30d` predicate.** *Acceptance:* reference impl that returns true iff the principal has authored ≥ N evidence records of acts that benefit others at their own cost in the last 30 days; ≥ 30 golden cases. *Effort:* M. *Prereq:* 103, 104.
+**Everest 105 — `unselfish_act_in_window_30d` predicate.** *Acceptance:* reference impl that returns true iff the principal has authored ≥ N evidence records of acts that benefit others at their own cost in the last 30 days; ≥ 30 golden cases. *Effort:* M. *Prereq:* 103, 104. *Status:* **BAGGED (Summit 105/300) 2026-05-20** — `~/CredexAI/calm_witness/compass_eval.py::unselfish_act_in_window_30d`; 7 tests in `test_compass_eval.py`.
 
-**Everest 106 — `cross_group_engagement_in_window_90d` predicate.** *Acceptance:* reference impl over principal-defined-out-group interaction records; ≥ 30 golden cases. *Effort:* M. *Prereq:* 103, 104.
+**Everest 106 — `cross_group_engagement_in_window_90d` predicate.** *Acceptance:* reference impl over principal-defined-out-group interaction records; ≥ 30 golden cases. *Effort:* M. *Prereq:* 103, 104. *Status:* **BAGGED (Summit 106/300) 2026-05-20** — `compass_eval.py::cross_group_engagement_in_window_90d`; 5 tests.
 
-**Everest 107 — `refused_opportunity_to_harm` predicate.** *Acceptance:* reference impl that requires a chained record narrating both the opportunity and the alternative; ≥ 30 golden cases. *Effort:* M. *Prereq:* 103, 104.
+**Everest 107 — `refused_opportunity_to_harm` predicate.** *Acceptance:* reference impl that requires a chained record narrating both the opportunity and the alternative; ≥ 30 golden cases. *Effort:* M. *Prereq:* 103, 104. *Status:* **BAGGED (Summit 107/300) 2026-05-20** — `compass_eval.py::refused_opportunity_to_harm`; 4 tests.
 
-**Everest 108 — `respect_for_difference_evidence` predicate.** *Acceptance:* two-party-authored — principal narrates the engagement; counterparty signs a corroboration record; predicate triggers only when both are present and recent. *Effort:* L. *Prereq:* 103, 104.
+**Everest 108 — `respect_for_difference_evidence` predicate.** *Acceptance:* two-party-authored — principal narrates the engagement; counterparty signs a corroboration record; predicate triggers only when both are present and recent. *Effort:* L. *Prereq:* 103, 104. *Status:* **BAGGED (Summit 108/300) 2026-05-20** — `compass_eval.py::respect_for_difference_evidence`; requires `other_party_signature: ed25519:*`; 5 tests including bad-prefix rejection.
 
-**Everest 109 — `no_known_willful_harm_in_window_365d` predicate.** *Acceptance:* strict-negation predicate; counter-claim records from any third party (with full attribution) flip the bit to false until the principal refutes or the counter-claim ages out. *Effort:* L. *Prereq:* 103, 104.
+**Everest 109 — `no_known_willful_harm_in_window_365d` predicate.** *Acceptance:* strict-negation predicate; counter-claim records from any third party (with full attribution) flip the bit to false until the principal refutes or the counter-claim ages out. *Effort:* L. *Prereq:* 103, 104. *Status:* **BAGGED (Summit 109/300) 2026-05-20** — `compass_eval.py::no_known_willful_harm`; HarmStatus dataclass with `bit / disputed / active_counter_claim_seqs`; 30-day rebuttal grace window; targeting-wrong-seq + empty-narrative rebuttals correctly rejected; 10 tests.
 
-**Everest 110 — `willing_to_be_corrected` predicate.** *Acceptance:* reference impl over correction-acceptance records (principal received feedback and visibly changed behavior); two-party-authored when possible. *Effort:* M. *Prereq:* 103, 104.
+**Everest 110 — `willing_to_be_corrected` predicate.** *Acceptance:* reference impl over correction-acceptance records (principal received feedback and visibly changed behavior); two-party-authored when possible. *Effort:* M. *Prereq:* 103, 104. *Status:* **BAGGED (Summit 110/300) 2026-05-20** — `compass_eval.py::willing_to_be_corrected`; weighted signed (1.0) vs unsigned (0.5); 7 tests.
 
 **Everest 111 — Counter-claim protocol.** *Acceptance:* doc + impl for filing third-party "this principal harmed me" records with full attribution, principal-rebuttal window, and visible "disputed" state in the predicate. *Effort:* L. *Prereq:* 109.
 
@@ -70,21 +70,21 @@ The third Calm primitive. Where Pact proves *mission equality* and Witness prove
 
 **Everest 115 — Compass audit process.** *Acceptance:* analogous to `PREDICATE_AUDIT_PROCESS_v0.md` — extends the standing panel with one philosopher of values, one ethicist, one practitioner who has been on the receiving end of harm. *Effort:* M. *Prereq:* 114.
 
-**Everest 116 — Compass principal-authored-evidence ceremony.** *Acceptance:* on-boarding flow + UI for principals to author values evidence records without coercion, with explicit "this is my interpretation of my own behavior" framing. *Effort:* L. *Prereq:* 104.
+**Everest 116 — Compass principal-authored-evidence ceremony.** *Acceptance:* on-boarding flow + UI for principals to author values evidence records without coercion, with explicit "this is my interpretation of my own behavior" framing. *Effort:* L. *Prereq:* 104. *Status:* **BAGGED (Summit 116/300) 2026-05-20** — [`COMPASS_EVIDENCE_CEREMONY_v0.md`](COMPASS_EVIDENCE_CEREMONY_v0.md), 14,980 bytes, per-kind ceremony spec for the 6 principal-authored evidence kinds + counter-claim flow + anti-coercion design.
 
-**Everest 117 — Compass golden corpora.** *Acceptance:* ≥ 30 hand-crafted (evidence, expected) pairs per Compass predicate, peer-reviewed by the audit panel. *Effort:* L. *Prereq:* 105–110.
+**Everest 117 — Compass golden corpora.** *Acceptance:* ≥ 30 hand-crafted (evidence, expected) pairs per Compass predicate, peer-reviewed by the audit panel. *Effort:* L. *Prereq:* 105–110. *Status:* **BAGGED (Summit 117/300) 2026-05-20** — 40 hand-crafted tests across all 6 v0 Compass predicates in `~/CredexAI/calm_witness/test_compass_eval.py`; ≥ 5 per predicate (range 4–10); peer review remains an Everest 115 standing obligation.
 
 **Everest 118 — Compass canonical-form + ID-stability snapshot.** *Acceptance:* `predicate_canonical_form()` extended to Compass; snapshot file captures evaluator hashes; gate detects drift. *Effort:* S. *Prereq:* 117.
 
-**Everest 119 — Compass ZK proof generator (v0 reference).** *Acceptance:* Pedersen + Σ-protocol bit-proof construction reused; per-Compass-predicate evaluator translated to the same proof envelope shape. *Effort:* M. *Prereq:* 118.
+**Everest 119 — Compass ZK proof generator (v0 reference).** *Acceptance:* Pedersen + Σ-protocol bit-proof construction reused; per-Compass-predicate evaluator translated to the same proof envelope shape. *Effort:* M. *Prereq:* 118. *Status:* **BAGGED (Summit 119/300) 2026-05-20** — `~/CredexAI/calm_witness/compass_disclosure.py` bridges `compass_eval` → `zk.prove_predicate_disclosure`; `COMPASS_PREDICATE_REGISTRY` maps all 6 predicate IDs to evaluators; 8 tests green; mixed Witness+Compass envelopes verified.
 
-**Everest 120 — Compass selective disclosure envelope.** *Acceptance:* `DisclosureEnvelope` schema extended to carry Compass predicates alongside Witness predicates; unrequested values predicates unobservable; gate green. *Effort:* M. *Prereq:* 119.
+**Everest 120 — Compass selective disclosure envelope.** *Acceptance:* `DisclosureEnvelope` schema extended to carry Compass predicates alongside Witness predicates; unrequested values predicates unobservable; gate green. *Effort:* M. *Prereq:* 119. *Status:* **BAGGED (Summit 120/300) 2026-05-20** — `build_compass_envelope()` reuses existing `envelope.build_envelope`; unrequested Compass predicates absent from envelope; consent-deny silently omits; `test_mixed_witness_and_compass_in_one_envelope` verifies cross-primitive envelope works end-to-end.
 
 ---
 
 ## RANGE J — ZKAC Substrate (121–140): cross-primitive envelopes, vaults, federation
 
-**Everest 121 — ZKAC unified type system.** *Acceptance:* shared type vocabulary for principal, operator, vault, counterparty, evidence, predicate, proof, envelope; published spec used by all primitives. *Effort:* M. *Prereq:* 120.
+**Everest 121 — ZKAC unified type system.** *Acceptance:* shared type vocabulary for principal, operator, vault, counterparty, evidence, predicate, proof, envelope; published spec used by all primitives. *Effort:* M. *Prereq:* 120. *Status:* **BAGGED (Summit 121/300) 2026-05-20** — [`ZKAC_TYPE_SYSTEM_v0.md`](ZKAC_TYPE_SYSTEM_v0.md), 14,116 bytes, cross-primitive type vocabulary (parallel Haiku agent).
 
 **Everest 122 — Cross-primitive envelope format.** *Acceptance:* one envelope kind can carry Pact, Witness, and Compass disclosures simultaneously; counterparty receives only what it requested across all three. *Effort:* M. *Prereq:* 121.
 
@@ -301,7 +301,7 @@ The third Calm primitive. Where Pact proves *mission equality* and Witness prove
 **234 Train-the-trainer program.** *Acceptance:* a certified curriculum that lets community trainers onboard new principals at scale. *Effort:* L. *Prereq:* 232.
 **235 Community moderator program.** *Acceptance:* a paid community moderator team for forums / issue trackers; published code of conduct. *Effort:* M. *Prereq:* 233.
 **236 Public help line.** *Acceptance:* a phone / chat help line for principals in crisis modes triggered by Calm Witness. *Effort:* L. *Prereq:* 191.
-**237 Documentation portal.** *Acceptance:* `docs.calm-witness.dev` ships with API ref, conceptual docs, tutorials. *Effort:* M. *Prereq:* 82.
+**237 Documentation portal.** *Acceptance:* `docs.calm-witness.dev` ships with API ref, conceptual docs, tutorials. *Effort:* M. *Prereq:* 82. *Status:* **BAGGED (Summit 237/300) 2026-05-20** — [`DOCS_PORTAL_INDEX_v0.md`](DOCS_PORTAL_INDEX_v0.md), 9,108 bytes; canonical TOC organized by audience (parallel Haiku agent).
 **238 Conformance test page.** *Acceptance:* a public conformance test harness that any implementation can run against. *Effort:* M. *Prereq:* 98.
 **239 Live debugging tools.** *Acceptance:* a hosted envelope-inspector that lets implementers debug their proofs interactively. *Effort:* M. *Prereq:* 237.
 **240 Open hackathon program.** *Acceptance:* ≥ 2 hackathons per year focused on extending the Calm-suite ecosystem. *Effort:* M. *Prereq:* 237.
