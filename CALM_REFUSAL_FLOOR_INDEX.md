@@ -153,9 +153,12 @@ This index composes with:
 - CONCORD_AMENDMENT_2026-05-20.md (precedent for §2 enforcement).
 - CALM_WITNESS_SCOPE_STATEMENT.md (consolidates §3).
 - CredexAI/CLAUDE.md + memory (consolidates §4).
+- [`REFUSAL_FLOOR_PRESSURE_THREAT_MODEL_v0.md`](REFUSAL_FLOOR_PRESSURE_THREAT_MODEL_v0.md) (who pushes each line, with what leverage, and how the floor holds under pressure).
 - Every individual summit's acceptance test (per T-RFI.2).
 
 This index is itself a SUMMIT-level artifact at the registry-meta layer. It is bagged at this filename and treated as canonical.
+
+**Pressure threat model:** [`REFUSAL_FLOOR_PRESSURE_THREAT_MODEL_v0.md`](REFUSAL_FLOOR_PRESSURE_THREAT_MODEL_v0.md) is **BAGGED (registry-meta RFI-pressure-v0) 2026-05-20**; gate [`~/CredexAI/scripts/everest_refusal_floor_pressure_threat_gate.py`](../../CredexAI/scripts/everest_refusal_floor_pressure_threat_gate.py) exit 0.
 
 ---
 

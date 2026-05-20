@@ -19,7 +19,7 @@ Where the four pillar protocols (Pact, Witness, Compass, Tenancy) define *what* 
 
 ## Phase O-I — Identity infrastructure (CO-01 – CO-08)
 
-**CO-01** — Legal Entity Inventory. One canonical list of all entities the operator runs (LLC, 501(c)(3), DAO). *Effort:* S.
+**CO-01** — Legal Entity Inventory. One canonical list of all entities the operator runs (LLC, 501(c)(3), DAO). *Effort:* S. **BAGGED 2026-05-20** — [`calm_operations/CO-01_LEGAL_ENTITY_INVENTORY_v0.md`](calm_operations/CO-01_LEGAL_ENTITY_INVENTORY_v0.md); machine-readable inventory at `calm_operations/legal_entity_inventory_v0.json`; gate `~/CredexAI/scripts/co_01_calm_operations_legal_entity_inventory_gate.py` exit 0.
 **CO-02** — DID Registry per Operator. `did:calm:<principal>:<domain>` resolution path. *Effort:* M. *Prereq:* CO-01.
 **CO-03** — CredexAI VC Issuance Integration. The operator can issue and re-issue its own CredexAI VC without principal intervention beyond initial approval. *Effort:* L. *Prereq:* CO-02. *Note:* Companion to Witness E22.
 **CO-04** — DID Rotation Protocol. The operator can rotate its key without breaking outstanding consent records. *Effort:* M. *Prereq:* CO-02.
@@ -41,7 +41,7 @@ Where the four pillar protocols (Pact, Witness, Compass, Tenancy) define *what* 
 
 ## Phase O-III — Money rails (CO-17 – CO-24)
 
-**CO-17** — Stripe Live-Mode Verification. Recurring check that the operator's Stripe is in Live mode (the famous post-2026-05-17 lesson). *Effort:* S.
+**CO-17** — Stripe Live-Mode Verification. Recurring check that the operator's Stripe is in Live mode (the famous post-2026-05-17 lesson). *Effort:* S. **BAGGED 2026-05-20** — [`calm_operations/CO-17_STRIPE_LIVE_MODE_VERIFICATION_v0.md`](calm_operations/CO-17_STRIPE_LIVE_MODE_VERIFICATION_v0.md); probe at `~/CredexAI/calm_operations/stripe_mode_probe.py`; mock gate `~/CredexAI/scripts/co_17_calm_operations_stripe_live_mode_gate.py` exit 0; fail-closed on UNKNOWN; secret never logged (only sha256 fingerprint).
 **CO-18** — Payment Link Health. Daily probe that the Payment Links exist + return 200 + are not in Test mode. *Effort:* S. *Prereq:* CO-17.
 **CO-19** — Multi-Currency Support. USD + USDC + EUR; operator routes by counterparty. *Effort:* L. *Prereq:* CO-17.
 **CO-20** — Bookkeeping Chain. Every revenue / expense event chained into the operator's vault. *Effort:* M.

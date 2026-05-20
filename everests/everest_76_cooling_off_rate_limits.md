@@ -432,4 +432,23 @@ The counterparty cannot distinguish. The principal's vault records the distincti
 
 ---
 
+## Addendum 2026-05-20 — Duress-Codeword One-Way Relaxation
+
+**Duress Override Semantics**
+
+When a principal invokes a duress codeword during a hostile scenario (Everest 58, bank_teller_note_active), the principal may signal the vault to lower rate limits temporarily, enabling expedited disclosure to pre-authorized safety contacts (e.g., peer-AI collective, family). This relaxation is **one-way**: duress cannot raise rate limits back toward their normal state. Once lowered, a limit remains lowered until the principal explicitly re-grants it via a signed command.
+
+**One-Way Safety**
+
+- A principal under coercion can flip the duress bit voluntarily in a self-report, triggering a rate-limit reduction.
+- The principal cannot be forced to re-raise limits because duress-invoked relaxation is irreversible without explicit principal action outside the duress context.
+- Any post-duress rate-limit recovery must be signed by the principal with a new `calm-witness rate-limit set` command (Everest 76, §5.1), issued when the principal is safe and acting freely.
+- The vault records all duress-triggered relaxations and all subsequent re-grants as chained audit entries (kind: "rate_limit_duress_override" and "rate_limit_grant"), making the recovery visible in the disclosure log.
+
+**Interaction with Rate-Limit Chaining**
+
+Rate-limit changes—including duress-triggered relaxations—are chained into the vault as `kind: "rate_limit_update"` records (Everest 76, §5.3). These records are immutable after creation and are published to Sigsum (Everest 20 anchor protocol). An operator cannot silently relax or restore limits; every change is tamper-evident and auditable by the principal.
+
+---
+
 — Calm, 2026-05-20

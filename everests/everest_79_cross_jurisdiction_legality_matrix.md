@@ -252,6 +252,32 @@ Calm Witness v0 is NOT currently deployable in India under DPDP. Wait for finali
 
 ---
 
+## Jurisdiction × Disclosure Use Matrix
+
+Legal-risk ratings: **LOW** (deployable with standard consent), **MEDIUM** (deployable with jurisdiction-specific counsel and extra mitigations), **HIGH** (likely blocked or requires narrow lawful basis), **CRITICAL** (do not deploy without independent DPO or regulator sign-off), **SCOPE_PROHIBITED** (forbidden by [`CALM_WITNESS_SCOPE_STATEMENT.md`](../CALM_WITNESS_SCOPE_STATEMENT.md) §2 regardless of jurisdiction; license forfeit if deployed under the Calm Witness name).
+
+| Disclosure use | US | EU | UK | CA | JP | Required mitigations (all jurisdictions where not SCOPE_PROHIBITED) |
+|---|---|---|---|---|---|---|
+| **Agent-to-agent collaboration calibration** (scope §1) | MEDIUM | HIGH | MEDIUM | MEDIUM | LOW | Written consent before enrollment (BIPA §14(a) in IL; GDPR Art. 7 in EU); per-predicate per-counterparty grants (Everest 8); disclosure audit log (Everest 72); counterparty VC binding (Everest 69). |
+| **Financial KYC / anti-fraud** (transactional, not credit) | MEDIUM | HIGH | MEDIUM | MEDIUM | LOW | Same as above plus explicit `financial` class consent; document that proof is not creditworthiness input (scope §2.4); rate limits (Everest 76). |
+| **Duress / bank-teller note push** (Everest 58) | MEDIUM | CRITICAL | HIGH | MEDIUM | LOW | Pre-authorized counterparty list; stealth push only to enrolled recipients (Everest 78); EU may require Art. 9(2)(d) vital-interests analysis before any EU-resident principal enrolls; codeword never in plaintext chain. |
+| **Medical principal-authorized communication** | MEDIUM | HIGH | MEDIUM | MEDIUM | LOW | `medical` class default deny unless principal grants; no clinical predicates; scope §2.5 blocks diagnosis; HIPAA/PIPEDA counsel if US/CA health entities involved. |
+| **Cross-border proof transfer** | LOW (domestic) / MEDIUM (export) | CRITICAL | HIGH | HIGH | MEDIUM | SCCs or Art. 46 equivalent for EU/UK/CA/BR outbound; APPI Art. 23 adequacy assessment for JP; geofence refusal when transfer_mode restricted (Everest 78); document proof-as-personal-data conservative stance. |
+| **Governmental / law-enforcement surveillance** | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | Scope §2.1; `governmental` class defaults deny; EU AI Act Art. 26 real-time biometric ban reinforces; do not seek lawful-basis workarounds. |
+| **Employment screening / termination** | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | Scope §2.2; no `employment` counterparty class; BIPA private right of action adds US litigation risk if misused. |
+| **Insurance underwriting / claims** | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | Scope §2.3; Quebec Law 25 sensitive-data rules add CA friction if misclassified. |
+| **Lending / credit decisions** | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | Scope §2.4; `financial` class is KYC-only, not FCRA/credit-bureau use. |
+| **Clinical diagnosis / care rationing** | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | Scope §2.5 medical diagnosis; behavioral attestation is not a clinical instrument. |
+| **Child welfare / custody / family court** | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | Scope §2.6 child welfare; no court-evidence predicate exists in v0. |
+| **Immigration adjudication** | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | Scope §2.7 immigration. |
+| **Predictive future-behavior decisions** | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | Scope §2.8 predictions about future behavior; v0 predicates are state-attenuation, not forecasting. |
+| **Cross-principal population aggregation** | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | Scope §2.9 aggregation across principals; one principal, one counterparty, one bit per session. |
+| **Marketing / advertising targeting** | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | SCOPE_PROHIBITED | Scope §2.10; CPRA "sale/share" rules add US penalty if misused. |
+
+**Reading the matrix:** Permitted rows (top four plus conditional cross-border) require jurisdiction-specific consent infrastructure from § "What Calm Witness Must Build." Prohibited rows inherit the one-way scope ratchet (scope §4): tightening only, never loosening. When a counterparty requests a SCOPE_PROHIBITED use, the operator refuses before predicate evaluation (geofencing, Everest 78) and logs the refusal without revealing undisclosed predicates (Everest 77).
+
+---
+
 ## Summary Matrix
 
 | Jurisdiction | Stance | Behavioral biometric in scope? | ZK proof = "processing"? | Special-category prohibition? | v0 deployable as-is? |

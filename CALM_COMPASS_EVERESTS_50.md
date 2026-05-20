@@ -23,7 +23,7 @@ Stable IDs **CC-01 … CC-50**. Companion to [`CALM_COMPASS_PROTOCOL_v0.md`](CAL
 **CC-02** — Route Map. **BAGGED 2026-05-20** — this file. *Effort:* S.
 **CC-03** — Glossary. Every Compass-specific term defined; cross-linked to Witness/Tenancy glossaries. *Effort:* S. *Prereq:* CC-01.
 **CC-04** — Compass Audit & Public Review Process. The procedure by which a new predicate is added to the v1 vocabulary (≥2 outside reviewers, ≥30-day comment window). *Effort:* M. *Prereq:* CC-01.
-**CC-05** — Forbidden-Predicate Categories. Explicit list of predicate classes that v0 refuses to define (DSM labels, race/ethnicity, sexual orientation, religion-of-origin, criminality forecasting). *Effort:* S. *Prereq:* CC-01.
+**CC-05** — Forbidden-Predicate Categories. **BAGGED 2026-05-20** — [`CC-05_COMPASS_FORBIDDEN_PREDICATE_CATEGORIES_v0.md`](CC-05_COMPASS_FORBIDDEN_PREDICATE_CATEGORIES_v0.md); 12 forbidden categories; machine-enforceable JSON [`calm_compass/cc05_forbidden_categories.json`](calm_compass/cc05_forbidden_categories.json); gate `~/CredexAI/scripts/cc_05_calm_compass_forbidden_categories_gate.py` exit 0; no-appeal hard floor. *Effort:* S. *Prereq:* CC-01.
 **CC-06** — Counterparty-Imposed-Predicate Rejection. The protocol-level enforcement of "principal-authored vocabulary." Reject any request whose `predicate_id` is not in the principal's enrolled vocabulary. *Effort:* S. *Prereq:* CC-01.
 **CC-07** — Compass Failure-Mode Catalogue (CC-FM-01…). Numbered failure modes: classifier drift, vocabulary tampering, coerced attestation, mass-surveillance demand, etc. *Effort:* M. *Prereq:* CC-01.
 **CC-08** — Reference Architecture Diagram. Where Compass fits in the four-pillar Calm Session. *Effort:* S. *Prereq:* CC-01.

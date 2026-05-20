@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-05-20T13:15:00Z",
+  "entities": [
+    {
+      "entity_id": "creativity_machine_llc",
+      "legal_name": "Creativity Machine LLC",
+      "kind": "LLC",
+      "jurisdiction": "US-NC",
+      "formed_at": "2024-01-01",
+      "status": "active",
+      "role_in_calm_stack": "principal_operator",
+      "did": null,
+      "notes": "Principal operator entity; does business as John Bradley (principal)"
+    },
+    {
+      "entity_id": "calm_witness_foundation",
+      "legal_name": "Calm Witness Foundation, Inc.",
+      "kind": "501c3",
+      "jurisdiction": "US-DE",
+      "formed_at": null,
+      "status": "in_formation",
+      "role_in_calm_stack": "foundation",
+      "did": null,
+      "notes": "Nonstock Delaware corporation organized under IRC §501(c)(3); governance of Calm Witness protocol; incorporation filing + IRS Form 1023 submission pending (E241)"
+    }
+  ]
+}

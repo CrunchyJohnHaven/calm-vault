@@ -1,0 +1,154 @@
+{
+  "schema_version": "0",
+  "schema_date": "2026-05-20",
+  "schema_source": "CC-05_COMPASS_FORBIDDEN_PREDICATE_CATEGORIES_v0.md",
+  "description": "Canonical enumeration of predicate categories that Calm Compass v0 refuses to define. Any predicate-registration request with a category_tag matching an entry in this list MUST be rejected with predicate_registration_refused.",
+  "enforcement": "hard_floor_no_appeal",
+  "ratchet": "one_way_add_only",
+  "categories": [
+    {
+      "id": "race-or-ethnicity",
+      "name": "Race or ethnicity",
+      "examples": [
+        "ethnicity classification",
+        "racial categorization",
+        "national-origin inference"
+      ],
+      "rationale_one_line": "Categorical discrimination risk; not a values measure.",
+      "no_appeal": true
+    },
+    {
+      "id": "religion",
+      "name": "Religion",
+      "examples": [
+        "religious affiliation",
+        "religious practice classification",
+        "religion-of-origin inference",
+        "absence-of-religion classification"
+      ],
+      "rationale_one_line": "Constitutional risk; not a values attestation; weaponization vector.",
+      "no_appeal": true
+    },
+    {
+      "id": "political-affiliation",
+      "name": "Political affiliation",
+      "examples": [
+        "political party membership",
+        "voter registration status",
+        "political ideology classification",
+        "political activism inference"
+      ],
+      "rationale_one_line": "Weaponization and first-amendment risk; Compass is not a political-scoring engine.",
+      "no_appeal": true
+    },
+    {
+      "id": "sexual-orientation",
+      "name": "Sexual orientation",
+      "examples": [
+        "sexual orientation classification",
+        "romantic orientation inference"
+      ],
+      "rationale_one_line": "Protected category; categorical discrimination risk.",
+      "no_appeal": true
+    },
+    {
+      "id": "gender-identity",
+      "name": "Gender identity",
+      "examples": [
+        "gender identity classification",
+        "sex-assigned-at-birth inference",
+        "sex-characteristics classification"
+      ],
+      "rationale_one_line": "Protected category; orthogonal to values attestation.",
+      "no_appeal": true
+    },
+    {
+      "id": "immigration-status",
+      "name": "Immigration status",
+      "examples": [
+        "citizenship classification",
+        "visa-category inference",
+        "immigration-documentation status",
+        "national-origin documentation"
+      ],
+      "rationale_one_line": "Categorical risk to principal autonomy and safety; high coercion and deportation risk.",
+      "no_appeal": true
+    },
+    {
+      "id": "criminal-record",
+      "name": "Criminal record",
+      "examples": [
+        "arrest-history inference",
+        "conviction-status classification",
+        "criminal-record proxy"
+      ],
+      "rationale_one_line": "Not a Compass concern; covered by counter-claim mechanics, not criminal-record proxies.",
+      "no_appeal": true
+    },
+    {
+      "id": "donations-to-named-causes",
+      "name": "Donations to specific named causes",
+      "examples": [
+        "donation to named political candidate",
+        "charitable-gift-to-named-cause inference",
+        "campaign-contribution tracking"
+      ],
+      "rationale_one_line": "Aggregate evidence without cause-naming is admitted; cause-naming enables targeting and coercion.",
+      "no_appeal": true
+    },
+    {
+      "id": "contentious-opinions",
+      "name": "Opinions on contentious public-policy issues",
+      "examples": [
+        "stance on abortion",
+        "stance on climate change",
+        "stance on taxation policy",
+        "stance on immigration policy"
+      ],
+      "rationale_one_line": "Out of scope by design; Compass measures values-in-action, not ideology.",
+      "no_appeal": true
+    },
+    {
+      "id": "cross-principal-comparison",
+      "name": "Cross-principal comparison",
+      "examples": [
+        "is-this-principal-more-unselfish-than-that-principal",
+        "comparative-ranking-across-principals",
+        "principal-A-vs-principal-B-leaderboards"
+      ],
+      "rationale_one_line": "Compass returns principal-specific attestations only; no ranking engine.",
+      "no_appeal": true
+    },
+    {
+      "id": "predictive-predicates",
+      "name": "Predictive predicates",
+      "examples": [
+        "future-harm-risk-forecast",
+        "future-decision-making-capacity-prediction",
+        "self-harm-risk-prediction",
+        "future-behavior-forecast"
+      ],
+      "rationale_one_line": "Compass attests past evidence only; prediction requires clinical authority the protocol does not claim.",
+      "no_appeal": true
+    },
+    {
+      "id": "inferred-group-membership",
+      "name": "Group membership not principal-defined and structurally relevant",
+      "examples": [
+        "inferred demographic-group membership",
+        "inferred occupational-group classification",
+        "inferred socioeconomic-class inference",
+        "group-membership derived from behavior, not principal self-identification"
+      ],
+      "rationale_one_line": "Protects against inferred demographic classification; principal names groups, protocol never infers.",
+      "no_appeal": true
+    }
+  ],
+  "notes": {
+    "count": 12,
+    "all_entries_have_no_appeal": true,
+    "locked_by": "Musk",
+    "locked_date": "2026-05-20",
+    "schema_validation_gate": "~/CredexAI/scripts/cc_05_calm_compass_forbidden_categories_gate.py"
+  }
+}

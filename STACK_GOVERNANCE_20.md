@@ -8,13 +8,13 @@ Where the four pillar route maps cover protocol-internal work, this document cov
 
 ## Phase S-I — Cross-protocol governance (CS-01 – CS-08)
 
-**CS-01** — Stack Versioning. Semver across the four pillars; one composed version (`calm-stack/v0`). *Effort:* S.
+**CS-01** — Stack Versioning. Semver across the four pillars; one composed version (`calm-stack/v0`). *Effort:* S. *Status:* **BAGGED (Summit 281/300) 2026-05-20** — see `everests/everest_281_stack_versioning.md`.
 **CS-02** — Compatibility Matrix. Which pillar versions compose with which. *Effort:* M.
 **CS-03** — Cross-Pillar Failure-Mode Reconciliation. Unified failure catalogue that maps pillar-specific FMs to common categories. *Effort:* M.
 **CS-04** — Stack Quorum. Some operations (predicate-vocabulary changes, threat-model revisions) require quorum across pillar maintainers. *Effort:* M.
 **CS-05** — Stack Open-Source Release Manifest. One canonical CHANGELOG across all repos. *Effort:* S.
 **CS-06** — Bug Bounty Across Stack. Funded program; published payout schedule. *Effort:* M.
-**CS-07** — Public Security Disclosure Policy. 90-day responsible-disclosure window. *Effort:* S.
+**CS-07** — Public Security Disclosure Policy. 90-day responsible-disclosure window. *Effort:* S. *Status:* **BAGGED (Summit 287/300) 2026-05-20** | see `everests/everest_287_public_security_disclosure_policy.md`.
 **CS-08** — Public Roadmap. Living document; refreshed quarterly. *Effort:* S.
 
 ## Phase S-II — Standards track (CS-09 – CS-14)

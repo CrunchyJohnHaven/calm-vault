@@ -160,4 +160,66 @@ The protocol's job is to prevent involuntary revelation. If the principal wants 
 
 ---
 
+## Addendum 2026-05-20 — Opt-In Semantics, Duress Composition, and Operator-Violation Closure
+
+### Clarification: Opt-In Refusal Disclosure (Deferred to v1+)
+
+The main document (§ "Compromises Considered and Rejected") explicitly rejects opt-in disclosure of refusal in v0 on threat-surface grounds: a principal under duress might be coerced into enabling the feature, or a principal in a custody dispute might have their device manipulated.
+
+**v0 decision: No opt-in.** The principal cannot opt into per-(predicate, counterparty-class) "tell this counterparty that I refused" mode in v0.
+
+**v1+ reopening:** Opt-in may be re-evaluated in v1+ if accompanied by safeguards such as biometric confirmation, vault-server ceremony, or a recovery-ceremony confirmation step. Any v1+ opt-in feature must be explicitly opt-in per (predicate_id, counterparty_class) pair—the principal cannot issue a blanket "disclose all refusals" grant—and must be revocable via the same ceremony. The principal's default remains uniform silence; refusal disclosure is always explicit, limited in scope, and requires affirmative principal action.
+
+### Composition with Everest 8, Axiom A9 (Defeasibility by Duress Codeword)
+
+Everest 8, Axiom A9 establishes that when `bank_teller_note_active` evaluates to true (principal has signaled duress), any consent record in the principal's "duress_invert_list" is inverted: the operator does not produce a proof, even if consent exists.
+
+**Interaction with E77 (this document):**
+
+- A principal under duress can invoke the bank-teller-note signal (E58) to flip `bank_teller_note_active = true`.
+- This inverts consents for listed predicates (E8.A9), causing the operator to return 204 (no proof) even when the principal would normally consent.
+- From the counterparty's perspective, the 204 is indistinguishable from any other refusal (no proof returned).
+- The principal's vault logs the actual cause: `duress_invert_active` rather than `explicit_refuse` or `no_consent`.
+- The operator applies uniform latency padding (§ "Response Timing") regardless of whether duress or explicit refusal triggered the 204.
+
+This composition ensures that **duress is coercion-pressure-resistant by construction**: a counterparty cannot determine whether a 204 was caused by duress, refusal, missing consent, rate-limit, or system error. The indistinguishability is the safety mechanism.
+
+### Composition with Everest 76 (Cooling-Off / Rate Limits)
+
+Everest 76 § 8 ("Uniform-Silence Interaction") formalizes that rate-limit rejection is observationally identical to any other refusal. All five rate-limit dimensions (global, per-class, per-counterparty, per-predicate-per-class, per-predicate-per-counterparty) result in HTTP 204 (No Content) with no distinguishing headers, latency, or error text.
+
+**Enforcement at E77 scope:**
+
+- Rate-limit exhaustion: 204
+- Consent missing: 204
+- Consent expired: 204
+- Explicit consent.deny: 204
+- Cooling-off active: 204
+- System error: 204
+- Duress invert active: 204
+
+The operator never leaks which rate-limit dimension was triggered. The principal's vault records the distinction in the refusal_reason field; the counterparty sees uniform silence. This uniformity is critical: if a counterparty could distinguish "rate-limited" from "refused," they could infer that the principal exists and is receiving requests, and could estimate request volume over time. The indistinguishable 204 prevents this inference.
+
+### Operator-Violation Case: No Path to Refusal Distinguishability
+
+**Structural closure:** There is no code path, operator configuration, or API surface that permits the operator to expose refusal-distinguishability to a counterparty.
+
+**Enforcement mechanisms:**
+
+1. **Unified response handler** (§ "Implementation Notes"): All not-generated cases route to a single `send_no_proof_response` code path. The operator computes `reason` (for principal audit), but this field is not serialized into the HTTP response.
+
+2. **HTTP status code uniformity**: All not-generated cases return HTTP 204. Status codes 403, 401, 429, 503, or any other reason-specific code are forbidden in the v0 protocol.
+
+3. **Response body emptiness**: 204 responses have no body. No error text, no JSON, no distinguishing content whatsoever.
+
+4. **Header filtering** (E76): The operator never returns `X-RateLimit-*`, `X-Retry-After`, `X-Consent-State`, or any counterparty-visible metadata that would leak reason state.
+
+5. **Latency padding** (§ "Response Timing"): All 204 responses are padded to a uniform target latency (≈250ms ± 50ms jitter), eliminating timing side channels.
+
+**Scope Statement enforcement** ([CALM_WITNESS_SCOPE_STATEMENT.md](../CALM_WITNESS_SCOPE_STATEMENT.md) § 3.3): The predicate audit panel logs any proposal that would traffic in refusal-distinguishability and rejects it at triage.
+
+**Violation response:** An operator that violates this closure (e.g., returns 403 for "consent denied" vs. 429 for "rate limited") is a scope-statement violator. Such an operator forfeits the right to call itself Calm Witness and is downgraded from CredexAI operator credential (CALM_REFUSAL_FLOOR_INDEX.md § 3).
+
+---
+
 — Calm, 2026-05-20

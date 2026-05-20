@@ -1,0 +1,133 @@
+{
+  "results": [
+    {
+      "name": "functional/honest_match",
+      "status": "PASS",
+      "ms": 0.42,
+      "details": {
+        "pass": true,
+        "telemetry": {
+          "commit_time_ms": 0.4004160000476986,
+          "proof_time_ms": 0.008334000085596927,
+          "verify_time_ms": 0.006665999535471201,
+          "accept": true
+        }
+      }
+    },
+    {
+      "name": "functional/honest_mismatch_rejected",
+      "status": "PASS",
+      "ms": 0.02,
+      "details": {
+        "pass": true,
+        "got_acceptance": false
+      }
+    },
+    {
+      "name": "functional/whitespace_case_canonicalized",
+      "status": "PASS",
+      "ms": 0.02,
+      "details": {
+        "pass": true,
+        "expected_match_post_canonical": true
+      }
+    },
+    {
+      "name": "functional/unicode_supported",
+      "status": "PASS",
+      "ms": 0.02,
+      "details": {
+        "pass": true
+      }
+    },
+    {
+      "name": "security/forged_proof_rejected",
+      "status": "PASS",
+      "ms": 0.01,
+      "details": {
+        "pass": true,
+        "forged_accepted": false
+      }
+    },
+    {
+      "name": "security/replay_rejected",
+      "status": "PASS",
+      "ms": 0.03,
+      "details": {
+        "pass": true,
+        "fresh_ok": true,
+        "replay_rejected": true
+      }
+    },
+    {
+      "name": "security/tamper_rejected",
+      "status": "PASS",
+      "ms": 0.01,
+      "details": {
+        "pass": true
+      }
+    },
+    {
+      "name": "security/swap_commitments_rejected",
+      "status": "PASS",
+      "ms": 0.02,
+      "details": {
+        "pass": true
+      }
+    },
+    {
+      "name": "edge/empty_maxim",
+      "status": "PASS",
+      "ms": 0.02,
+      "details": {
+        "pass": true
+      }
+    },
+    {
+      "name": "edge/long_maxim",
+      "status": "PASS",
+      "ms": 0.03,
+      "details": {
+        "pass": true,
+        "telemetry": {
+          "commit_time_ms": 0.020292000044719316,
+          "proof_time_ms": 0.0038329999370034784,
+          "verify_time_ms": 0.004249999619787559,
+          "accept": true
+        }
+      }
+    },
+    {
+      "name": "performance/throughput_1000ops",
+      "status": "PASS",
+      "ms": 14.33,
+      "details": {
+        "pass": true,
+        "ops": 1000,
+        "all_passed": true,
+        "per_op_ms": 0.014,
+        "total_sec": 0.01
+      }
+    },
+    {
+      "name": "adversarial/forgery_resistance",
+      "status": "PASS",
+      "ms": 2.24,
+      "details": {
+        "pass": true,
+        "forge_results": {
+          "I commit to maximize human flo": "0/100",
+          "I commit to maximize profit un": "0/100",
+          "Random nonsense string.": "0/100",
+          "": "0/100"
+        }
+      }
+    }
+  ],
+  "summary": {
+    "total": 12,
+    "pass": 12,
+    "fail": 0,
+    "error": 0
+  }
+}

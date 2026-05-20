@@ -179,16 +179,14 @@ Veto is chain-anchored (`kind: "derb_veto"`) including DERB's written opinion an
 
 ## §8. Scale considerations — where v0 breaks
 
-v0 is explicitly designed for 1–5 founders + arbitrary machine-agent members. The protocol does not pretend this scales. Everest 259 will treat scale in depth; this section names the breakpoints.
+v0 is explicitly designed for 1–5 founders + arbitrary machine-agent members. The protocol does not pretend this scales. Everest 259 treats scale in depth; this section names the breakpoints.
 
-- **~5 founders.** Consensus among 5 is achievable; above 5, combinatorics make substantive consensus statistically unlikely. Collectives that exceed 5 founders either promote some to non-voting honorary status (de facto reducing voting count) or switch to a supermajority template v0 does not specify.
+- **~5 founders.** Above 5, combinatorics make substantive consensus statistically unlikely. Collectives that exceed promote some to non-voting honorary status (de facto reducing voting count) or switch to a supermajority template v0 does not specify.
 - **~15 members total.** Below 15, "everyone has a relationship with everyone else" remains tenable. Above, the collective must develop sub-bodies (committees, working groups) which v0 does not template.
 - **~50 members.** Representative governance becomes nearly mandatory. The voting/non-voting gap becomes structural unfairness rather than transitional protection. v1+ must specify full-member voting with weighted tiers or elected representatives with bounded mandates.
-- **~500 members.** Operating at the scale of a small political body. v0 governance is operating beyond its competence.
+- **~500 members.** Operating at the scale of a small political body; v0 is beyond its competence.
 
-### What v0 commits to
-
-The governance clause declares the v0 template explicitly *with a sunset condition*: a member-count threshold (default 12 total members) above which the collective must adopt a new governance clause via charter amendment (§6) or trigger DERB-recommended re-formation. The protocol's promise is honesty about scaling limits, not graceful scaling.
+The governance clause declares the v0 template explicitly *with a sunset condition*: a member-count threshold (default 12 total members) above which the collective must adopt a new clause via charter amendment (§6) or trigger DERB-recommended re-formation. The protocol's promise is honesty about scaling limits, not graceful scaling.
 
 ## §9. Conflict of interest
 
@@ -321,9 +319,9 @@ For successor collectives: formation under Everest 231 + this template at format
 
 ## §17. The principal-protective inversion at governance scale
 
-The load-bearing position carries through: the collective narrates its own governance (charter specifies template, categories, quorum, amendment procedure; no external party defines how the collective decides); the collective authorizes its own commitments (founders decide subject to bounded DERB veto on enumerated scope); the collective is the strongest party within its own decision-making (counterparties, regulators, customers do not have voting rights).
+The load-bearing position carries through: the collective narrates its own governance (charter, no external party); founders authorize the collective's own commitments (subject to bounded DERB veto, not plenary oversight); counterparties, regulators, customers do not have voting rights inside.
 
-Each design choice was tested against the inversion. DERB veto is bounded (§7), not plenary, so DERB cannot dominate. Agent dissent is recorded but non-binding (§3.5), so agents have voice without inverting human-principal accountability. Charter amendment requires unanimous founder consent + DERB review + public comment (§6), so no minority of founders + external pressure can mutate the collective from outside. Foundational matters require affirmative DERB sign-off rather than mere non-veto, so the gravest decisions get external scrutiny without giving DERB unilateral authority. Substantive non-publication is forbidden (§10), so the collective cannot hide decisions from those it affects. Where any design choice would weaken the principal's protection, it was rejected.
+Tests applied to each design choice: DERB veto bounded (§7), not plenary; agent dissent recorded but non-binding (§3.5), so agents have voice without inverting human-principal accountability; charter amendment requires unanimous founder consent + DERB review + public comment (§6), so no minority of founders + external pressure can mutate the collective from outside; foundational matters require affirmative DERB sign-off rather than mere non-veto; substantive non-publication forbidden (§10). Where any choice would weaken the principal's protection, it was rejected.
 
 ## §18. Acceptance test
 
