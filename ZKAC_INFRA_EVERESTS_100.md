@@ -258,19 +258,20 @@ These are the operating-system-level invariants. Any summit violating them is re
 
 ```
 Phase XVII  : ███░░░░░░░  3 / 10   bagged (ZKAC E1, E5, E6)
-Phase XVIII : ███░░░░░░░░░░░░  3 / 15   bagged (ZKAC E11, E12, E15)
-Phase XIX   : █░░░░░░░░░░░░░░  1 / 15   bagged (ZKAC E26)
+Phase XVIII : █████░░░░░░░░░░  5 / 15   bagged (ZKAC E11, E12, E13, E15, E17)
+Phase XIX   : ███░░░░░░░░░░░░  3 / 15   bagged (ZKAC E26, E29, E30)
 Phase XX    : █░░░░░░░░░░░░░░  1 / 15   bagged (ZKAC E41)
 Phase XXI   : ██░░░░░░░░░░░░░  2 / 15   bagged (ZKAC E56, E58)
 Phase XXII  : ██░░░░░░░░░░░░░  2 / 15   bagged (ZKAC E71, E77)
 Phase XXIII : █░░░░░░░░░  1 / 10   bagged (ZKAC E87)
-Phase XXIV  : █░░░░  1 / 5   bagged (ZKAC E96)
+Phase XXIV  : ██░░░  2 / 5   bagged (ZKAC E96, E99)
 
-Total: 14 / 100 ZKAC Infra summits bagged.
-Critical-path MVP subset (12): bagged **1, 5, 6, 11, 15, 26, 41, 56, 71, 96**; remaining 2 (route map = this doc), 99.
+Total: 19 / 100 ZKAC Infra summits bagged.
+Critical-path MVP subset (12): bagged **1, 5, 6, 11, 15, 26, 41, 56, 71, 96, 99**; remaining 2 (route map = this doc).
 Pass log:
 - 2026-05-20 12:11 — wave 1 (Haiku × 7): E1, E5, E6, E11, E41, E56, E71.
 - 2026-05-20 12:19 — wave 2 (Haiku × 7): E12, E15, E26, E58, E77, E87, E96.
+- 2026-05-20 12:26 — wave 3 (Haiku × 5): E13, E17, E29, E30, E99.
 ```
 
 ---

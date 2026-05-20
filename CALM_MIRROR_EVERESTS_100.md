@@ -274,18 +274,19 @@ Same shape as the Calm Witness route map:
 ```
 Phase IX   : ███░░░░░░░  3 / 10   bagged (Mirror E1, E5, E9)
 Phase X    : █░░░░░░░░░░░░░░  1 / 15   bagged (Mirror E11)
-Phase XI   : █████░░░░░░░░░░  5 / 15   bagged (Mirror E27, E28, E29, E30, E31)
-Phase XII  : ████░░░░░░░░░░░  4 / 15   bagged (Mirror E41, E42, E49, E51)
-Phase XIII : ░░░░░░░░░░░░░░░  0 / 15
+Phase XI   : ███████░░░░░░░░  7 / 15   bagged (Mirror E27, E28, E29, E30, E31, E34, E40)
+Phase XII  : ██████░░░░░░░░░  6 / 15   bagged (Mirror E41, E42, E43, E46, E49, E51)
+Phase XIII : █░░░░░░░░░░░░░░  1 / 15   bagged (Mirror E58)
 Phase XIV  : ░░░░░░░░░░░░░░░  0 / 15
 Phase XV   : ░░░░░░░░░░  0 / 10
 Phase XVI  : ░░░░░  0 / 5
 
-Total: 13 / 100 Mirror summits bagged.
-Critical-path MVP subset (12): bagged **1, 5, 11, 27, 30, 31, 49**; remaining 2 (route map = this doc), 40, 58, 87, 96.
+Total: 18 / 100 Mirror summits bagged.
+Critical-path MVP subset (12): bagged **1, 5, 11, 27, 30, 31, 40, 49, 58**; remaining 2 (route map), 87, 96.
 Pass log:
 - 2026-05-20 12:11 — wave 1 (Haiku × 6): E1, E5, E9, E27, E30, E49.
 - 2026-05-20 12:19 — wave 2 (Haiku × 7): E11, E28, E29, E31, E41, E42, E51.
+- 2026-05-20 12:26 — wave 3 (Haiku × 5): E34, E40, E43, E46, E58. + Mirror values-demo script shipped at ~/CredexAI/scripts/mirror_values_demo.py.
 ```
 
 ---
