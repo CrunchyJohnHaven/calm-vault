@@ -85,6 +85,20 @@ These four predicates are the v0 vocabulary. Adding a fifth requires a protocol-
 
 ---
 
+## 3A — Hydration layer
+
+Before predicate evaluation, the operator **hydrates** the principal's vault chain: it loads the append-only `user_state.jsonl` history from genesis through the current chain head, verifies hash linkage (`prev_hash` → `record_hash`), checks operator signatures on evidence records, and materializes an in-memory view of all `compass_evidence.*` kinds within the evaluator's time windows.
+
+Hydration is read-only with respect to the chain. No record is modified during hydration. The hydrated view supplies:
+
+1. **Chain head binding** — the `record_hash` of the latest record, carried into every Compass disclosure proof.
+2. **Predicate inputs** — filtered evidence records keyed by `kind`, `ts`, and `seq`, passed to `compass_eval.py` evaluators.
+3. **Dispute state** — active `compass_evidence.counter_claim` and `compass_evidence.principal_rebuttal` records for `no_known_willful_harm`, including grace-window and `HarmStatus.disputed` computation.
+
+If hydration fails (broken chain, invalid signature, seq gap), the operator refuses evaluation and returns `refused` on the wire. Counterparties learn nothing beyond refusal.
+
+---
+
 ## 4. The cryptographic spine (sketch)
 
 The novel construction relative to Witness is the **sum-over-private-history proof**:

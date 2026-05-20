@@ -515,9 +515,8 @@ Removing or renaming an existing kind requires a major version bump (v1) and a d
   "kind": "compass_evidence.respect_engagement",
   "payload": {
     "other_party_id": "vc:credexai:xyz789",
-    "disagreement_narrative": "We disagreed about whether the API should default to opt-out or opt-in for data collection. I wanted opt-in (more user control); Morgan wanted opt-out (simpler UX). We both cared about user privacy, but had different philosophies on friction.",
+    "disagreement_narrative": "We disagreed about opt-out vs opt-in for data collection. I wanted opt-in; Morgan wanted opt-out. I listened to Morgan's UX-friction argument; we compromised on opt-out with a first-login banner. I learned that my way is not always the most respectful way.",
     "engagement_continued": true,
-    "disagreement_narrative": "We disagreed about opt-out vs opt-in. I listened to Morgan's UX-friction argument; we compromised on opt-out with a first-login banner. I learned that my way is not always the most respectful way.",
     "other_party_signature": "ed25519:b2c3d4e5f6g7..."
   },
   "ts": "2026-05-10T09:00:00Z",

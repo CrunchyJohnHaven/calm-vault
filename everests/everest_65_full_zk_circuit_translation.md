@@ -1,7 +1,8 @@
 # Everest 65-full — Predicate ZK Circuit Translation (XL)
 
 **Status:** DESIGN-BAGGED (pending proving-system toolchain integration) 2026-05-20  
-**Follow-through:** Halo2 crate in `~/CredexAI/calm_witness/circuits/` + on-chain conformance vectors per predicate.
+**Canonical plan:** [`../E65_FULL_CIRCUIT_TRANSLATION_PLAN_v0.md`](../E65_FULL_CIRCUIT_TRANSLATION_PLAN_v0.md) — gate `~/CredexAI/scripts/everest_65full_zkac_circuit_plan_gate.py`  
+**Follow-through:** Halo2 crate in `~/CredexAI/calm_witness/circuits/` + on-chain conformance vectors per predicate (not started; plan only).
 
 ## Acceptance (verbatim from route map)
 

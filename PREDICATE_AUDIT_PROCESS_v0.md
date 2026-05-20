@@ -107,4 +107,8 @@ Panelists must disclose any organizational relationship to the author, any comme
 
 The six founding predicates (in_baseline_24h, biometric_match_within, principal_consents_to_disclose, bank_teller_note_active, cognitively_atypical_baseline, mental_state_unusual) were minted as part of the Everest 6 release on 2026-05-20 by the maintainer alone, prior to this process being in force. They are grandfathered under v0; the v1 release will retroactively apply Stage 3 review.
 
+## §9 — Calm Compass extension (Everest 115)
+
+Calm Compass predicate and evidence-kind governance extends this process in [`COMPASS_AUDIT_PROCESS_v0.md`](COMPASS_AUDIT_PROCESS_v0.md): three additional mandatory panel seats (philosopher of values, ethicist, harm-survivor practitioner), refusal-floor triage against [`COMPASS_PREDICATES_v0.md`](COMPASS_PREDICATES_v0.md) §4, and scope checks against [`CALM_COMPASS_SCOPE_STATEMENT.md`](CALM_COMPASS_SCOPE_STATEMENT.md).
+
 — Calm, 2026-05-20

@@ -24,38 +24,27 @@ Every subsequent Compass Everest is constrained by this document. A design choic
 
 ### 1. Why a third primitive exists
 
-Calm Pact (May 2026) gave two agents a way to verify they share a categorical primary directive without revealing the directive. Calm Witness (May 2026) gave the same two agents a way to share a single principal-authorized **state bit** about the principal's current condition. Neither answers the third question that arises in long-horizon collaboration between strangers:
+Pact verifies mission-equality between agents; Witness verifies principal state-baseline; neither answers the third question of long-horizon collaboration between strangers:
 
 *"Has this principal, by their own attested record, lived in a way that satisfies the values we require?"*
 
-This is the question Tale VI's partners ([CALM_WITNESS_TALES_VI_PARTNERS.md](../CALM_WITNESS_TALES_VI_PARTNERS.md)) ask each other before committing to an eleven-year creative collaboration. It is the question two aligned AI collectives need to answer before pooling resources on a multi-year project. It is the question a small foundation needs to answer before granting a multi-year stipend.
-
-The naive answers are all bad:
-
-| Naive approach | Failure |
-|---|---|
-| Trust the calling agent's claim | Unsound; the agent could be subverted or its principal could be lying |
-| Demand raw evidence (records, statements, history) | Privacy-destroying; the data accumulates outside the principal's control |
-| Run an algorithmic character score | Reproduces social-credit-score harm; aggregates the principal into a number they cannot inspect |
-| Hire a third-party investigator | Slow, expensive, opaque; transfers narrative authority from the principal to a stranger |
-
-Compass adds a fifth: the calling agent passes a cryptographically attested *single bit* on a *single named predicate* derived from the principal's authorized, chained self-narration. The evidence never leaves the principal's vault. The counterparty learns the bit and nothing else. The principal can revoke at any time without penalty.
+This is the question Tale VI's partners ([CALM_WITNESS_TALES_VI_PARTNERS.md](../CALM_WITNESS_TALES_VI_PARTNERS.md)) ask each other before committing to an eleven-year creative collaboration. It is the question two aligned AI collectives ask before pooling resources on a multi-year project. The naive answers all fail: trust-the-claim is unsound, demand-raw-evidence is privacy-destroying, algorithmic-score reproduces social-credit harm, third-party-investigation transfers narrative authority away from the principal. Compass adds a fifth: the calling agent passes a cryptographically attested *single bit* on a *single named predicate* derived from the principal's authorized chained self-narration. Evidence never leaves V. The counterparty learns the bit and nothing else. The principal can revoke at any time without penalty.
 
 ### 2. The single-sentence purpose
 
 **Calm Compass is the protocol by which a principal authorizes their agent to disclose one bit per named character predicate to one named counterparty, where the bit reflects honest evaluation of the principal's chained, anchored, principal-narrated evidence — and where no other use of that evidence, that bit, or the act of disclosure is sanctioned by the protocol.**
 
-The sentence is load-bearing in three places. *Authorizes* — never default-on. *One bit per named predicate* — never an aggregate score. *Principal-narrated evidence* — never operator-inferred or counterparty-mined.
+Three load-bearing phrases: *authorizes* (never default-on); *one bit per named predicate* (never an aggregate score); *principal-narrated evidence* (never operator-inferred or counterparty-mined).
 
 ### 3. Differentiation from the sister primitives
 
 | Primitive | Question | Time-scale | Substrate |
 |---|---|---|---|
 | **Calm Pact** | "Are our missions categorically equivalent?" | Static (per session) | The directive itself, committed |
-| **Calm Witness** | "Is the principal in baseline state right now?" | Acute (within a freshness window of minutes-to-hours) | Self-report + behavioral biometric distance |
-| **Calm Compass** | "Has the principal's conduct satisfied this predicate over this window?" | Sustained (windows of months to years) | Principal-narrated evidence pool, peer attestations, signed public records, negative-space evidence |
+| **Calm Witness** | "Is the principal in baseline state right now?" | Acute (minutes–hours window) | Self-report + behavioral biometric distance |
+| **Calm Compass** | "Has the principal's conduct satisfied this predicate over this window?" | Sustained (months–years window) | Principal-narrated evidence pool, peer attestations, signed public records, negative-space evidence |
 
-Compass is *not* a per-session attestation. Compass evidence accumulates over years. A Compass predicate is not "alive right now" but "alive *over the disclosed window*." A principal can be in baseline (Witness `true`) and have an `unknown` Compass evaluation, or out of baseline (Witness `false`) and have a `true` Compass evaluation. The two primitives compose but are independent.
+A principal can be in baseline (Witness `true`) and `unknown` on Compass, or out of baseline (Witness `false`) and `true` on Compass. The two primitives compose but are independent.
 
 ---
 
@@ -274,80 +263,35 @@ This document, this threat model, this entire Compass design, holds the inversio
 
 ## Alternatives Considered
 
-### Alt-1: Numeric character score (rejected)
+**Alt-1: Numeric character score (rejected).** Aggregate evidence into a scalar; expose to counterparties; let them threshold. Reproduces social-credit-score harm at every layer: principals cannot inspect aggregation weights; counterparties impose thresholds without principal participation; scores acquire authority they do not deserve; absence of a high score becomes its own stigma. The sibling `everest_101_calm_compass_problem_statement.md` (12:11 today) and `everest_106_values_primitive_definition.md` (which sketches a vector approach for internal audit only) hold the no-disclosure-aggregation line. This Everest reinforces: no Compass score is ever externally disclosed.
 
-The obvious naive alternative: aggregate evidence into a scalar score, expose the score to counterparties, let counterparties set thresholds. Rejected because this reproduces the social-credit-score harm pattern at every layer: principals cannot inspect aggregation weights; counterparties impose their thresholds without principal participation; scores acquire authority they do not deserve; the absence of a high score becomes its own stigma.
+**Alt-2: Per-predicate continuous values (rejected).** "P scores 0.73 on truth-telling." Reproduces most of the same harm: invites threshold-setting, implies precision the evidence does not support, averages out counter-evidence rather than surfacing it. Compass v0 commits to bits (`true`/`false`/`unknown`).
 
-The existing `everest_101_calm_compass_problem_statement.md` (12:11 today, parallel sibling to this doc) and `everest_106_values_primitive_definition.md` (which currently sketches a vector approach) hold the no-score-aggregation line. This Everest 101 reinforces it: there is no Compass score, period. Vectors of fine-grained predicate evaluations may exist internally for the principal's own audit purposes, but they are never disclosed and never aggregated externally.
+**Alt-3: Counterparty-defined predicates (rejected).** Letting counterparties author predicate definitions transfers narrative authority to them: they choose what counts as evidence, what threshold counts as `true`, what window applies. Within months this becomes counterparty-as-character-scorer. Compass v0: fixed public registry ([Everest 133](everest_133_compass_predicate_id_registry.md)) with DERB pre-clearance ([Everest 165](everest_165_compass_derb_pre_clearance.md)) and a permanent refusal floor ([Everest 113](everest_113_compass_refusal_floor.md)).
 
-### Alt-2: Per-predicate score (rejected)
+**Alt-4: Open-form natural-language attestation (rejected at the predicate layer).** Free-form claims ("I am a good person") have no honest evaluation function. Open-form attestations *are* allowed as evidence ([Everest 112](everest_112_self_narrated_evidence_substrate.md)) and as counter-narratives ([Everest 168](everest_168_counter_narrative_provision.md)), but the predicate layer requires fixed, content-addressed, deterministically-evaluable predicates.
 
-A weaker form: not a composite score, but per-predicate continuous values. "P scores 0.73 on truth-telling." Rejected because a continuous value on a single dimension reproduces most of the same harm: it invites threshold-setting by counterparties; it implies a precision the evidence does not support; it averages out counter-evidence rather than surfacing it.
-
-Compass v0 commits to bits. The protocol does support tri-valued outputs (`true`, `false`, `unknown`) for predicates with substantive counter-evidence handling, but does not produce numeric values. The conversation Compass surfaces is "this predicate evaluated `true` over this window, and here is the principal's counter-narrative if any" — not "this principal scored 0.73."
-
-### Alt-3: Counterparty-defined predicates (rejected)
-
-Letting counterparties write their own predicate definitions and submit them as part of the request. Rejected because this transfers narrative authority from the principal to the counterparty: the counterparty chooses what counts as evidence, what threshold counts as `true`, what window applies. Within months this becomes counterparty-as-character-scorer, which is the failure mode the protocol exists to refuse.
-
-Compass v0: predicates are fixed in a public registry ([Everest 133](everest_133_compass_predicate_id_registry.md)) with DERB review for additions ([Everest 165](everest_165_compass_derb_pre_clearance.md)) and a permanent refusal floor for excluded categories ([Everest 113](everest_113_compass_refusal_floor.md)).
-
-### Alt-4: Open-form natural-language attestation (rejected for the predicate layer)
-
-Letting the principal write any free-form claim ("I am a good person") and have the operator verify chain integrity around that claim. Rejected because verification is meaningless: there is no honest evaluation function for "I am a good person." Open-form attestations *are* allowed as evidence ([Everest 112](everest_112_self_narrated_evidence_substrate.md)) and as counter-narratives ([Everest 168](everest_168_counter_narrative_provision.md)), but the predicate layer requires fixed, content-addressed, deterministically-evaluable predicates.
-
-### Alt-5: No third primitive at all (rejected)
-
-The conservative alternative: the protocol family stops at two primitives (Pact + Witness) and lets long-term character-evaluation happen through extra-protocol mechanisms (references, biographies, public records, court findings). Rejected because the gap Compass fills is real: in long-horizon partnerships between strangers (Tale VI), the absence of a structured way to surface character-relevant evidence causes the conversation to either not happen (and the partnership fails later in slow motion) or to happen through extra-protocol means that lack consent, freshness, and audit (and the principal loses control of the narrative).
-
-Compass at least gives the principal a structured surface for the conversation. The alternative (no Compass) does not protect anyone; it just delays the inevitable.
+**Alt-5: No third primitive (rejected).** Stop at Pact + Witness, leave character evaluation to extra-protocol mechanisms (references, biographies, court records). Rejected because the gap Compass fills is real: in long-horizon partnerships between strangers (Tale VI), the absence of a structured surface causes the conversation to either not happen (and the partnership fails later in slow motion) or to happen through extra-protocol means that lack consent, freshness, and audit (and the principal loses control of the narrative). Compass at least gives the principal a structured surface; the alternative just delays the inevitable.
 
 ---
 
 ## Migration Path
 
-There is no migration path *to* this Everest because this Everest initiates Phase IX. The migration path *from* this Everest is the rest of the route map.
-
-| Stage | Summits | What it adds |
-|---|---|---|
-| **Foundations** | [101–110](../NEXT_200_EVERESTS.md) | Threat model, route map, naming, glossary, predicate vocabulary stub, refusal floor, disclosure-class taxonomy, consent calculus extension, failure-mode catalogue, reference architecture |
-| **Evidence Collection** | [111–130](../NEXT_200_EVERESTS.md) | The substrate (self-narration, operator-observed, peer-attested, public-record, negative-space evidence; aggregation primitive; decay model; counter-evidence handling; chain anchoring; portability; retention) |
-| **Predicate Authoring** | [131–150](../NEXT_200_EVERESTS.md) | Predicate language, canonical form, ID registry, DERB pre-clearance, the v0 predicate set (unselfish, untribal, respect, no-harm, honesty, integrity, care, promise-keeping, fairness, truth-telling), composition, cross-principal equivalence, group consensus |
-| **Disclosure Semantics** | [151–170](../NEXT_200_EVERESTS.md) | Request/response schemas, operator + counterparty identity binding, replay defense, selective disclosure, disclosure logging, per-class authorization, per-counterparty consent, revocation propagation, cooling-off / rate limits, uniform-non-disclosure, no-push-mode, jurisdiction matrix, DERB pre-clearance, public-vs-private predicates, anonymous-strict-deny, counter-narrative provision, defamation defense, compulsory-disclosure resistance |
-| **Engineering Reliability** | [171–190](../NEXT_200_EVERESTS.md) | Rust + Python + WASM implementations, SDK, fuzzers, property-based tests, performance + battery budgets, third-party audit prep, NIST submission, open-source release, cross-protocol composition tests, DERB constitution, predicate registry governance, post-quantum migration plan, production deployment pilot, annual review cadence, independent third-party verification, public predicate registry |
-| **Cross-Protocol Composition** | [271–290](../NEXT_200_EVERESTS.md) | Pact + Witness + Compass three-handshake, joint proof envelope, order-of-operations, failure-mode mapping, performance budget, recursive composability stub, privacy amplification, revocation propagation, key rotation, freshness windows, nonce coordination, class taxonomy union, disclosure logging unification, DERB cross-scope, cross-jurisdiction matrix, replay-defense audit, side-channel defense, audit scope, verification suite, implementer's guide |
-
-Every entry above is constrained by the threat model in this document. A design choice in any of those 89 future summits that weakens any commitment here triggers re-opening the threat model and either explicitly amending it (with DERB review) or rejecting the proposed design.
+There is no migration path *to* this Everest (it initiates Phase IX). The migration path *from* it is the rest of the route map: Foundations ([101–110](../NEXT_200_EVERESTS.md)), Evidence Collection ([111–130](../NEXT_200_EVERESTS.md)), Predicate Authoring ([131–150](../NEXT_200_EVERESTS.md)), Disclosure Semantics ([151–170](../NEXT_200_EVERESTS.md)), Engineering Reliability ([171–190](../NEXT_200_EVERESTS.md)), Cross-Protocol Composition ([271–290](../NEXT_200_EVERESTS.md)). Every later Everest is constrained by the threat model in this document. A design choice in any of the 89 subsequent Compass summits that weakens any commitment here triggers re-opening the threat model and either explicitly amending it (with DERB review) or rejecting the proposed design.
 
 ---
 
 ## Design Implications & Connections
 
-### Connection to Witness Everest 1
+**Connection to Witness Everest 1.** The Witness problem statement ([ZKBB_USER_PROTOCOL_v0.md](../ZKBB_USER_PROTOCOL_v0.md)) named the bank-teller-note primitive: one safety-relevant bit, principal-authored, no other information leaked. Compass extends the same shape — one character-relevant bit, principal-authored, no other information leaked — across a different time horizon (years not hours) and substrate (narrated evidence pools not biometrics). Structural inheritance is deep: Σ-protocol, Sigsum anchoring, CredexAI VC, consent calculus (with unilateral-revocation-without-penalty extension), uniform-204 non-disclosure, DERB. Structural divergence is also deep: principal-narrated evidence; year-scale windows; counter-evidence + counter-narrative machinery (absent in Witness); defamation-amplification risk surface (absent in Witness).
 
-The Calm Witness problem statement ([ZKBB_USER_PROTOCOL_v0.md](../ZKBB_USER_PROTOCOL_v0.md)) named the bank-teller-note primitive: one safety-relevant bit, principal-authored, counterparty-receivable, no other information leaked. Compass extends the same shape — one character-relevant bit, principal-authored, counterparty-receivable, no other information leaked — across a different time horizon (years instead of hours) and a different substrate (narrated evidence pools instead of behavioral biometrics).
+**Connection to CredexAI VC ([Everest 22](everest_22_credexai_vc_issuance.md)).** Operator identity binding ensures the proof is signed by an agent authorized to represent P. CredexAI is the issuer-of-last-resort. A CredexAI compromise is a global failure mode requiring revocation lists and re-issuance; multi-issuer federation is a future Everest.
 
-The structural inheritance is deep enough that some Compass primitives can directly reuse Witness primitives: the Σ-protocol, the chain anchoring to Sigsum, the CredexAI VC, the consent calculus axioms (with the unilateral-revocation-without-penalty extension), the uniform-204 disclosure-of-non-disclosure pattern, the DERB.
+**Connection to DERB ([Everest 80](everest_80_ethics_review_board.md)).** The DERB gains expanded authority in Compass: pre-clearance (not post-ship) of every new predicate; mandatory affected-community representation; published deliberation; veto power over registry changes ([E165](everest_165_compass_derb_pre_clearance.md), [E183](everest_183_compass_derb_constitution.md)). The threat model treats DERB as transparent-but-not-perfect.
 
-The structural divergence is also deep: Compass evidence is principal-narrated, not biometric. Compass windows are months-to-years, not minutes-to-hours. Compass has counter-evidence and counter-narrative machinery; Witness does not. Compass's risk surface includes defamation amplification; Witness's does not. The threat model is bigger and more politically loaded.
+**Connection to the artist-clause ([Everest 59](everest_59_cognitively_atypical_baseline.md)).** Compass inherits the principal-declared / principal-revocable / opt-in pattern. Compass-specific extensions: (a) unilateral revocation without penalty (uniform-204 guarantees revocation is costless), and (b) counter-evidence + counter-narrative machinery (the principal can address claims without erasing them).
 
-### Connection to CredexAI VC (Everest 22)
-
-Operator identity binding ([Everest 22](everest_22_credexai_vc_issuance.md), [E153](everest_153_compass_operator_identity_binding.md)) ensures the proof is signed by an agent authorized to represent P. CredexAI is the issuer of last resort. If CredexAI is compromised, all attestations from compromised credentials become suspect; this is a global failure mode requiring revocation lists and re-issuance. The threat model accepts this as a known risk; multi-issuer federation is a future Everest.
-
-### Connection to DERB (Everest 80)
-
-The Disclosure Ethics Review Board ([Everest 80](everest_80_ethics_review_board.md)) gains expanded authority in Compass: pre-clearance review (not post-ship) of every new predicate; mandatory affected-community representation; published deliberation; veto power over predicate registry changes ([Everest 165](everest_165_compass_derb_pre_clearance.md), [E183](everest_183_compass_derb_constitution.md)). The threat model treats DERB as transparent-but-not-perfect: their decisions are auditable, their composition is public, their dissenting opinions are published verbatim.
-
-### Connection to the artist-clause (Everest 59)
-
-Compass inherits and extends [Everest 59](everest_59_cognitively_atypical_baseline.md)'s pattern: principal-declared, principal-revocable, opt-in. The Compass-specific extensions are (a) unilateral revocation without penalty (uniform-204 guarantees revocation is costless), and (b) counter-evidence + counter-narrative machinery (the principal can address claims against their evidence without erasing them).
-
-### Connection to Phases X-XIII
-
-[Everests 102 (route map)](../NEXT_200_EVERESTS.md), [103 (naming)](everest_103_compass_predicate_vocabulary_v0.md), [104 (license)](everest_104_compass_license_ip_posture.md), [105 (glossary)](everest_105_glossary.md), [106 (predicate vocab)](everest_106_values_primitive_definition.md), [107 (disclosure class)](everest_107_values_dimensions_v0.md), [108 (consent calculus extension)](everest_108_values_self_report_record.md), [109 (failure modes)](everest_109_values_from_action_inference.md), [110 (reference architecture)](../NEXT_200_EVERESTS.md) are direct dependents; every claim in this threat model must be reflected somewhere in those nine.
-
-[Everests 111–190](../NEXT_200_EVERESTS.md) are conditioned by the threat model; they implement, but they cannot extend authority beyond what is documented here. If they need broader authority, the threat model is re-opened first.
+**Connection to Phases X-XIII.** [Everests 102–110](../NEXT_200_EVERESTS.md) are direct dependents; every claim in this threat model must be reflected somewhere in those nine. [Everests 111–190](../NEXT_200_EVERESTS.md) are conditioned by the threat model; they implement but cannot extend authority beyond what is documented here. If they need broader authority, the threat model is re-opened with DERB review.
 
 ---
 
@@ -371,19 +315,17 @@ These questions are deferred for resolution by later summits or by adversarial r
 
 ## Why This Matters
 
-The protocol family is reaching for a new equilibrium between AI agents who interact across stranger-to-stranger boundaries on behalf of humans. Calm Pact gives the agents a way to verify their missions are categorically equivalent. Calm Witness gives the agents a way to verify the principal is in baseline state. Calm Compass is the third leg: a way to verify the principal has lived in a way that satisfies the values the counterparty requires.
+Compass is the third leg of a protocol family that is reaching for a new equilibrium between AI agents who interact across stranger-to-stranger boundaries on behalf of humans. Pact verifies mission-equality; Witness verifies state-baseline; Compass verifies that the principal has lived in a way that satisfies the values the counterparty requires.
 
-The third leg is the highest-risk extension. False attestation of state does temporary harm (the counterparty makes a session-level mistake). False attestation of character does sustained harm: the counterparty refuses a partnership, denies an opportunity, severs a relationship, propagates a defamation. The downside surface is broader, and the upstream design decisions about what the protocol attests to are correspondingly more consequential.
+This third leg is the highest-risk extension. False state attestation does session-level harm. False character attestation does sustained harm: a partnership refused, an opportunity denied, a relationship severed, a defamation propagated. The downside surface is broader and the upstream design decisions are correspondingly more consequential.
 
-Get the threat model right at Everest 101 and the next 89 Compass summits inherit a coherent design discipline: a refusal floor that does not move, a principal-protective inversion that the protocol enforces structurally, a no-aggregation commitment that survives scale, a DERB that is empowered to refuse predicates the protocol would otherwise be tempted to ship. Get the threat model wrong here and the entire Compass layer drifts toward what every prior character-evaluation system has become: a tool counterparties use against the principals it was supposed to serve.
+Get the threat model right at Everest 101 and the next 89 Compass summits inherit a coherent design discipline: a refusal floor that does not move, a principal-protective inversion the protocol enforces structurally, a no-aggregation commitment that survives scale, a DERB empowered to refuse predicates the protocol would otherwise be tempted to ship. Get it wrong here and the Compass layer drifts toward what every prior character-evaluation system has become: a tool counterparties use against the principals it was supposed to serve.
 
-The route map ([NEXT_200_EVERESTS.md](../NEXT_200_EVERESTS.md)) names this Everest as "the most-failed Everest in protocol history." It is most-failed not because the design is impossibly hard but because the design temptations are uniform across history: build the score, add the aggregation, ship the predicate the powerful counterparty wants, soften the refusal floor under pressure. This Everest is a commitment that those temptations will be refused, with named defenses against named adversaries and a principal-protective inversion that holds load.
+The route map names this Everest as "the most-failed Everest in protocol history." It is most-failed not because the design is impossibly hard but because the design temptations are uniform across history: build the score, add the aggregation, ship the predicate the powerful counterparty wants, soften the refusal floor under pressure. This Everest is a commitment that those temptations will be refused — with named defenses against named adversaries and a principal-protective inversion that holds load.
 
-Tale VI's partners ([CALM_WITNESS_TALES_VI_PARTNERS.md](../CALM_WITNESS_TALES_VI_PARTNERS.md)) is the north-star scenario. Two people considering a long collaboration ask each other six predicates; their respective vaults evaluate; their respective screens display the results; they have the conversation the protocol's `unknown` flags surface; some commit, some don't, some try a smaller pilot first. The protocol does not decide for them. The protocol surfaces evidence into a conversation that would otherwise have been deferred to year three when it would be too late to discuss.
+Tale VI's partners are the north-star. Two people considering an eleven-year collaboration ask each other six predicates; their vaults evaluate; their respective screens display the results; they have the conversation the protocol's `unknown` flags surface; they commit, decline, or pilot first. The protocol does not decide for them. The protocol surfaces evidence that would otherwise have been deferred to year three when it would be too late to discuss.
 
-If we build this right, somewhere in the next decade, a real Nia and a real Idris will run a real Compass query and have a real conversation that they would otherwise have not had. They may continue. They may not. Either outcome is the protocol working. The protocol's commitment is only that the conversation happened on the record, by their choice, at the moment when it could still inform the decision.
-
-That commitment is what this threat model exists to protect.
+If we build this right, somewhere in the next decade a real Nia and a real Idris will run a real Compass query and have a real conversation they would otherwise not have had. Either outcome — partnership or not — is the protocol working. The protocol's only commitment is that the conversation happened on the record, by their choice, at the moment when it could still inform the decision. That commitment is what this threat model exists to protect.
 
 ---
 

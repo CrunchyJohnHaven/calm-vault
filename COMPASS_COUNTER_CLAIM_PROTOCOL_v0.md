@@ -1,87 +1,144 @@
 # Calm Compass — Counter-Claim Protocol v0
 
-**Draft v0 · 2026-05-20 · Calm**
-**Closes Everest 111 of [`ZKAC_NEXT_200_EVERESTS.md`](ZKAC_NEXT_200_EVERESTS.md).**
-**Companion to [`COMPASS_PREDICATES_v0.md`](COMPASS_PREDICATES_v0.md) §2.4, [`COMPASS_EVIDENCE_CEREMONY_v0.md`](COMPASS_EVIDENCE_CEREMONY_v0.md) §4.**
+**Draft v0 · 2026-05-20 · Calm**  
+**Closes Everest 111 of [`ZKAC_NEXT_200_EVERESTS.md`](ZKAC_NEXT_200_EVERESTS.md).**  
+**Companion to [`COMPASS_EVIDENCE_CEREMONY_v0.md`](COMPASS_EVIDENCE_CEREMONY_v0.md) §4, [`COMPASS_VALUES_EVIDENCE_TAXONOMY_v0.md`](COMPASS_VALUES_EVIDENCE_TAXONOMY_v0.md) §7, and `~/CredexAI/calm_witness/compass_eval.py`.**
+
+---
 
 ## §1 — Purpose
 
-Third parties may allege that a principal committed **willful harm** within a named window. The counter-claim protocol governs how those allegations enter the principal's vault chain, how the principal may rebut them, and how the `cwp.compass.v0.no_known_willful_harm_in_window_365d` predicate exposes a **disputed** state without turning Compass into a criminal-record proxy.
+Third parties may allege that a principal **willfully harmed** them. Calm Compass does not adjudicate guilt in the abstract; it chains attributed claims, gives the principal a bounded rebuttal window, and exposes a **disputed** state on the `no_known_willful_harm_in_window_365d` predicate until claims are rebutted or age out of the evaluation window.
 
-Counter-claims are **attributed**, **time-bounded**, and **refutable**. Anonymous harm allegations are rejected at intake.
+This protocol formalizes:
 
-## §2 — Actors
+1. **Filing** — `compass_evidence.counter_claim` with mandatory full attribution.
+2. **Rebuttal** — `compass_evidence.principal_rebuttal` within 30 days.
+3. **Evaluator semantics** — `HarmStatus` (`bit`, `disputed`, `active_counter_claim_seqs`) from `no_known_willful_harm()`.
 
-| Actor | Role |
+---
+
+## §2 — Counter-claim record (`compass_evidence.counter_claim`)
+
+**Author:** third party Q (not principal P).  
+**Channel:** audit-process-mediated (`submitted_via`, Everest 115).  
+**Schema:** see [`COMPASS_VALUES_EVIDENCE_TAXONOMY_v0.md`](COMPASS_VALUES_EVIDENCE_TAXONOMY_v0.md) §7.
+
+**Mandatory fields:**
+
+| Field | Rule |
 |-------|------|
-| **Principal P** | Subject of the allegation; may author `principal_rebuttal` records on their own chain. |
-| **Claimant Q** | Third party filing `compass_evidence.counter_claim`; MUST hold a CredexAI-issued VC ID used as `claimant_id`. |
-| **Operator (P's)** | Stores P's chain; surfaces active counter-claims to P; never suppresses attributed claims. |
-| **Operator (Q's)** | Accepts Q's counter-claim submission via audit-mediated channel; signs Q's record on Q's chain (not P's). |
-| **Audit panel** | Mediates intake, adjudicates substantiation after rebuttal window (Everest 115); outcome may be logged as panel record. |
-| **Verifier** | Reads predicate bit + `disputed` annotation from a Compass disclosure envelope; never sees full narratives unless P consents (Everest 112). |
+| `claimant_id` | Non-empty CredexAI VC ID; **no anonymity** |
+| `alleged_harm_narrative` | Non-empty substantive account |
+| `alleged_harm_window.from` / `.to` | Valid ISO8601; `to` ≥ `from` |
+| `submitted_via` | Non-empty channel id (e.g. `calm_audit_process_v0`) |
 
-## §3 — Record shapes (v0)
+**Filing flow (ceremony §4):**
 
-Defined in [`COMPASS_PREDICATES_v0.md`](COMPASS_PREDICATES_v0.md) §3:
+1. Q initiates via audit panel intake (not direct vault injection).
+2. Panel verifies refusal-floor compliance (no protected-category fishing).
+3. Record is appended to **P's** vault chain with Q's operator signature.
+4. P receives notification: claimant identity + full narrative + harm window.
 
-- `compass_evidence.counter_claim` — authored by Q (via Q's operator), references P in narrative only; chained on a channel that links to P's vault head via audit process.
-- `compass_evidence.principal_rebuttal` — authored by P on P's chain; `targets_counter_claim_seq` MUST match an in-window claim.
+---
 
-Mandatory counter-claim fields:
+## §3 — Principal rebuttal (`compass_evidence.principal_rebuttal`)
 
-- `claimant_id` — non-empty CredexAI VC ID (full attribution).
-- `alleged_harm_narrative` — non-empty string.
-- `alleged_harm_window` — ISO `from` / `to` bounds.
-- `submitted_via` — MUST be `audit-process-mediated` for v0.
+**Author:** principal P.  
+**Window:** 30 calendar days from counter-claim `ts` (`rebuttal_window_days` default in `compass_eval.py`).
 
-## §4 — Filing flow
+**Schema:**
 
-1. **Intake.** Q submits allegation through the audit-panel counter-claim channel (not direct write to P's chain). Panel triages for refusal-floor violations (Everest 113) and spam patterns.
-2. **Publication.** On accept, Q's operator appends a signed `counter_claim` record; P's operator ingests a **notification pointer** (seq, claimant_id hash, window) into P's vault metadata — the full narrative is visible to P, not to verifiers by default.
-3. **Grace window.** For `rebuttal_window_days` (default **30**), an unrebutted claim does **not** flip the harm bit. P may author `principal_rebuttal` at any time during grace.
-4. **Activation.** After grace, if no substantive rebuttal targets the claim seq, the claim becomes **active** and the predicate returns `bit=false`, `disputed=true`.
-5. **Rebuttal.** A substantive rebuttal (`rebuttal_narrative` non-empty, correct `targets_counter_claim_seq`) removes the claim from the active set immediately — no panel wait required for deactivation.
-6. **Adjudication (optional).** Panel may later mark claims substantiated / not substantiated; v0 evaluator uses chain records only; panel records are reserved for v1 policy hooks.
+```json
+{
+  "kind": "compass_evidence.principal_rebuttal",
+  "payload": {
+    "targets_counter_claim_seq": <int, seq of the counter_claim>,
+    "rebuttal_narrative": "<string, substantive; non-empty after strip>",
+    "evidence_record_seqs": [<int>, ...]
+  },
+  "ts": "<ISO8601, must be after targeted claim ts>",
+  "seq": <int>,
+  "operator": "<P's operator>",
+  "signature": "<ed25519:hex>"
+}
+```
 
-## §5 — Predicate semantics (reference implementation)
+**Invariants:**
 
-The normative evaluator is:
+- `targets_counter_claim_seq` must reference an existing `counter_claim` in P's chain.
+- `rebuttal_narrative` must be non-empty; empty or whitespace-only rebuttals are **ignored** by the evaluator.
+- `evidence_record_seqs` is optional; when present, each seq must exist in the chain.
 
-`~/CredexAI/calm_witness/compass_eval.py`
+**Ceremony UI (COMPASS_EVIDENCE_CEREMONY_v0 §4.2):** P addresses Q's account directly; may link prior evidence records; signs with operator key.
 
-- `no_known_willful_harm(chain_records, now_iso) -> HarmStatus`
-- `no_known_willful_harm_bit(...) -> bool` (convenience wrapper)
+---
 
-`HarmStatus` fields:
+## §4 — Reference implementation: `HarmStatus`
 
-| Field | Meaning |
-|-------|---------|
-| `bit` | `True` iff zero active unrebutted counter-claims in the 365d window |
-| `disputed` | `True` iff at least one active unrebutted counter-claim exists |
-| `active_counter_claim_seqs` | Sorted seq ids of active claims |
+`compass_eval.py::no_known_willful_harm()` returns:
 
-**Active claim** = in 365d window + mandatory attribution present + past rebuttal grace + no matching substantive `principal_rebuttal`.
+```python
+@dataclass(frozen=True)
+class HarmStatus:
+    bit: bool          # True iff no active unrebutted claims
+    disputed: bool     # True iff active unrebutted claims exist
+    active_counter_claim_seqs: tuple[int, ...]
+```
 
-Claims without `claimant_id`, outside the window, or inside grace are ignored. Wrong-target or empty-narrative rebuttals do not clear a claim.
+**Claim collection:** all `compass_evidence.counter_claim` records with valid `claimant_id`, `ts` within `claim_window_days` (default 365).
 
-Golden tests: `~/CredexAI/calm_witness/test_compass_eval.py` (Everest 109 + 117 corpora).
+**Rebuttal detection:** any `principal_rebuttal` with matching `targets_counter_claim_seq` and substantive `rebuttal_narrative` removes the claim from the active set.
 
-## §6 — Disclosure to counterparties
+**Grace period:** for `rebuttal_window_days` (default 30) after claim `ts`, the claim is **not active** even without rebuttal — P may still respond.
 
-- Default: verifiers receive the **boolean harm bit** and, when `disputed`, a `disputed: true` annotation — not Q's narrative, not P's rebuttal text.
-- Under principal consent, a **redacted evidence sketch** may be released per [`COMPASS_FALSIFIABILITY_PROTOCOL_v0.md`](COMPASS_FALSIFIABILITY_PROTOCOL_v0.md).
-- If Calm Witness duress bit is active in the same envelope, Compass predicates downgrade to **Unknown** (composition rule in COMPASS_PREDICATES §6).
+**Active claim:** in window, not rebutted, and past grace period → included in `active_counter_claim_seqs`.
 
-## §7 — Abuse controls
+**Wire semantics for `cwp.compass.v0.no_known_willful_harm_in_window_365d`:**
 
-- **Anonymous claims** rejected (no `claimant_id`).
-- **Refusal floor** rejects predicates or evidence kinds that proxy race, religion, criminal record, etc. (canonical list: COMPASS_PREDICATES §4).
-- **Rate limits** on Q filings per principal per rolling year (operator policy; default max 3 accepted intakes).
-- **Anti-purity-test:** counter-claims MUST NOT be used to enforce "values similarity" requirements; see [`CALM_CONCORD_PROTOCOL_v0.md`](CALM_CONCORD_PROTOCOL_v0.md) §4.
+| State | `bit` | `disputed` | Verifier interpretation |
+|-------|-------|------------|-------------------------|
+| No claims in window | `true` | `false` | No third-party harm allegations on record |
+| Claims in grace | `true` | `false` | Allegations exist; rebuttal window open |
+| Active unrebutted | `false` | `true` | **Disputed** — do not treat as clean harm-absence |
+| All rebutted or aged out | `true` | `false` | Allegations addressed or outside window |
 
-## §8 — Versioning
+The convenience wrapper `no_known_willful_harm_bit()` returns only `HarmStatus.bit`; integrators that need dispute visibility MUST call `no_known_willful_harm()` directly.
 
-v0 grace window = 30 days; claim window = 365 days. Tightening may add fields; loosening attribution requirements is forbidden.
+---
 
-— Musk, 2026-05-20
+## §5 — Audit panel adjudication (post-rebuttal)
+
+After P files a rebuttal, the Compass audit panel ([`COMPASS_AUDIT_PROCESS_v0.md`](COMPASS_AUDIT_PROCESS_v0.md)) may record a non-chain adjudication outcome:
+
+- **Substantiated** — Q's claim meets panel plausibility bar.
+- **Not substantiated** — Q's claim fails on facts or weight.
+- **Disputed** — both accounts credible; matter unresolved.
+
+Adjudication does not rewrite chain records. It informs operator policy and Everest 200 misuse logging. The evaluator's `disputed` flag is driven solely by **active unrebutted** counter-claims per §4.
+
+---
+
+## §6 — Threat model
+
+| Attack | Mitigation |
+|--------|------------|
+| Anonymous harm accusations | `claimant_id` mandatory; no anonymous counter-claims |
+| Spam claims | Audit-process intake + panel triage |
+| Coerced rebuttal | Duress codeword pattern (Witness §P-04) applies to rebuttal signatures |
+| Stale claims | `claim_window_days` horizon |
+| Gaming via empty rebuttal | Evaluator ignores blank narratives |
+| Wrong-target rebuttal | `targets_counter_claim_seq` must match; non-matching ignored |
+
+---
+
+## §7 — Cross-references
+
+- **Everest 109** — `no_known_willful_harm` predicate implementation and tests.
+- **Everest 104** — `counter_claim` taxonomy §7.
+- **Everest 116** — ceremony §4 counter-claim UI.
+- **Everest 115** — audit intake and panel review.
+
+---
+
+— Calm, 2026-05-20

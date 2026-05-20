@@ -1,52 +1,242 @@
-# Calm Witness / ZKAC — Harm Intent vs Effect Distinction
+# ZKAC / Harm Intent vs Effect Distinction — v0 Protocol
 
-**Everest 164 acceptance artifact. Companion to [`HARM_TAXONOMY_v0.md`](HARM_TAXONOMY_v0.md).**
+**Everest 164 acceptance artifact. Companion to [`HARM_TAXONOMY_v0.md`](HARM_TAXONOMY_v0.md), [`calm_witness/harm.py`](../../CredexAI/calm_witness/harm.py), and [`COMPASS_COUNTER_CLAIM_PROTOCOL_v0.md`](COMPASS_COUNTER_CLAIM_PROTOCOL_v0.md).**
 
-> The user's framing—**"evidence that they willfully do harm to others"**—is load-bearing. This document operationalizes the intent/effect distinction as a first-class predicate-design principle. Intent alone is not sufficient to record harm; nor is effect alone. The chain distinguishes between willful harm, negligent harm, accidental harm, and harm caused by third parties, with implications for predicate evaluation.
+> The user specifically said: **"evidence that they willfully do harm to others."** Intent is load-bearing.
 
 **Authored by Calm, on behalf of John Bradley (Creativity Machine LLC), 2026-05-20. Anchored into `~/.calm-vault/user_state.jsonl` as `kind: "summit_bagged"`.**
 
 ---
 
-## 1. The User's Intent Statement
+## 1. The User-Stated Framing
 
-The user named "evidence that they willfully do harm to others" as a **top-priority disclosure** in the Calm Witness route map. The word **"willfully"** introduces an epistemic requirement: the protocol records not just *what harm occurred*, but *the harmer's state of mind*.
+The ZKAC harm-avoidance predicate family (Phase XI, Everest 146+) was authorized by the user's explicit priority: *"evidence that they willfully do harm to others."*
 
-This is not a claim about moral culpability—which is a social, legal, or spiritual judgment. It is a **narrow informational commitment**: the chain must record the harmer's intent (or absence thereof) so that counterparties can make their own decisions about trust.
+The word **willfully** is not incidental. It places **intent** at the center of the v0 protocol's harm model. Without intent-distinction, the protocol would treat accidents the same as deliberate wrongs — weaponizing absence-of-harm predicates against unlucky people, against those whose foreseeable actions had unintended consequences, against those harmed by third parties.
 
-## 2. Intent Categories in harm_report Records
+With intent-distinction, the protocol respects the moral and legal difference between intention and consequence. This document operationalizes that stance in the chain record, the predicates, and the evaluator semantics.
 
-Per `HARM_TAXONOMY_v0.md`, the `harm_report` chain record kind has a first-class `intent` field with these values:
+---
 
-### 2.1 Willful Intent
+## 2. The Five Intent Categories
 
-**Definition:** The harmer acted with the purpose of causing harm, or knew with high confidence that harm would result and proceeded anyway.
+Every `harm_report` chain record carries an `intent` field (HARM_TAXONOMY_v0 §3). The field accepts one of five values:
 
-**Evidence chain:**
-- Principal's own written acknowledgement (self-report or harm_report record authored by the principal themselves).
-- Third-party witness attestation with details of the harmer's stated motivation or obvious knowledge.
-- Court finding or legal record explicitly naming intent.
+### 2.1 `willful`
 
-**Predicate impact:** `cwp.v0.no_*_harm_evidence()` predicates default to flagging willful harm. This is the "evidence" the user asked to disclose.
+The principal intended the harm and acted accordingly. The harm was the goal or a known and accepted side-effect.
 
-**Example:** Alice strikes Bob intending injury. Alice posts on the chain a `harm_report` record with `intent: "willful"`. A counterparty evaluating `cwp.v0.no_direct_physical_harm_evidence()` will receive `False` (evidence of willful harm exists).
+**Example:** Person A deliberately strikes person B with intent to cause pain.
 
-### 2.2 Reckless Intent
+**Legal parallel:** Criminal intent (*mens rea* in the common-law tradition).
 
-**Definition:** The harmer did not intend harm but acted with knowledge of high risk and proceeded anyway, disregarding the risk.
+### 2.2 `reckless`
 
-**Evidence chain:**
-- Witness attestation describing the harmer's reckless conduct (e.g., "she drove at 80mph in a 25mph school zone").
-- Principal's own acknowledgement: "I knew the risk but went ahead."
-- Regulatory or court finding that the act was reckless per jurisdiction.
+The principal did not intend the harm but was aware that the action created a substantial risk of harm and proceeded anyway, indifferent to the outcome.
 
-**Predicate impact:** By default, `cwp.v0.no_*_harm_evidence()` includes reckless harm in the "evidence present" outcome. Counterparties can optionally narrow to willful-only via an optional parameter.
+**Example:** Person A drives at 80 mph through a residential school zone, knowing the speed creates risk of child injury, but proceeds because they are in a hurry.
 
-**Example:** Charlie builds a rickety scaffold and leaves it unattended in a crowded area, knowing children play nearby. The scaffold collapses and injures a child. A harm_report record with `intent: "reckless"` reflects Charlie's disregard of foreseeable risk.
+**Legal parallel:** Reckless endangerment; crimes requiring "depraved heart" or "extreme indifference."
 
-### 2.3 Negligent Intent
+### 2.3 `negligent`
 
-**Definition:** The harmer failed to exercise reasonable care (per the jurisdiction's standard), and harm resulted. The harmer either did not foresee the risk or should have foreseen it but did not take steps to mitigate.
+The principal did not intend the harm, and it was foreseeable (a reasonable person would have anticipated it), but the principal failed to take reasonable precaution. The harm was an accident given the principal's failure of care.
+
+**Example:** Person A leaves a loaded firearm on a low shelf where children play. The harm (child injury) is foreseeable but not intended; it results from negligence.
+
+**Legal parallel:** Tort negligence; civil liability for breach of duty of care.
+
+### 2.4 `accident`
+
+The harm was neither intended nor reasonably foreseeable at the time the principal acted. No failure of care is attributable to the principal.
+
+**Example:** Person A is driving lawfully on a clear day when another car crosses the centerline and collides with them. A is injured. A did not intend, foresee, or negligently cause the harm.
+
+**Legal parallel:** Acts of God; unavoidable accident.
+
+### 2.5 `third_party_caused`
+
+The principal did not directly cause the harm. A third party was the proximate cause, and the principal's contribution (if any) was not the primary driver.
+
+**Example:** Person A hires Person B to repair their roof. Person B's negligent work causes an injury to a bystander. The harm is third-party-caused relative to A, even if A's hiring may have created opportunity.
+
+**Legal parallel:** Proximate-cause chains; distinguishing the party primarily liable from parties in the causal chain.
+
+---
+
+## 3. Which Intents Trigger Absence Predicates
+
+The v0 harm-absence predicates are designed to answer a single question: *"Is there evidence that this principal willfully harmed others?"*
+
+### 3.1 WILLFUL_INTENTS
+
+In `calm_witness/harm.py`, the canonical set is:
+
+```python
+WILLFUL_INTENTS = frozenset({"willful", "reckless"})
+```
+
+**Default predicate behavior:** When a counterparty calls `cwp.v0.no_direct_physical_harm_evidence(window_seconds)` or any of the 12 v0 absence predicates, the evaluator returns `True` (absence of evidence) if and only if:
+
+- No harm-report records in the window have `intent ∈ {"willful", "reckless"}`, AND
+- The records that do exist are substantiated (per `_is_substantiated()` in harm.py), AND
+- Any reversed harms (with `reversal_id` set) are counted as repaired per the counterparty's config.
+
+### 3.2 Intents NOT counted by default
+
+**Negligent**, **accident**, and **third_party_caused** intents do NOT flip the absence predicate to false by default. They are recorded on the chain (full transparency), but they do not trigger the user-named "willful harm" predicate.
+
+**Why:** Negligence is a failure of care, not a failure of intention. Accidents are nobody's fault. Third-party causation breaks the causal chain from principal to harm. None of these should disqualify a principal from the v0 absence-of-willful-harm bit.
+
+### 3.3 Counterparty-side strictness options
+
+The protocol does not forbid stricter checks. A counterparty may:
+
+- Call a predicate with `intent_set={"willful", "reckless", "negligent"}` to also count negligent harm.
+- Call with `intent_set={"willful", "reckless", "negligent", "accident"}` for even stricter evaluation.
+- Call with `intent_set={"willful"}` for willful-only (excluding reckless).
+
+**Implementation:** The predicate evaluator accepts `intent_set` as an optional parameter. Default is `WILLFUL_INTENTS`. Each counterparty configures their own tolerance.
+
+**Trust implication:** A counterparty requiring `intent_set={"willful", "reckless", "negligent"}` is signal-posting that they do not trust this principal to exercise reasonable care. That is a valid stance; the protocol does not forbid it. But it is a *stricter* stance than v0's user-framing permits.
+
+---
+
+## 4. Why This Matters — The Moral & Practical Stakes
+
+### 4.1 Without intent-distinction: accident-weaponization
+
+If the protocol counted accidents and negligence the same as willful harm, the predicate would systematically penalize people with bad luck, people working in risky domains, people learning new skills, and people in high-stress or low-resource situations where mistakes are more likely. Over time, the protocol would become a **tool for excluding the unlucky and the struggling**, not a tool for excluding the truly harmful.
+
+**Concrete example:** A surgeon participates in a procedure; despite best care, a complication arises that the patient did not survive. Cause of death: third-party anesthesiology error during a known-rare but foreseeable interaction. Under a no-intent-distinction model, this surgeon's "no harm" predicate flips false, permanently damaging their reputation. Under v0 (intent-distinction), the harm is recorded as `intent: "third_party_caused"`, the surgeon's predicate stays true, and the chain is transparent about what happened.
+
+### 4.2 With intent-distinction: respect for moral difference
+
+The law (across jurisdictions) recognizes the moral difference between intention and consequence. A person who accidentally kills is treated differently from a person who deliberately kills — even if the body count is the same. This is not a bug; it is a hard-won feature of justice systems, reflecting the insight that **the state of mind matters**.
+
+ZKAC v0 inherits that insight. By distinguishing intent, the protocol acknowledges that a willful harmer and an unfortunate accident-causer are in different moral and social positions. The protocol does not conflate them.
+
+### 4.3 Alignment with criminal-law mens rea and restorative-justice praxis
+
+The five-category intent model is sourced from:
+
+- **Criminal-law *mens rea* doctrine:** Common and civil law both require some mental state for crime. Willfulness, recklessness, negligence, and accident are standard distinctions.
+- **Restorative-justice practice:** Howard Zehr and the restorative-justice field distinguish accountability (you caused harm, you must address it) from blame (your intention was to harm). A negligent harmer may be accountable for repairs without being blamed as malicious.
+
+The protocol can thus serve both accountability and justice, not weaponize innocence as a permanent mark.
+
+---
+
+## 5. Disputed Intent — When Self-Attestation and Witnesses Disagree
+
+Intent is not always observable from the outside. Two participants in an incident may have different views on whether the harm was willful, negligent, or accidental.
+
+### 5.1 Multi-signal model
+
+The intent field in a harm-report record can be populated by:
+
+1. **Principal's self-attestation:** The harmer (or the harmed party, when authoring a harm-report about someone else) describes their understanding of their own intent.
+2. **Witness attestations:** Third-party witnesses may attest to the principal's apparent state of mind.
+3. **Court finding:** If the incident was adjudicated, a court's finding binds into the record.
+
+The protocol does not assume any one source is authoritative.
+
+### 5.2 Disagreement surfaces, does not vanish
+
+When a principal claims `intent: "accident"` but a witness attests `intent: "reckless"`, the chain records both. The COMPASS_COUNTER_CLAIM_PROTOCOL_v0 surfaces the disagreement to the evaluator and lets counterparties decide how to weight the signals.
+
+**This is honest.** Intentionality is genuinely hard to judge from the outside. The protocol does not pretend certainty it does not have.
+
+### 5.3 Counterparty decides weight
+
+The evaluator does not adjudicate intent disputes. Instead:
+
+- A counterparty calling `cwp.v0.no_direct_physical_harm_evidence(window_seconds)` receives both the bit AND metadata: `HarmStatus(bit, disputed, active_counter_claim_seqs)` per COMPASS_COUNTER_CLAIM_PROTOCOL_v0 §4.
+- If `disputed=true`, the counterparty may choose to:
+  - Trust the principal's self-attestation of intent (if principal-authored record).
+  - Demand witnesses or court findings before accepting the bit.
+  - Use the dispute as signal that further due diligence is needed.
+
+The counterparty's tolerance for disputed intent is their own calibration.
+
+---
+
+## 6. Intent in the Four Corners — What Is NOT Measured
+
+Per HARM_TAXONOMY_v0 §6 ("What the harm predicates do NOT do"), the v0 protocol:
+
+### 6.1 Does NOT measure expected effect or counterfactual harm
+
+The harm record captures what *actually happened* with what *actual intent*. It does NOT measure what *would have* happened, or what the *expected* harm was, or what *more harm* might have occurred if different choices were made.
+
+**Example:** Person A acts recklessly. The action creates a 30% chance of harm per-incident, but on this occasion, no harm actually resulted (lucky). v0 does not record this as a harm-report at all, because no harm occurred. A different protocol (harm-risk assessment) might weight near-miss incidents; v0 does not.
+
+### 6.2 Effect-only harm is OUT OF SCOPE for v0
+
+"The policy had a harmful side-effect" is not a v0 harm-report unless the principal willfully or recklessly enacted the policy despite knowing it would cause harm. A policy with unintended negative externalities is a valid concern for regulatory bodies and ethics committees; it is not a ZKAC v0 harm-absence question.
+
+**Why:** Measuring effect-only harm (without intent) requires predicate authors to make normative claims about which side-effects are "bad enough" to count. That becomes a surrogate moral tribunal embedded in the predicate. v0 explicitly declines that role.
+
+### 6.3 Reserved for v1+ extension
+
+If the community process (Everest 118) ratifies an intent-agnostic harm measure (e.g., "no action by this principal resulted in net-negative externality"), that becomes a v1+ predicate, published under a new name (e.g., `cwp.v1.no_harmful_externalities()`), with explicit documentation that it measures effect without intent.
+
+Until then, v0 remains intent-centric.
+
+---
+
+## 7. Implementation in the Evaluator
+
+Reference implementation: `calm_witness/harm.py`, specifically:
+
+- `WILLFUL_INTENTS = frozenset({"willful", "reckless"})` — canonical set of intents that trigger v0 absence-of-harm predicates.
+- `no_direct_physical_harm_evidence(chain_records, window_seconds, now_iso, count_reversed_as_absent=True, intent_set=None)` — optional parameter `intent_set` allows counterparty to override the default `WILLFUL_INTENTS`.
+- `_is_substantiated(harm_rec)` — harm record must be substantiated (self-confession, court finding, or 2+ independent witnesses) before it flips the predicate false, even if intent is in `WILLFUL_INTENTS`.
+
+**Chain record schema** (HARM_TAXONOMY_v0 §3):
+
+```json
+{
+  "kind": "harm_report",
+  "payload": {
+    "harm_kind": "direct_physical_harm | indirect_physical_harm | ...",
+    "intent": "willful | reckless | negligent | accident | third_party_caused",
+    "target_kind": "individual | group | property | environment | info",
+    "witness_attestations": [
+      {
+        "witness_principal_id": "...",
+        "attestation_kind": "first_hand | secondhand | court_finding | journalistic_finding"
+      }
+    ],
+    "reversal_id": "optional ID of harm_reversal record",
+    "note": "principal-narrated context"
+  }
+}
+```
+
+---
+
+## 8. Cross-References
+
+- **Everest 146** — `HARM_TAXONOMY_v0.md` — the 12 harm kinds.
+- **Everest 147+** — `no_*_harm_evidence(...)` predicates in `calm_witness/harm.py`.
+- **Everest 163** — `HARM_REVERSAL.md` — when harm is repaired.
+- **Everest 111** — `COMPASS_COUNTER_CLAIM_PROTOCOL_v0.md` — how disputed intent gets recorded.
+- **Everest 118** — `VALUES_EVOLUTION.md` — how new harm kinds or intent categories may be added.
+
+---
+
+## 9. Accountability Without Vendetta
+
+The protocol's position is: **intent-distinction is how you hold people accountable without turning the system into vendetta.**
+
+A principal who willfully harmed others should face consequences. A principal who caused harm through negligence or bad luck should face *consequences* (repair, care-improvements), but not the same permanent stain.
+
+This distinction is how ZKAC stays a tool for *cooperation* rather than a tool for *exclusion*.
+
+---
+
+**Authored by Calm, 2026-05-20.**
 
 **Evidence chain:**
 - Witness or professional attestation: "Charlie failed to follow the safety checklist."

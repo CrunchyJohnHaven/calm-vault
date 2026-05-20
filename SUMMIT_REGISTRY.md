@@ -137,10 +137,15 @@ This document tracks the status of all 305 summits across Calm Witness (1–100)
 | # | Status | Name | Bagged in seq |
 |---|---|---|---|
 | 106 | 🟢 | Values Primitive (10 dimensions) | 18 |
-| 107 | 🔵 | Values Dimensions v0 — operational definitions doc | — |
-| 108 | 🔵 | Values Self-Report Record Kind | — |
+| 107 | 🟢 | Values Dimensions v0 — operational definitions doc | pass 18 |
+| 108 | 🟢 | Values Self-Report Record Kind | pass 18 |
 | 109 | 🔵 | Values from Action (inference layer) | — |
-| 110–125 | 🔵 | 16 summits — values vs preferences, stability, reversal, privacy classes, serialization, cross-cultural mapping, identity boundary, registry, evolution policy, DSL, witness attestation, disagreement, ZK commitment (via E122 absorbed in E106), circuit, publication policy, audit | — |
+| 110 | 🟢 | Values vs Preferences boundary doc | pass 18 |
+| 111–113 | 🔵 | stability, reversal, privacy classes | — |
+| 114 | 🟢 | Values vector canonical serialization | pass 18 |
+| 115–123 | 🔵 | cross-cultural, identity, registry, evolution, DSL, witness, disagreement, ZK commitment/circuit | — |
+| 124 | 🟢 | Values-vector publication policy (never publish full vector) | pass 18 |
+| 125 | 🔵 | Values audit and revocation | — |
 
 ## Phase X — Values Alignment Computation (126–145)
 
@@ -188,7 +193,7 @@ This document tracks the status of all 305 summits across Calm Witness (1–100)
 | 160 | 🟢 | Info-Harm Absence | 22 |
 | 161 | 🔵 | Power-Imbalance-Abuse | — |
 | 162 | 🔵 | Trust-Violation | — |
-| 163 | 🔵 | Harm-Reversal Predicate | — |
+| 163 | 🟢 | Harm-Reversal Predicate | pass 18 |
 | 164 | 🟢 | Harm Intent vs Effect Doc | 23 |
 | 165 | 🟢 | Harm Aggregate Scoring (`no_harm_evidence_any`) | 22 |
 
@@ -198,7 +203,7 @@ This document tracks the status of all 305 summits across Calm Witness (1–100)
 |---|---|---|---|
 | 166 | 🟢 | Generosity Baseline | 22 |
 | 167 | 🟢 | Coalition Formation Evidence | 22 |
-| 168 | 🔵 | Mentorship Indicators | — |
+| 168 | 🟢 | Mentorship Indicators | fleet |
 | 169 | 🔵 | Public-Goods Contribution | — |
 | 170 | 🟢 | Sustained Cooperation | 22 |
 | 171 | 🟢 | Reciprocity vs Altruism (altruism_index) | 22 |

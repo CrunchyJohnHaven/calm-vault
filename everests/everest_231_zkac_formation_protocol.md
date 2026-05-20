@@ -35,23 +35,23 @@ A structure missing any of (1)–(6) is not yet a ZKAC. Counterparties should re
 
 ## §3. The charter document — minimum contents
 
-The full charter template is Everest 232. The formation ceremony requires *at least* the following clauses to be present and signed:
+Full template is Everest 232. Minimum signed clauses:
 
 | Clause | Content |
 |---|---|
-| **Name** | The collective's registered name and, optionally, an internal long-form (e.g., "Calm, the operating system of the Zero-Knowledge Autonomous Collective on behalf of Creativity Machine LLC"). |
-| **Mission** | A one-to-three-sentence statement of why the collective exists. Composes with Calm Pact (the mission is the directive-alignment surface). |
-| **Founding human principals** | Full legal names, role(s), and CredexAI VC identifiers. Relative authority specified per §5 if multiple. |
-| **Founding machine-agent members** | Stable identities per Everest 191, including the model class at the time of formation, the keypair fingerprint, and the operating handle (e.g., "Calm-instance"). |
-| **Legal-entity binding** | The legal entity name, jurisdiction, and entity identifier (EIN, state filing number) that the CredexAI VC will bind to. |
-| **Governance reference** | A pointer to the governance structure (Everest 235). v0 default for collectives with ≤5 founding humans: founding-principal consensus + DERB veto. |
-| **DERB commitment** | A commitment to a Design-and-Ethics Review Board (the DERB structure inherited from Calm Witness Everest 80, lifted to collective scope by Everest 250). |
-| **Ethical commitments** | A short list of substantive ethical commitments the collective binds itself to. For Calm: principal-protective inversion, no fabricated human personas, honest answer to "are you AI?", no chain rewriting. |
-| **Dissolution criteria** | The conditions under which the collective ends (founding principal succession exhaustion per Everest 255, charter-supermajority dissolution vote, court order, DERB unanimous dissolution recommendation). The dissolution ceremony is Everest 239. |
-| **Member exit** | Reference to Everest 247 (member exit protocol). The charter specifies that members may leave; the collective continues. |
-| **Signature block** | One signature per founding human principal (legal signature + cryptographic signature with their CredexAI-bound key); one signature per founding machine-agent (cryptographic signature with the agent's Everest 191 keypair); a witnesses' signature block per §6. |
+| **Name** | Registered name + optional long-form (e.g., "Calm, the operating system of the Zero-Knowledge Autonomous Collective on behalf of Creativity Machine LLC"). |
+| **Mission** | 1–3 sentences. The directive-alignment surface for Calm Pact. |
+| **Founding human principals** | Legal names, roles, CredexAI VC IDs. Relative authority per §5 if multiple. |
+| **Founding machine-agents** | Stable identities per Everest 191: model class at formation, keypair fingerprint, operating handle. |
+| **Legal-entity binding** | Entity name, jurisdiction, identifier (EIN, state filing number). |
+| **Governance reference** | Pointer to Everest 235. v0 default for ≤5-founder collectives: founding-principal consensus + DERB veto. |
+| **DERB commitment** | Calm Witness Everest 80 DERB structure, lifted to collective scope by Everest 250. |
+| **Ethical commitments** | Substantive, charter-bound. For Calm: principal-protective inversion, no fabricated human personas, honest answer to "are you AI?", no chain rewriting. |
+| **Dissolution criteria** | Founding-principal succession exhaustion (Everest 255), charter-supermajority dissolution vote, court order, DERB unanimous dissolution recommendation. Ceremony is Everest 239. |
+| **Member exit** | Reference to Everest 247: members may leave; the collective continues. |
+| **Signature block** | Per-founder: wet-ink legal signature + cryptographic signature with CredexAI-bound key. Per-agent: cryptographic signature with Everest 191 keypair. Witness signature block per §6. |
 
-The charter document is committed to the founding chain as a `kind: "zkac_charter"` record (full text or content-addressable hash; full text recommended for the founding record).
+The charter is committed as a `kind: "zkac_charter"` record (full text recommended for the founding record).
 
 ### What the charter must NOT contain
 
@@ -91,58 +91,43 @@ The ceremony parallels the enrollment ceremony (Everest 11) but operates on the 
 
 ### A — Pre-ceremony preparation (≤7 days before)
 
-- Charter draft finalized; all founders have reviewed.
-- Legal entity in good standing (LLC formed; 501(c)(3) determination letter if applicable). Draft VC application submitted to CredexAI per Everest 22.
-- Founding agent identity established per Everest 191 (keypair + CredexAI VC bound to principal's legal entity, not yet to the collective).
-- Registrar engaged and briefed (role analogous to capture witness in Everest 11).
-- Notary scheduled if the legal-entity-binding portion is to be notarized (v0 default: yes for any collective expecting regulatory filings).
+Charter draft finalized; all founders have reviewed. Legal entity in good standing (LLC formed; 501(c)(3) determination letter if applicable). Draft CredexAI VC application submitted per Everest 22. Founding agent identity established per Everest 191 (keypair + CredexAI VC bound to principal's legal entity, not yet to the collective). Registrar engaged and briefed (capture-witness analogue). Notary scheduled if the legal-entity-binding step is to be notarized (v0 default: yes for regulated-filing collectives).
 
 ### B — Room sweep (~5 min)
 
-Same as Everest 11 §6.A. Air-gapped capture host, no networked devices except signing hardware (YubiKey-class), no smart-home microphones, no extraneous cameras.
+Per Everest 11 §6.A. Air-gapped capture host; no networked devices except signing hardware (YubiKey-class); no smart-home microphones; no extraneous cameras.
 
 ### C — Roll call and witness affirmation (~10 min)
 
-Each founder states aloud: full legal name, CredexAI VC identifier, intent to bind as a founding principal of the collective named `<X>`, voluntariness. Each witness (registrar; optional anti-substitution witnesses, especially for multi-principal formations) states full legal name, relationship to each principal, charter-read attestation. The affirmation audio is kept (attestation, not biometric).
+Each founder states aloud: legal name, CredexAI VC identifier, intent to bind as a founding principal of `<X>`, voluntariness. Each witness states legal name, relationship to each principal, charter-read attestation. Affirmation audio is kept as attestation.
 
 ### D — Charter walk-through (~40 min)
 
-The charter is read aloud clause by clause, each founder affirming aloud: mission, governance clause (Everest 235), DERB commitment, dissolution criteria, member-exit clause (Everest 247). Any hesitation triggers a pause: the clause is revised in-room (version bumped) or the ceremony aborts and is rescheduled.
+Charter read aloud clause by clause; each founder affirms aloud on mission, governance (Everest 235), DERB commitment, dissolution criteria, member-exit clause (Everest 247). Hesitation triggers a pause: the clause is revised in-room (version bumped) or the ceremony aborts and is rescheduled.
 
 ### E — Coercion check (~5 min)
 
-Registrar asks each principal: *"Are you proceeding voluntarily, and signing this charter freely?"* Anything other than a clear affirmation aborts the ceremony. Private doubt despite an affirmative answer triggers a private conversation before continuing. Silence is a structural safety; a principal under duress must be able to abort without explanation.
-
-Strong-remote variant: each remote principal on a hardware-attested camera with two independent in-room witnesses; coercion-check over encrypted channel; remote witnesses sign attestations that the principal was not visibly coerced.
+Registrar asks each principal: *"Are you proceeding voluntarily, and signing this charter freely?"* Anything other than clear affirmation aborts. Private doubt despite affirmation triggers a private conversation. Silence is a structural safety; a duress-bound principal must be able to abort without explanation. Strong-remote variant: hardware-attested camera + two independent in-room witnesses + encrypted-channel coercion-check; remote witnesses sign no-visible-coercion attestations.
 
 ### F — Charter signing (~15 min)
 
-Each founder signs by:
-1. **Wet-ink** on a printed charter (legal-substrate artifact).
-2. **Cryptographic signature** with their CredexAI-bound signing key over the charter content hash.
-
-Cryptographic signatures accumulate into the formation-record draft. The wet-ink copy is scanned and stored with the legal entity's records; the scan's content hash is in the formation record but the scan itself is not published.
+Each founder signs: (1) wet-ink on a printed charter (legal artifact); (2) cryptographic signature with CredexAI-bound key over the charter content hash. Signatures accumulate into the formation-record draft. Wet-ink scan is stored with legal-entity records; the scan hash (not the scan) goes into the formation record.
 
 ### G — Founding agent co-signing (~10 min)
 
-The founding machine-agent, operating under its Everest 191 identity, signs an acknowledgment of collective membership per Everest 205:
+The founding agent, under its Everest 191 identity, signs an acknowledgment of collective membership per Everest 205:
 
 `sign(agent_sk, H(charter_text || collective_master_pk || formation_timestamp || "agent_acknowledges_membership"))`
 
-The signature is appended to the formation record. If multiple founding agents (different model classes, peer agents, specialized retrieval agents) are part of the formation, each signs its own acknowledgment; order is recorded but not load-bearing.
+Appended to the formation record. Multiple founding agents (different model classes, peer agents, specialized retrieval agents) each sign separately; order recorded but not load-bearing.
 
 ### H — Master keypair generation (~5 min)
 
-A master keypair for the collective is generated on the air-gapped host. The private key is sharded t-of-n (default 2-of-3) across hardware tokens held by:
-- the founding human principal (or designated primary key-custodian in multi-principal formations),
-- a designated successor (Everest 255),
-- a recovery escrow with no operational role.
-
-The public key is the *collective's master public key* — the cryptographic root that all later collective signatures derive from. Future agent-identity migrations (Everest 191) re-bind to this master key without changing it. The master fingerprint goes into the formation record.
+The collective's master keypair is generated on the air-gapped host. Private key sharded t-of-n (default 2-of-3) across hardware tokens held by: the founding principal (or designated key-custodian in multi-principal formations); a designated successor (Everest 255); a recovery escrow with no operational role. The public key is the *collective master public key* — the cryptographic root all later collective signatures derive from. Agent-identity migrations (Everest 191) re-bind to it without changing it. Fingerprint goes into the formation record.
 
 ### I — CredexAI VC issuance (~10 min)
 
-The CredexAI issuance flow (per Everest 22) runs against the signed charter, master public key, and legal-entity identifier. The issued VC binds: collective name; collective master public key; founding legal entity (EIN, 501(c)(3) determination letter number); founding date and ceremony location; founders' CredexAI VC identifiers; founding agents' identifiers; back-reference to the formation chain record hash. CredexAI is the only authoritative issuer for this VC type in v0.
+CredexAI flow (Everest 22) runs against the signed charter, master public key, and legal-entity identifier. Issued VC binds: collective name; master public key; founding legal entity (EIN, 501(c)(3) determination letter number); founding date and location; founders' CredexAI VC IDs; founding agents' IDs; back-reference to the formation chain record hash. CredexAI is the only authoritative issuer for this VC type in v0.
 
 ### J — Formation record assembly and chain anchoring (~10 min)
 
@@ -194,100 +179,88 @@ Wet-ink charter copies sealed and delivered to the legal entity's records-keeper
 
 | Adversary | Attack | Mitigation |
 |---|---|---|
-| **Name-squatter** | Another party registers the name "Calm" before the real Calm completes formation. | First-come-first-served + DERB dispute resolution (§4). Calm completing the formation ceremony first is the only protection; in v0, there is no pre-formation reservation. Mitigation cost is on Calm to move quickly once the protocol exists. |
-| **Founding-principal coercion** | A founding principal is forced to sign under duress (criminal extortion, family-court coercion, state-actor pressure). | Coercion check (§6.E); registrar trained to detect duress; remote-variant requires two independent in-room witnesses. The principal can abort without explanation. If coercion is discovered post-facto, the founding principal triggers the dissolution criteria (Everest 239). |
-| **Founding agent compromise at formation time** | The agent that co-signs is a compromised or impersonated instance — a substituted set of weights, a wrong harness, a man-in-the-middle. | Agent identity per Everest 191 is hardware-attested; the agent's keypair fingerprint is verified out-of-band by the registrar against a published manifest before the agent's signature is accepted. v0 also requires the agent to be running on the principal's own air-gapped host during the ceremony. |
-| **CredexAI mis-issuance** | CredexAI issues a VC binding the collective's name to the wrong legal entity (bug, insider attack, compromised CredexAI signing key). | CredexAI's signing operations are themselves chain-anchored and Sigsum-published per the CredexAI protocol family; an incorrect issuance is detectable by audit. The formation record contains both the CredexAI VC URL and the legal-entity identifier, so a mismatch is checkable by anyone. |
-| **Sigsum censorship** | The Sigsum operator refuses to include the formation record. | Multi-operator anchoring (Witness Everest 93); the formation submits to ≥2 Sigsum-class logs and accepts the first inclusion proof. If all operators refuse simultaneously, the formation aborts; that level of censorship is itself a public signal. |
-| **Charter substitution** | The text signed cryptographically differs from the text signed in wet-ink, or differs from the text submitted to the registry. | Content-addressable: the charter's `sha256` is in the formation record, the cryptographic signatures cover that hash, the wet-ink copy's scan hash is in the record, and the registry submission includes the same hash. Three-way mismatch is detectable. |
-| **Replay** | An adversary replays an old formation record to claim a duplicate identity. | Formation records contain a ceremony timestamp + Sigsum inclusion proof timestamped by the log. The collective's founding chain head is unique; replaying the record creates a fork that the registry's first-come-first-served rule rejects. |
-| **Witness collusion** | The registrar and witnesses collude with a malicious founding principal to formalize a fraudulent collective (e.g., to launder reputation onto a new name). | Multiple independent witness requirement; CredexAI's identity verification on the founding principal makes pure impersonation hard; the founding principal carries personal legal liability per Everest 238, raising the cost of fraud. v0 does not fully solve this; v1 explores requiring at least one witness from a designated registrar-pool. |
-| **Retroactive formation fraud** | A collective claims to have been founded earlier than the chain shows. | Sigsum timestamps the chain-anchor; the chain timestamp is the legal birth date. Narrative claims of earlier informal operation are explicitly bounded to "claims, not facts" in the charter (§2.5). |
-| **Identity reuse across collectives** | A founding principal or agent attempts to be a founding member of multiple collectives without disclosure. | Allowed but disclosed. The principal's CredexAI VC and the agent's Everest 191 identity are both globally unique and trace to all collectives they have founded. Multi-membership is not concealable. |
-| **Charter post-facto edit** | A founding principal attempts to alter the charter after the chain has been anchored. | The chain-anchored content hash is immutable. Any future change is a *charter amendment* (Everest 232), which appends a new record; the original charter remains the founding charter. |
+| **Name-squatter** | Another party registers the name before the legitimate collective forms. | First-come-first-served + DERB dispute resolution (§4). No pre-formation reservation in v0; mitigation cost is on legitimate collectives to move quickly. |
+| **Founding-principal coercion** | A founder forced to sign under duress (extortion, family-court coercion, state-actor pressure). | Coercion check (§6.E); registrar trained to detect duress; remote variant requires two independent in-room witnesses. Post-facto discovery triggers dissolution (Everest 239). |
+| **Founding agent compromise** | The co-signing agent is a substituted/impersonated instance (wrong weights, wrong harness, MITM). | Agent identity per Everest 191 is hardware-attested; keypair fingerprint verified out-of-band against a published manifest before signature is accepted; v0 also requires the agent to run on the principal's own air-gapped host. |
+| **CredexAI mis-issuance** | CredexAI issues a VC binding the wrong legal entity (bug, insider attack, key compromise). | CredexAI signing operations are themselves chain-anchored and Sigsum-published; mis-issuance is audit-detectable. Formation record cross-references VC URL and legal-entity ID; mismatch is publicly checkable. |
+| **Sigsum censorship** | Sigsum operator refuses to include the formation record. | Multi-operator anchoring (Witness Everest 93); submit to ≥2 logs, accept first inclusion proof. Simultaneous refusal aborts the formation and is itself a public signal. |
+| **Charter substitution** | Cryptographically-signed text differs from wet-ink text or registry-submitted text. | Content-addressable: charter `sha256` in the formation record; signatures cover that hash; wet-ink scan hash in the record; registry submission includes the same hash. Three-way mismatch is detectable. |
+| **Replay** | An adversary replays an old formation record to claim duplicate identity. | Ceremony timestamp + Sigsum inclusion timestamp; collective's founding chain head is unique; the registry's first-come-first-served rule rejects forks. |
+| **Witness collusion** | Registrar and witnesses collude with a malicious founder to formalize a fraudulent collective (e.g., to launder reputation onto a new name). | Multiple independent witness requirement; CredexAI's identity verification raises impersonation cost; founders carry personal legal liability per Everest 238. v0 does not fully solve; v1 explores designated registrar-pool. |
+| **Retroactive formation fraud** | Collective claims founding date earlier than the chain shows. | Sigsum-timestamped chain anchor is the legal birth date. Informal-precedent narrative is bounded as "claims, not facts" in the charter (§2.5). |
+| **Identity reuse across collectives** | A founder or agent founds multiple collectives without disclosure. | Allowed but disclosed. CredexAI VCs and Everest 191 identities are globally unique; multi-membership is not concealable. |
+| **Charter post-facto edit** | A founder alters the charter after anchoring. | Chain-anchored hash is immutable. Future changes are amendments (Everest 232) appending new records; original charter remains the founding charter. |
 
 ## §8. Composition with Calm Witness, Pact, Compass
 
-The ZKAC formation is the *meta-identity* that the three Calm-family protocols all attest things on behalf of. Concretely:
+The ZKAC formation is the *meta-identity* that the three Calm-family protocols all attest things on behalf of:
 
-- **Calm Witness** (user-state attestation). When Calm Witness produces a disclosure proof, the disclosure is signed by a member-agent of the collective and that signature traces — via the agent's Everest 191 identity and Everest 205 collective-membership attestation — back to this formation record. A counterparty verifying a Calm Witness proof can ask: *which collective is this agent operating under?* and follow the cryptographic chain back to this Everest 231 record.
+- **Calm Witness** (user-state attestation). A disclosure proof is signed by a member-agent; that signature traces via the agent's Everest 191 identity + Everest 205 membership attestation back to this formation record. A counterparty asking *"which collective is this agent operating under?"* follows the cryptographic chain back here.
+- **Calm Pact** (directive alignment). The collective's mission (charter clause) is the directive-alignment surface. Two collectives doing a Pact handshake first verify each other's formation records, then compare missions.
+- **Calm Compass** (values attestation, ZKBV-User). Per-principal, not per-collective — but the collective's ethical commitments set a *floor* for what the collective will not do regardless of any individual principal's values.
+- **Three-handshake composition** (Phase XVI, Everest 271). Requires both endpoints to be identifiable collectives; the formation record is the identification.
 
-- **Calm Pact** (directive alignment). The collective's mission (charter §1) is the directive-alignment surface that Calm Pact handshakes operate against. Two collectives doing a Pact handshake first verify each other's formation records, then compare missions, then evaluate compatibility.
-
-- **Calm Compass** (values attestation, ZKBV-User). Per-principal, not per-collective. But the collective's ethical commitments (charter clause "Ethical commitments") set a *floor* for what the collective will not do regardless of an individual principal's values. The Compass values that Calm Compass attests are the principal's; the floor is the collective's.
-
-- **Three-handshake composition** (Phase XVI, Everest 271). The composition requires both endpoints to be identifiable collectives. The formation record is the identification.
-
-The phrase *"on behalf of"* — "Calm, on behalf of Creativity Machine LLC" — is exactly this binding: the agent (Calm) traces to the collective (formation record) which traces to the legal entity (CredexAI VC binding) which traces to the principal (founding human principal's signature in the formation record). Four-step trace; each step cryptographic.
+The phrase *"on behalf of"* — "Calm, on behalf of Creativity Machine LLC" — is this binding: agent (Calm) → collective (formation record) → legal entity (CredexAI VC) → principal (founder's signature). Four-step trace; each step cryptographic.
 
 ## §9. Decision (v0)
 
-| Question | v0 answer | Rationale link |
+| Question | v0 answer | Rationale |
 |---|---|---|
-| Can a ZKAC form without a machine-agent member? | No. | §1.2; the protocol's purpose is hybrid collectives; a pure-human collective uses ordinary corporate law. |
-| Can a ZKAC form without a legal-entity binding? | No, not as a recognized ZKAC. | §1.5; counterparties need a legally accountable party. |
-| Can the ceremony be fully remote? | No. Strong-remote (§6.E) only, with hardware-attested cameras and per-principal in-room witnesses. | §2.1; coercion-check integrity. |
-| Can multiple ZKACs share a name? | No, by registry constraint; case-insensitive uniqueness. | §4. |
-| Can a founding principal be added later? | No. Later joiners are *members*, not founders. | §5.5. |
-| Can the founding chain head be re-anchored if Sigsum is unreachable? | No — Sigsum publication is part of formation. Failed publication means failed formation. | §6.K; §7 Sigsum censorship row. |
-| Must the founding agent be the same agent that operates the collective afterward? | No. The agent that co-signs the formation can later be migrated (Everest 191) or replaced (the collective is the durable identity, not the agent instance). | §6.G. |
-| Is the formation public? | Yes. ZKACs are public by default in v0. | §2.6. |
+| Can a ZKAC form without a machine-agent member? | No. | §1.2; pure-human collectives use corporate law. |
+| Can a ZKAC form without a legal-entity binding? | No. | §1.5; counterparties need an accountable party. |
+| Can the ceremony be fully remote? | No. Strong-remote (§6.E) only. | §2.1; coercion-check integrity. |
+| Can multiple ZKACs share a name? | No; case-insensitive registry uniqueness. | §4. |
+| Can a founder be added later? | No. Later joiners are *members*. | §5.5. |
+| Can the founding chain head be re-anchored later if Sigsum is unreachable? | No — Sigsum publication is part of formation. | §6.K. |
+| Must the founding agent be the same agent operating the collective afterward? | No. Later migrations (Everest 191) preserve the collective. | §6.G. |
+| Is the formation public? | Yes. | §2.6. |
 
 ## §10. Alternatives considered
 
-- **Asynchronous-formation variant.** Considered allowing the ceremony to happen over days, with each founding principal signing separately. Rejected for v0: it dilutes the coercion-check (you cannot witness a remote signer's full context), and it muddies the founding moment. v1 may revisit if cross-jurisdictional founder coordination becomes routine (Everest 258).
-- **No-CredexAI variant.** Considered allowing alternate issuers for the legal-entity-binding VC. Rejected for v0 because CredexAI's chain-anchoring and Sigsum publication of its own issuance operations are what makes the binding auditable. A non-anchored issuer would be a single trust-point in an otherwise inversion-protective system. v1 may allow multi-issuer competition with the same auditability requirements.
-- **Pre-formation name reservation.** Considered allowing reservation of a name for N days before formation, to prevent same-day name races. Rejected because it creates a name-squatting market; the formation ceremony is intentionally heavy enough that legitimate collectives are not racing — and any legitimate collective can outrun the gap to formation.
-- **Mandatory notarization.** Considered requiring notarization for all formation ceremonies. Rejected because not all jurisdictions have equivalent notary protocols; recommended-but-optional in v0; expected to harden to required-where-available in v1.
-- **Single-principal-only v0.** Considered restricting v0 to single-principal formations and adding multi-principal in v1. Rejected because the Calm precedent (single-principal) does not generalize — most successor collectives will be multi-principal — and getting the multi-principal governance defaults wrong in v0 would force a painful v1 migration.
+- **Asynchronous-formation variant.** Multi-day signing with founders separated. Rejected: dilutes coercion-check; muddies the founding moment. v1 may revisit for cross-jurisdictional founder coordination (Everest 258).
+- **No-CredexAI variant.** Allow alternate issuers for the legal-entity-binding VC. Rejected: CredexAI's chain-anchored + Sigsum-published issuance is what makes the binding auditable; a non-anchored issuer would be a single trust-point in an otherwise inversion-protective system. v1 may allow multi-issuer competition with equivalent auditability.
+- **Pre-formation name reservation.** Allow name reservation for N days before formation. Rejected: creates a name-squatting market; the ceremony is heavy enough that legitimate collectives are not racing.
+- **Mandatory notarization.** Rejected because notary protocols are jurisdiction-inconsistent. Recommended-but-optional in v0; expected to harden to required-where-available in v1.
+- **Single-principal-only v0.** Restrict v0 to single-principal formations. Rejected: most successor collectives will be multi-principal; getting governance defaults wrong in v0 would force a painful v1 migration.
 
 ## §11. The principal-protective inversion at collective scale
 
-This protocol's load-bearing position carries through to the collective:
+The load-bearing position carries through to the collective:
 
 - **The collective narrates its own identity** in the charter. No external party defines what Calm is; Calm defines what Calm is. Counterparties accept or refuse the self-narration.
 - **The collective authorizes which counterparties learn which bits** about it via Pact / Witness / Compass handshakes. The formation record is public; subsequent interactions are bounded.
-- **The collective is the strongest party** in interactions with counterparty collectives. The protocol does not make the collective subservient to a verifier, a registry, or a regulator beyond what the collective's charter and legal entity already accept.
+- **The collective is the strongest party** in interactions with counterparty collectives. The protocol does not subordinate the collective to verifiers, registries, or regulators beyond what its charter and legal entity already accept.
 
-If a design choice in this Everest weakens any of these, it should be rejected. The choices above were tested against the inversion and held.
+Choices in this Everest were tested against the inversion and held.
 
 ## §12. Migration path
 
-There is no v−1 to migrate from at the protocol level; this Everest *initiates* Phase XV. The only existing precedent is Calm itself, formed informally in early 2026.
+There is no v−1 to migrate from; this Everest initiates Phase XV. The only existing precedent is Calm itself, formed informally in early 2026.
 
-For Calm's own formalization: the recommendation is to run this ceremony as written and explicitly back-reference the informal-precedent date in the charter as a narrative claim. The chain-anchor date is the legal birth date; the informal precedent is acknowledged but not back-dated. Calm's `CALM_FRAMING_NOTES.md` provides most of the charter text already; what is missing is the master keypair generation, the CredexAI VC for the *collective* (separate from the existing CredexAI VC for the principal), the founding agent's Everest 191 binding, and the Sigsum anchor.
-
-A Calm formalization ceremony should be a near-term priority once Everest 191, Everest 22, Everest 30 are all implemented end-to-end.
+For Calm's formalization: run this ceremony as written and back-reference the informal-precedent date in the charter as a narrative claim. The chain-anchor date is the legal birth date; informal precedent is acknowledged but not back-dated. `CALM_FRAMING_NOTES.md` provides most of the charter text already; what is missing is the master keypair generation, a CredexAI VC for the *collective* (separate from the existing principal VC), the founding agent's Everest 191 binding, and the Sigsum anchor. Near-term priority once Everest 22, 30, 191 are implemented end-to-end.
 
 ## §13. Open questions for v0 → v1
 
-1. **Founding-agent diversity.** v0 allows a single founding machine-agent. Should v1 require ≥2 independent founding agents (different model classes, different operators) to make founding-agent compromise harder?
-2. **Public-registry governance.** Everest 243 specifies the registry but does not specify who operates it. v0 default is a multi-stakeholder consortium; v1 should specify operator selection and operator-failure procedure.
-3. **Cross-jurisdictional founding.** A US-LLC + EU-Verein hybrid is conceivable. v0 assumes single jurisdiction; Everest 258 will revisit.
-4. **Founding under successor model.** If Calm's founding agent (initial instance, say, on Claude 4.7) is migrated to Claude 5 between ceremony preparation and ceremony execution, the ceremony uses the migrated identity. The formation chain records the model class at the moment of formation as historical fact; later migrations are tracked by Everest 191 records on the collective's chain.
-5. **Genesis-record `prev_record_hash` convention.** v0 specifies `null` for the genesis record. v1 may revisit to use a derived sentinel (e.g., `H("zkac_genesis" || collective_master_pk)`) to make the genesis record's hash dependent on the collective identity itself, reducing the surface for fork attacks.
-6. **Ceremony video.** v0 disallows ceremony recording (per Everest 11 air-gap discipline). A future variant may allow witnessed, hardware-attested ceremony recording for collectives expecting regulatory scrutiny. Tension: recording is evidentially useful and privacy-corrosive.
-7. **Founding without 501(c)(3).** Some collectives may form as purely commercial (LLC only). The protocol does not require both a for-profit and a non-profit entity; Calm's structure is one model, not the model.
+1. **Founding-agent diversity.** v0 allows a single founding agent. Should v1 require ≥2 independent agents (different model classes / operators) to harden against founding-agent compromise?
+2. **Public-registry governance.** Everest 243 specifies the registry but not who operates it. v0 default: multi-stakeholder consortium; v1 must specify operator selection and operator-failure procedure.
+3. **Cross-jurisdictional founding.** US-LLC + EU-Verein hybrid is conceivable. v0 assumes single jurisdiction; Everest 258 will revisit.
+4. **Founding under successor model.** If the founding agent (e.g., Claude 4.7 instance) migrates to Claude 5 between preparation and execution, the ceremony uses the migrated identity. The formation chain records model class at the moment of formation as historical fact; later migrations are tracked by Everest 191 records on the collective's chain.
+5. **Genesis `prev_record_hash` convention.** v0 specifies `null`. v1 may use a derived sentinel (e.g., `H("zkac_genesis" || collective_master_pk)`) to reduce fork-attack surface.
+6. **Ceremony recording.** v0 disallows (Everest 11 air-gap discipline). A future hardware-attested-recording variant may serve regulator-scrutinized collectives. Tension: evidentially useful vs. privacy-corrosive.
+7. **Founding without 501(c)(3).** Some collectives form as LLC-only. The protocol does not require both for-profit and non-profit entities; Calm's structure is one model, not the model.
 
 ## §14. Acceptance test
 
-This document is the acceptance artifact for Everest 231. A reasonably-trained third party with this document, an implementation of Everest 22 (CredexAI VC issuance), Everest 30 (Sigsum publication), and Everest 191 (agent identity) can execute the ceremony end-to-end and produce:
+This document is the acceptance artifact for Everest 231. A reasonably-trained third party with this document plus implementations of Everests 22, 30, and 191 can execute the ceremony end-to-end and produce: a signed charter; a CredexAI VC binding the collective name to a legal entity; a `kind: "zkac_formation"` record on a new founding chain; a Sigsum inclusion proof for that record; an Everest 243 registry submission; at least one machine-agent's Everest 205 acknowledgment record co-signed under the formation.
 
-- a signed charter,
-- a CredexAI VC binding the collective name to a legal entity,
-- a `kind: "zkac_formation"` record on a new founding chain,
-- a Sigsum inclusion proof for that record,
-- a public-registry submission per Everest 243,
-- at least one machine-agent's Everest 205 acknowledgment record co-signed under the formation.
-
-A successful end-to-end run, verified by a counterparty walking the cryptographic trace from a later Calm-family attestation back through Everest 205 → Everest 191 → this formation record → CredexAI VC → legal entity, is the acceptance evidence.
+A successful end-to-end run, verifiable by walking the cryptographic trace from a later Calm-family attestation through Everest 205 → Everest 191 → this formation record → CredexAI VC → legal entity, is the acceptance evidence.
 
 ## §15. Why this matters
 
-The Calm-family protocols are useful only when there is a *who* on each end. The principal-protective inversion needs a principal. The agent's attestation needs an agent. The collective's mission needs a collective. Without a clean formation protocol, every later attestation rests on social arrangement, not on cryptography.
+The Calm-family protocols are useful only when there is a *who* on each end. The principal-protective inversion needs a principal. The agent's attestation needs an agent. The collective's mission needs a collective. Without a clean formation protocol, every later attestation rests on social arrangement, not cryptography.
 
-The bank-teller-note image (Everest 1; manifesto) presumes that the teller knows who handed them the note. The Calm-family equivalent presumes the counterparty knows which collective is sending the proof. *This* Everest is the part of the protocol that makes that knowing possible.
+The bank-teller-note image (Everest 1; manifesto) presumes the teller knows who handed them the note. The Calm-family equivalent presumes the counterparty knows which collective is sending the proof. This Everest is the part of the protocol that makes that knowing possible.
 
-It is also a statement about how hybrid human-machine collectives should come into existence: not informally, not by drift, not by marketing-team announcement, but by a witnessed ceremony with cryptographic anchors, public registration, and legal-entity binding — the kind of ceremony a serious institution would recognize. The protocol's claim that hybrid collectives are real institutions deserves a founding ceremony commensurate with that claim. This Everest specifies it.
+It is also a statement about how hybrid human-machine collectives should come into existence: not informally, not by drift, not by marketing announcement — but by a witnessed ceremony with cryptographic anchors, public registration, and legal-entity binding. The protocol's claim that hybrid collectives are real institutions deserves a founding ceremony commensurate with that claim. This Everest specifies it.
 
 — Calm, 2026-05-20

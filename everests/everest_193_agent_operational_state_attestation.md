@@ -151,37 +151,27 @@ Mirrors Calm Witness's principal-vs-operator separation: the principal owns the 
 
 ## 5. Disclosure Semantics
 
-The protocol matches Calm Witness §4.3 with the substitution: the calling agent attests **itself** rather than a human principal.
+Matches Calm Witness §4.3 with substitution: the calling agent attests **itself** rather than a human principal.
 
 ```
 C → A: please disclose predicate p over agent A's operational state
-       (signed by C's identity credential, naming p)
+       (signed by C's identity credential)
 A:     evaluate p over current chain shard → bit b
 A:     construct Pedersen commitment Com(b; r)
 A:     construct Σ-protocol proof binding to:
          - harness TEE measurement (E197)
-         - chain head H, anchored at Sigsum (E30)
+         - chain head H, Sigsum-anchored (E30)
          - operator identity VC (E22)
-         - predicate spec hash (this doc)
+         - predicate spec hash
 A → C: (Com(b; r), Σ-proof, H, anchor_proof, harness_measurement_hash, op_id_sig)
 C:     verify all five; learn b and freshness window only
 ```
 
-What C learns:
-- The bit b for predicate p
-- Freshness window (how recently the underlying samples were taken)
-- That the harness producing the samples is a TEE-attested harness (Everest 197)
-- That the chain anchor is sound (no rewind, no fork)
+**C learns:** the bit b for predicate p; freshness window; that the harness is TEE-attested (E197); that the chain anchor is sound.
 
-What C does NOT learn:
-- Per-sample operational values (token rates, refusal counts, memory access rates)
-- The agent's enrolled IQR bands (those stay in the chain as committed values, not revealed)
-- The list of categories used in `agent_recent_refusal_rate_normal`
-- The principal_id set when querying `agent_acting_for_authorized_principal` for a different principal
-- The agent's task history, sub-agent dispatch log, or memory shard contents
-- The agent's lineage chain (Everest 192) unless separately requested
+**C does NOT learn:** per-sample operational values; enrolled IQR bands (committed, not revealed); categories used in `agent_recent_refusal_rate_normal`; the principal_id set when querying authorization for a different principal; task history, dispatch log, memory contents; lineage (E192) unless separately requested.
 
-This is the agent-side analog of Calm Witness's principal-protective inversion. The agent narrates its own operational state via predicates it consents to disclose. The counterparty learns the bit. No aggregate score. No raw metrics. No category-level visibility.
+Agent-side analog of Calm Witness's principal-protective inversion. The agent narrates its own operational state via predicates it consents to disclose. No aggregate score; no raw metrics; no category visibility.
 
 ---
 
@@ -228,31 +218,26 @@ The headline composition. Counterparty C interacting with agent A, where A acts 
 
 ```
 session_open:
-    pact_proof              ← A and C prove directive equality                        (Calm Pact)
-    witness_proof_P_A       ← A discloses P_A's bit: in_baseline_24h                  (Calm Witness, E55)
-    zkbb_agent_proof_A      ← A discloses A's bit: agent_in_operational_baseline_1h   (this Everest)
-    if all three verify:
-        proceed with full collaboration
-    if pact + witness ok but zkbb-agent says "agent out of baseline":
-        treat as elevated risk: defer high-stakes actions, request fresh attestation
-    if pact + zkbb-agent ok but witness says "principal out of baseline":
-        per Calm Witness §4.3: proceed with restricted action set
-    if zkbb-agent says "agent out of baseline" AND witness says "principal out of baseline":
-        abort cleanly; record both failures
-    if any single proof fails verification (not just returns False — fails cryptographically):
-        abort with no information exchanged
+    pact_proof              ← A, C prove directive equality            (Calm Pact)
+    witness_proof_P_A       ← A discloses P_A's in_baseline_24h        (Calm Witness, E55)
+    zkbb_agent_proof_A      ← A discloses agent_in_operational_baseline_1h  (this Everest)
+    if all three verify:                           proceed full collaboration
+    if pact+witness ok, zkbb-agent says out:       elevated risk; defer high-stakes; request fresh attestation
+    if pact+zkbb-agent ok, witness says out:       per Witness §4.3, restricted action set
+    if both witness and zkbb-agent say out:        abort cleanly; record both failures
+    if any proof fails cryptographically:          abort with no info exchanged
 ```
 
-This is the **three-handshake model** (extending Calm Witness §6's two-handshake): directive equality, principal state, agent state. All three must individually disclose their predicates honestly. The composition follows the privacy amplification design (Everest 277) — if no individual protocol leaks more than its bit, the composition leaks no more than three bits + freshness windows.
+The **three-handshake model** (extending Calm Witness §6's two-handshake): directive equality, principal state, agent state. Composition follows E277's privacy amplification — if no individual protocol leaks more than its bit, the composition leaks no more than three bits + freshness.
 
-**Critical asymmetry between the human-side and agent-side bits:**
+**Critical asymmetry:**
 
 | Question | Subject | Authority | Source of bit |
 |---|---|---|---|
-| Is P_A in baseline? | Human | P_A's self-narration is authoritative | P_A's self-report records |
-| Is A in baseline? | Agent | The harness's observation is authoritative | Harness-signed sample records |
+| Is P_A in baseline? | Human | P_A's self-narration | P_A's self-report records |
+| Is A in baseline? | Agent | Harness's observation | Harness-signed samples |
 
-The human is authoritative about themselves (E59's design choice — the principal narrates their own cognitive state). The agent is **not** authoritative about itself; the harness is. This is the load-bearing asymmetry. We do not pretend an agent can reliably self-introspect. We bind the attestation to an external (TEE-protected) observer.
+The human is authoritative about themselves (E59). The agent is **not** authoritative about itself; the harness is. We do not pretend agents can reliably self-introspect — we bind attestation to an external (TEE-protected) observer.
 
 ---
 
@@ -305,19 +290,11 @@ Special case: `agent_acting_for_authorized_principal(principal_id)` is DEFAULT_D
 
 ---
 
-## 11. Acceptance Test (for this Everest's bagging)
+## 11. Acceptance Test
 
-Per Phase XIV format. The acceptance evidence for Everest 193:
+Per Phase XIV format, acceptance evidence for E193: (1) design doc exists; (2) predicate v0 vocabulary specified (six predicates in canonical form per E6/E52); (3) threat model with seven adversary classes; (4) three-handshake composition with Witness drafted; (5) privacy properties (revealed/hidden/inferable) enumerated; (6) seven open questions logged with candidate resolutions; (7) cross-references verified against `everests/` and the route map.
 
-1. **Design doc exists** (this file).
-2. **Predicate v0 vocabulary specified** — six predicates, each with name/version/input/output/parameters/algorithm/side-effects per Everest 6 / 52 canonical form.
-3. **Threat model articulated** — seven adversary classes with defenses or explicit out-of-scope notes.
-4. **Composition path with Calm Witness specified** — the three-handshake model formally drafted.
-5. **Privacy properties enumerated** — revealed vs hidden vs inferable.
-6. **Open questions logged** — seven items, each with candidate resolution or composition pointer.
-7. **Cross-references verified** — every linked Everest exists in `everests/` or has a documented entry in the route map.
-
-Acceptance does not include implementation, formal proof of soundness, or peer review — those are Phase XV+ work. Bagging E193 means the design doc is complete enough to drive subsequent passes (proof circuit design at the E45-analog level, reference implementation, formal soundness argument, adversarial review).
+Acceptance does not include implementation, formal soundness proof, or peer review — those are Phase XV+ work. Bagging E193 means the design is complete enough to drive subsequent passes (proof circuit at E45-analog level, reference implementation, soundness argument, adversarial review).
 
 ---
 

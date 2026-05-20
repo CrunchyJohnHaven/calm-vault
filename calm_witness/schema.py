@@ -31,6 +31,17 @@ KIND_REGISTRY = {
     "disclosure",
     "correction",
     "genesis_attestation",       # binds seq=1 to a CredexAI VC after E22 lands
+    "summit_claim",
+    "emergency_stop_engaged",
+    "emergency_stop_released",
+    "stripe_live_mode_check",
+    "tenancy_reply",
+    "tenancy_daily_check",
+    "compass_evidence",
+    "compass_dispute",
+    "baseline_revision",
+    "harm_claim_external",
+    "harm_admission_voluntary",
 }
 
 REQUIRED_TOP_LEVEL = (
@@ -104,8 +115,10 @@ def _validate_summit_bagged(payload: Dict[str, Any]) -> List[str]:
     for field in ("summit_number", "summit_number_in_route_map"):
         if field in payload:
             n = payload[field]
-            if not isinstance(n, int) or not (1 <= n <= 100):
-                errors.append(f"payload.{field} must be int in [1, 100]")
+            # EVEREST 300/300 range. Per-pillar IDs (e.g. CC-01, CT-30) are
+            # aliased into the 1-300 canonical space per THE_EVEREST_300.md §4.
+            if not isinstance(n, int) or not (1 <= n <= 300):
+                errors.append(f"payload.{field} must be int in [1, 300]")
     if not ("evidence_path" in payload or "evidence_paths" in payload):
         errors.append(
             "payload missing evidence (need 'evidence_path' or 'evidence_paths')"
