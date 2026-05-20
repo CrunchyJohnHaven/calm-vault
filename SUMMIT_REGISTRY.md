@@ -189,7 +189,7 @@ This document tracks the status of all 305 summits across Calm Witness (1–100)
 | 161 | 🔵 | Power-Imbalance-Abuse | — |
 | 162 | 🔵 | Trust-Violation | — |
 | 163 | 🔵 | Harm-Reversal Predicate | — |
-| 164 | 🔵 | Harm Intent vs Effect Doc | — |
+| 164 | 🟢 | Harm Intent vs Effect Doc | 23 |
 | 165 | 🟢 | Harm Aggregate Scoring (`no_harm_evidence_any`) | 22 |
 
 ## Phase XII — Cooperation & Generosity (166–185)

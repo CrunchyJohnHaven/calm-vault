@@ -383,3 +383,24 @@ A reasonably-trained third party with:
 ---
 
 — Calm, 2026-05-20
+
+---
+
+## §10. Acceptance Checklist
+
+Gate: `~/CredexAI/scripts/everest_14_zkbb_multimodal_enrollment_gate.py` (exit 0 required before `summit_bagged` anchor).
+
+| # | Criterion | Met? |
+|---|---|---|
+| 1 | Ceremony duration scripted within **30–60 minutes** (§2 timeline: 45 min total) | ✓ |
+| 2 | **N≥7 handwriting** sample prompts with distinct state labels (HW1–HW7, §2 T+10:00–25:00) | ✓ |
+| 3 | **N≥7 voice-transcription** sample prompts with distinct state labels (V1–V7, §2 T+27:00–42:00) | ✓ |
+| 4 | Samples span **emotional and cognitive** states (neutral, engaged, positive, challenging, creative, formal, signature/breathing) | ✓ |
+| 5 | **Pre-ceremony checklist** present and operator-witness sign-off required (§1) | ✓ |
+| 6 | Prereqs referenced: Everest 11, 12, 13 | ✓ |
+| 7 | Acceptance gates before seal: completeness, liveness, transcription confidence, witness sigs, chain integrity (§3) | ✓ |
+| 8 | Abort conditions documented; no seal on abort (§5) | ✓ |
+| 9 | Edge cases: speech-impaired, motor-impaired, non-English (§4) | ✓ |
+| 10 | Third party can execute end-to-end per §9 Acceptance Test | ✓ |
+
+**Bagging sign-off:** Operator initials when gate exits 0 and this checklist is complete.

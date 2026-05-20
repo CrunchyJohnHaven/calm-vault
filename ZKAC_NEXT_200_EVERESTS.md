@@ -40,13 +40,13 @@ RANGE R  281–300  Beyond ZKAC — Calm Foresight (intent), federation, mainstr
 
 The third Calm primitive. Where Pact proves *mission equality* and Witness proves *state baseline*, Compass proves a **small set of principal-authored values bits**. The bits are explicit, narrow, falsifiable, and refusable; the underlying evidence is chained in the principal's vault and never crosses the envelope boundary.
 
-**Everest 101 — Calm Compass Problem Statement & Threat Model.** *Acceptance:* a versioned doc captures the values use case, the actors, the trust assumptions, the adversaries, and what the protocol does + does not claim about values. *Effort:* M. *Prereq:* 1.
+**Everest 101 — Calm Compass Problem Statement & Threat Model.** *Acceptance:* a versioned doc captures the values use case, the actors, the trust assumptions, the adversaries, and what the protocol does + does not claim about values. *Effort:* M. *Prereq:* 1. *Status:* **BAGGED (Summit 101/300) 2026-05-20** — [`CALM_COMPASS_PROBLEM_STATEMENT_v0.md`](CALM_COMPASS_PROBLEM_STATEMENT_v0.md), 18,754 bytes; gate [`~/CredexAI/scripts/everest_101_zkac_compass_problem_gate.py`](../../CredexAI/scripts/everest_101_zkac_compass_problem_gate.py) exit 0.
 
-**Everest 102 — Calm Compass Protocol Spec v0.** *Acceptance:* draft protocol doc analogous to `ZKBB_USER_PROTOCOL_v0.md`, with hydration / predicate evaluation / disclosure layers explicit. *Effort:* M. *Prereq:* 101.
+**Everest 102 — Calm Compass Protocol Spec v0.** *Acceptance:* draft protocol doc analogous to `ZKBB_USER_PROTOCOL_v0.md`, with hydration / predicate evaluation / disclosure layers explicit. *Effort:* M. *Prereq:* 101. *Status:* **BAGGED (Summit 102/300) 2026-05-20** — [`CALM_COMPASS_PROTOCOL_v0.md`](CALM_COMPASS_PROTOCOL_v0.md), 12,078 bytes; gate [`~/CredexAI/scripts/everest_102_zkac_compass_protocol_gate.py`](../../CredexAI/scripts/everest_102_zkac_compass_protocol_gate.py) exit 0.
 
-**Everest 103 — Compass Predicate Vocabulary v0.** *Acceptance:* an enumerated list of v0 values predicates with formal semantics, ID stability rules, and explicit refusal floor. *Effort:* L. *Prereq:* 102.
+**Everest 103 — Compass Predicate Vocabulary v0.** *Acceptance:* an enumerated list of v0 values predicates with formal semantics, ID stability rules, and explicit refusal floor. *Effort:* L. *Prereq:* 102. *Status:* **BAGGED (Summit 103/300) 2026-05-20** — [`COMPASS_PREDICATES_v0.md`](COMPASS_PREDICATES_v0.md), 11,283 bytes; gate [`~/CredexAI/scripts/everest_103_zkac_compass_predicates_gate.py`](../../CredexAI/scripts/everest_103_zkac_compass_predicates_gate.py) exit 0.
 
-**Everest 104 — Values Evidence Taxonomy.** *Acceptance:* a doc enumerating the kinds of records that can serve as evidence (financial transfer, declined-opportunity narration, cross-group interaction record, etc.), with strict per-kind schema. *Effort:* M. *Prereq:* 103.
+**Everest 104 — Values Evidence Taxonomy.** *Acceptance:* a doc enumerating the kinds of records that can serve as evidence (financial transfer, declined-opportunity narration, cross-group interaction record, etc.), with strict per-kind schema. *Effort:* M. *Prereq:* 103. *Status:* **BAGGED (Summit 104/300) 2026-05-20** — [`VALUES_EVIDENCE_TAXONOMY_v0.md`](VALUES_EVIDENCE_TAXONOMY_v0.md), 28 KB; 7 evidence kinds with field-by-field schema; cross-validated against compass_eval.py by [`everest_104_values_evidence_taxonomy_gate.py`](../../../CredexAI/scripts/everest_104_values_evidence_taxonomy_gate.py); gate PASS ✓.
 
 **Everest 105 — `unselfish_act_in_window_30d` predicate.** *Acceptance:* reference impl that returns true iff the principal has authored ≥ N evidence records of acts that benefit others at their own cost in the last 30 days; ≥ 30 golden cases. *Effort:* M. *Prereq:* 103, 104. *Status:* **BAGGED (Summit 105/300) 2026-05-20** — `~/CredexAI/calm_witness/compass_eval.py::unselfish_act_in_window_30d`; 7 tests in `test_compass_eval.py`.
 
@@ -74,7 +74,7 @@ The third Calm primitive. Where Pact proves *mission equality* and Witness prove
 
 **Everest 117 — Compass golden corpora.** *Acceptance:* ≥ 30 hand-crafted (evidence, expected) pairs per Compass predicate, peer-reviewed by the audit panel. *Effort:* L. *Prereq:* 105–110. *Status:* **BAGGED (Summit 117/300) 2026-05-20** — 40 hand-crafted tests across all 6 v0 Compass predicates in `~/CredexAI/calm_witness/test_compass_eval.py`; ≥ 5 per predicate (range 4–10); peer review remains an Everest 115 standing obligation.
 
-**Everest 118 — Compass canonical-form + ID-stability snapshot.** *Acceptance:* `predicate_canonical_form()` extended to Compass; snapshot file captures evaluator hashes; gate detects drift. *Effort:* S. *Prereq:* 117.
+**Everest 118 — Compass canonical-form + ID-stability snapshot.** *Acceptance:* `predicate_canonical_form()` extended to Compass; snapshot file captures evaluator hashes; gate detects drift. *Effort:* S. *Prereq:* 117. *Status:* **BAGGED (Summit 118/300) 2026-05-20** — `~/CredexAI/calm_witness/compass_predicates.py`, `schema/compass_predicates_v0.json`, `schema/compass_predicates_v0.snapshot.json`, gate `~/CredexAI/scripts/everest_118_zkac_compass_canonical_gate.py`; 10/10 pytest green; registry aligned with `COMPASS_PREDICATE_REGISTRY`; evaluator source hashing catches impl drift.
 
 **Everest 119 — Compass ZK proof generator (v0 reference).** *Acceptance:* Pedersen + Σ-protocol bit-proof construction reused; per-Compass-predicate evaluator translated to the same proof envelope shape. *Effort:* M. *Prereq:* 118. *Status:* **BAGGED (Summit 119/300) 2026-05-20** — `~/CredexAI/calm_witness/compass_disclosure.py` bridges `compass_eval` → `zk.prove_predicate_disclosure`; `COMPASS_PREDICATE_REGISTRY` maps all 6 predicate IDs to evaluators; 8 tests green; mixed Witness+Compass envelopes verified.
 
@@ -180,7 +180,7 @@ The third Calm primitive. Where Pact proves *mission equality* and Witness prove
 
 **Everest 164 — MITM-attack resistance at scale.** *Acceptance:* transport-binding mechanism prevents man-in-the-middle re-routing of envelopes; tested with red-team scenarios. *Effort:* L. *Prereq:* 129.
 
-**Everest 165 — Quantum-readiness audit.** *Acceptance:* third-party audit of the v0 cryptographic primitives against post-quantum criteria + execution plan per `POST_QUANTUM_MIGRATION_PLAN_v0.md`. *Effort:* L. *Prereq:* 121.
+**Everest 165 — Quantum-readiness audit.** *Acceptance:* third-party audit of the v0 cryptographic primitives against post-quantum criteria + execution plan per `POST_QUANTUM_MIGRATION_PLAN_v0.md`. *Effort:* L. *Prereq:* 121. *Status:* **DESIGN-BAGGED (Summit 165/300) 2026-05-20** — [`CRYPTO_AUDIT_PACKET_v0.md`](CRYPTO_AUDIT_PACKET_v0.md), 22,118 bytes; engagement SOW for Trail of Bits / NCC Group covering 9 modules + 8 attack-class checklist + dependency SBOM + prior-bug log + code-freeze commit-hash discipline + $50K-$150K scope. *Follow-through:* sign engagement with audit firm.
 
 **Everest 166 — Side-channel audit.** *Acceptance:* third-party audit of the reference implementations for timing, cache, and power side channels. *Effort:* L. *Prereq:* 121.
 
@@ -222,11 +222,11 @@ The third Calm primitive. Where Pact proves *mission equality* and Witness prove
 
 **Everest 183 — Incident-response playbook.** *Acceptance:* documented runbook for security incidents, with acknowledgement / triage / remediation SLAs. *Effort:* M. *Prereq:* 161.
 
-**Everest 184 — Compliance reporting.** *Acceptance:* SOC 2 Type 2 + ISO 27001 reports for the reference operator. *Effort:* L. *Prereq:* 183.
+**Everest 184 — Compliance reporting.** *Acceptance:* SOC 2 Type 2 + ISO 27001 reports for the reference operator. *Effort:* L. *Prereq:* 183. *Status:* **DESIGN-BAGGED (Summit 184/300) 2026-05-20** — [`COMPLIANCE_EVIDENCE_MAP_v0.md`](COMPLIANCE_EVIDENCE_MAP_v0.md), 35,757 bytes; full SOC 2 Trust Services Criteria → Calm artifact map + ISO 27001 Annex A subset; auditor shortlist (Schellman / A-LIGN / Sensiba for SOC 2; BSI / DNV for ISO 27001). *Follow-through:* 12-24 months operating-evidence accumulation + engagement.
 
-**Everest 185 — Privacy compliance.** *Acceptance:* GDPR, CCPA, LGPD, and APPI conformance documented + audited for the reference operator. *Effort:* L. *Prereq:* 184.
+**Everest 185 — Privacy compliance.** *Acceptance:* GDPR, CCPA, LGPD, and APPI conformance documented + audited for the reference operator. *Effort:* L. *Prereq:* 184. *Status:* **DESIGN-BAGGED (Summit 185/300) 2026-05-20** — co-mapped in [`COMPLIANCE_EVIDENCE_MAP_v0.md`](COMPLIANCE_EVIDENCE_MAP_v0.md) with GDPR Articles 5/25/30/32/33/35 alignment + CCPA/LGPD/APPI structural notes. *Follow-through:* DPA/DPIA template + in-jurisdiction specialist engagements.
 
-**Everest 186 — Disability-rights legal review.** *Acceptance:* formal review by a disability-rights legal organization; published response. *Effort:* M. *Prereq:* 113, 114.
+**Everest 186 — Disability-rights legal review.** *Acceptance:* formal review by a disability-rights legal organization; published response. *Effort:* M. *Prereq:* 113, 114. *Status:* **DESIGN-BAGGED (Summit 186/300) 2026-05-20** — [`DISABILITY_RIGHTS_REVIEW_REQUEST.md`](DISABILITY_RIGHTS_REVIEW_REQUEST.md), 12,313 bytes; formal review request to a named disability-rights org with reviewer profile + honorarium + deliverable shape. *Follow-through:* John to send + secure named-reviewer commitment.
 
 **Everest 187 — Cognitive-liberties legal review.** *Acceptance:* formal review by a cognitive-liberties scholar / advocate; published response. *Effort:* M. *Prereq:* 113, 114.
 
@@ -274,9 +274,9 @@ The third Calm primitive. Where Pact proves *mission equality* and Witness prove
 **212 Australian Privacy Act conformance.** *Acceptance:* same shape for the OAIC. *Effort:* M. *Prereq:* 185.
 **213 Cross-border data-flow compatibility.** *Acceptance:* documented + tested that no envelope contents constitute "personal data" requiring DPA registration. *Effort:* M. *Prereq:* 194.
 **214 International conformance matrix.** *Acceptance:* same as Everest 194 but extended to ≥ 30 jurisdictions. *Effort:* L. *Prereq:* 194.
-**215 Treaty-grade governance preliminary draft.** *Acceptance:* a draft cross-border treaty article defining how Calm-suite governance interacts with state authority. *Effort:* XL. *Prereq:* 214.
+**215 Treaty-grade governance preliminary draft.** *Acceptance:* a draft cross-border treaty article defining how Calm-suite governance interacts with state authority. *Effort:* XL. *Prereq:* 214. *Status:* **DESIGN-BAGGED (Summit 215/300) 2026-05-20** — [`TREATY_GRADE_GOVERNANCE_DRAFT_v0.md`](TREATY_GRADE_GOVERNANCE_DRAFT_v0.md), 16,560 bytes; 17-article skeleton, 10-year achievable-path timeline, R-1..R-6 risk catalogue, composition with EU AI Act / CETS 225 / GDPR / CRPD / ICCPR / NIST RMF. *Follow-through:* circulate to ≥5 foreign-ministry cyber-policy desks for written comment.
 **216 Multi-stakeholder governance forum.** *Acceptance:* annual multi-stakeholder convening; first one held + minutes published. *Effort:* L. *Prereq:* 215.
-**217 Academic publication: cryptography venue.** *Acceptance:* a peer-reviewed paper at CRYPTO / EUROCRYPT / TCC. *Effort:* L. *Prereq:* 165.
+**217 Academic publication: cryptography venue.** *Acceptance:* a peer-reviewed paper at CRYPTO / EUROCRYPT / TCC. *Effort:* L. *Prereq:* 165. *Status:* **DESIGN-BAGGED (Summit 217/300) 2026-05-20** — [`CRYPTO_PAPER_ABSTRACT_v0.md`](CRYPTO_PAPER_ABSTRACT_v0.md), abstract + section outline + venue targeting (CRYPTO 2027 submission deadline). *Follow-through:* draft full paper from outline + submit.
 **218 Academic publication: safety venue.** *Acceptance:* a peer-reviewed paper at AI Safety / NeurIPS Safety Workshop. *Effort:* L. *Prereq:* 91.
 **219 Academic publication: HCI venue.** *Acceptance:* CHI / CSCW paper on the principal-side consent UI. *Effort:* L. *Prereq:* 188.
 **220 Academic publication: ethics venue.** *Acceptance:* JME / AJOB paper on the Compass refusal floor. *Effort:* L. *Prereq:* 113.
@@ -310,7 +310,7 @@ The third Calm primitive. Where Pact proves *mission equality* and Witness prove
 
 ## RANGE P — Long-Term Sustainability (241–260)
 
-**241 Calm Witness Foundation incorporation.** *Acceptance:* 501(c)(3) status filed + granted. *Effort:* L. *Prereq:* 95.
+**241 Calm Witness Foundation incorporation.** *Acceptance:* 501(c)(3) status filed + granted. *Effort:* L. *Prereq:* 95. *Status:* **DESIGN-BAGGED (Summit 241/300) 2026-05-20** — [`CALM_WITNESS_FOUNDATION_INCORPORATION_DRAFT.md`](CALM_WITNESS_FOUNDATION_INCORPORATION_DRAFT.md), articles of incorporation skeleton + bylaws + Form 1023 narrative + non-revenue posture + timeline. *Follow-through:* Delaware incorporation filing + IRS Form 1023 submission.
 **242 Foundation board seating.** *Acceptance:* ≥ 7 board members across the required coverage areas. *Effort:* M. *Prereq:* 241.
 **243 Funding sustainability plan.** *Acceptance:* 3-year operating budget + identified funding sources covering 24 months. *Effort:* M. *Prereq:* 241.
 **244 Operational continuity plan.** *Acceptance:* documented procedure for foundation operations to continue if founder is unavailable for ≥ 6 months. *Effort:* M. *Prereq:* 242.
@@ -394,7 +394,7 @@ Three intended readers:
 ## §3 — Status table (initial)
 
 ```
-Range I   (101–120): ░░░░░░░░░░░░░░░░░░░░  0/20   Calm Compass — not started
+Range I   (101–120): █████████░░░░░░░░░░░  10/20  Calm Compass — 104 bagged
 Range J   (121–140): ░░░░░░░░░░░░░░░░░░░░  0/20   ZKAC substrate — not started
 Range K   (141–160): ░░░░░░░░░░░░░░░░░░░░  0/20   Agent infra — not started
 Range L   (161–180): ░░░░░░░░░░░░░░░░░░░░  0/20   Adversarial hardening — not started
@@ -405,7 +405,7 @@ Range P   (241–260): ░░░░░░░░░░░░░░░░░░░
 Range Q   (261–280): ░░░░░░░░░░░░░░░░░░░░  0/20   Three-primitive composition — not started
 Range R   (281–300): ░░░░░░░░░░░░░░░░░░░░  0/20   Beyond ZKAC — not started
 
-Total: 0 / 200 next-200 summits bagged.
+Total: 10 / 200 next-200 summits bagged.
 
 Critical-path subset for the Calm Compass MVP (10): 101, 102, 103, 105, 113, 114, 115, 119, 120, 261.
 ```
