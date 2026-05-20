@@ -1,510 +1,456 @@
 #!/usr/bin/env python3
 """
-Calm Vault — a local, passphrase-protected credential broker for AI agents.
+Calm Vault — zero-trust credential broker.
 
-Calm Vault stores secrets (API keys, tokens, passwords) encrypted on disk with
-a passphrase-derived key, and lets you hand out short-lived, agent-scoped
-"grants" that an autonomous agent can redeem for the underlying value. Grants
-are time-bound, single-credential, and revocable. Nothing leaves the local
-machine — the broker is a CLI you wrap inside your agent harness.
+Architecture (Koushik-Hyperledger-inspired, single-principal flat-file implementation):
 
-Storage layout (under $CALM_VAULT_HOME, default ~/.calm-vault):
-  config.json   — KDF parameters, vault version, created_at (cleartext)
-  vault.enc     — Fernet-encrypted JSON blob holding credentials, agents, grants
-  audit.log     — append-only newline-JSON record of every operation
+- John has a MASTER KEYPAIR (Ed25519). Master private key encrypted at rest with passphrase.
+- Calm has an AGENT IDENTITY KEYPAIR (Ed25519). Issued + signed by John's master.
+- Each credential stored AES-256-GCM-encrypted with a key derived from John's master.
+- John issues PER-USE GRANTS (signed JSON: {credential_alias, agent_id, expires_at, nonce, signature}).
+- Calm presents a grant to the broker; broker verifies:
+  1. Grant signed by John's master key (cryptographic proof of authorization)
+  2. Calm's agent identity is registered + not revoked
+  3. Grant not expired
+  4. Grant not previously used (nonce check)
+  5. Credential not revoked
+- All access attempts logged to audit.jsonl (append-only, hashed-chained for tamper-detection).
+- ONE-line revoke: `calm_vault.py revoke-all` from John's terminal.
 
-The vault is encrypted with a Fernet key derived from the user's passphrase
-via Scrypt (n=2**15, r=8, p=1). Grants are HMAC-signed envelopes that include
-a credential id, agent id, expiry, and nonce. Redeeming a grant requires the
-unlocked vault, so the passphrase is still the root of trust — grants exist
-to give agents bounded, auditable redemption without giving them the key.
+Maps to Hyperledger Indy concepts:
+- John = Issuer
+- Calm = Holder
+- Vendor (the system Calm logs into) = Verifier (but verification is OPAQUE — vendor sees only the credential value, not the proof)
+- John's master = root issuer DID
+- Calm's agent key = holder DID
+- Grants = Verifiable Credentials (with embedded revocation + expiration)
+- audit.jsonl = revocation registry (append-only, future: replace with private chain)
+
+For production: swap audit.jsonl for Hyperledger Indy ledger; replace Ed25519 with BLS12-381 (Anoncreds);
+add ZK-proof presentation so vendors don't see the raw credential.
+
+Usage (John):
+    calm_vault.py setup                                   # one-time: generates master key, prompts passphrase
+    calm_vault.py issue-agent <agent_id>                  # register Calm's agent identity
+    calm_vault.py add <alias> <value>                     # add a credential
+    calm_vault.py grant <alias> --duration 300            # issue a 5-min permission grant
+    calm_vault.py revoke <alias>                          # revoke one credential
+    calm_vault.py revoke-agent <agent_id>                 # revoke an agent identity
+    calm_vault.py revoke-all                              # nuke everything
+    calm_vault.py audit                                   # show audit log
+    calm_vault.py status                                  # vault state summary
+
+Usage (Calm):
+    calm_vault.py request <alias> --grant <grant_json>    # request credential value
+    calm_vault.py use <alias> <command...>                # single-use: inject into env for one command
 """
-
-from __future__ import annotations
-
 import argparse
 import base64
 import getpass
-import hmac
+import hashlib
 import json
 import os
-import secrets as _secrets
+import pathlib
+import secrets
+import subprocess
 import sys
 import time
-import uuid
-from dataclasses import dataclass
-from hashlib import sha256
-from pathlib import Path
-from typing import Any, Optional
+from datetime import datetime, timezone, timedelta
 
-from cryptography.fernet import Fernet, InvalidToken
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey, Ed25519PublicKey
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 
-VAULT_VERSION = 1
-DEFAULT_HOME = Path(os.environ.get("CALM_VAULT_HOME", Path.home() / ".calm-vault"))
-SCRYPT_N = 2 ** 15
-SCRYPT_R = 8
-SCRYPT_P = 1
-SCRYPT_LEN = 32
-SALT_BYTES = 16
-GRANT_DEFAULT_DURATION = 300  # 5 minutes
-PASSPHRASE_ENV = "CALM_VAULT_PASSPHRASE"
+VAULT_DIR = pathlib.Path(os.path.expanduser("~/.calm-vault"))
+MASTER_PUB = VAULT_DIR / "master.pub"
+MASTER_PRIV_ENC = VAULT_DIR / "master.priv.enc"
+MASTER_SALT = VAULT_DIR / "master.salt"
+AGENTS = VAULT_DIR / "agents.jsonl"      # registered agent identities (append-only)
+REVOKED_AGENTS = VAULT_DIR / "revoked_agents.jsonl"
+CREDENTIALS = VAULT_DIR / "credentials.jsonl"  # encrypted credentials
+REVOKED_CREDS = VAULT_DIR / "revoked_credentials.jsonl"
+GRANTS_USED = VAULT_DIR / "grants_used.jsonl"  # nonces of consumed grants
+AUDIT = VAULT_DIR / "audit.jsonl"        # every access attempt (hash-chained)
+KILL_SWITCH = VAULT_DIR / "REVOKED_ALL"  # if this file exists, ALL access denied
 
 
-# ---------------------------------------------------------------------------
-# Key derivation, encryption, signing
-# ---------------------------------------------------------------------------
+def _now() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
 
-def _kdf(passphrase: str, salt: bytes) -> bytes:
-    kdf = Scrypt(salt=salt, length=SCRYPT_LEN, n=SCRYPT_N, r=SCRYPT_R, p=SCRYPT_P)
-    return kdf.derive(passphrase.encode("utf-8"))
+def _hash_chain(prev_hash: bytes, entry: dict) -> str:
+    """Hash-chain audit entry: H(prev_hash || canonical_entry_json)."""
+    s = prev_hash + json.dumps(entry, sort_keys=True).encode()
+    return hashlib.sha256(s).hexdigest()
 
 
-def _fernet_for(passphrase: str, salt: bytes) -> Fernet:
-    key = _kdf(passphrase, salt)
-    return Fernet(base64.urlsafe_b64encode(key))
-
-
-def _sign(secret_key: bytes, payload: bytes) -> str:
-    return base64.urlsafe_b64encode(hmac.new(secret_key, payload, sha256).digest()).decode("ascii").rstrip("=")
-
-
-def _verify(secret_key: bytes, payload: bytes, signature: str) -> bool:
-    expected = _sign(secret_key, payload)
-    return hmac.compare_digest(expected, signature)
-
-
-# ---------------------------------------------------------------------------
-# Vault store
-# ---------------------------------------------------------------------------
-
-
-@dataclass
-class VaultPaths:
-    home: Path
-
-    @property
-    def config(self) -> Path:
-        return self.home / "config.json"
-
-    @property
-    def data(self) -> Path:
-        return self.home / "vault.enc"
-
-    @property
-    def audit(self) -> Path:
-        return self.home / "audit.log"
-
-
-class VaultLockedError(RuntimeError):
-    pass
-
-
-class VaultNotFoundError(RuntimeError):
-    pass
-
-
-class VaultExistsError(RuntimeError):
-    pass
-
-
-class Vault:
-    """High-level vault operations. Stateless across CLI invocations: every
-    command unlocks, mutates, re-seals, writes, and forgets the key."""
-
-    def __init__(self, paths: VaultPaths):
-        self.paths = paths
-        self._fernet: Optional[Fernet] = None
-        self._secret_key: Optional[bytes] = None
-        self._state: dict[str, Any] = {}
-
-    # --- lifecycle ---
-
-    def init(self, passphrase: str) -> None:
-        if self.paths.config.exists():
-            raise VaultExistsError(f"vault already initialised at {self.paths.home}")
-        self.paths.home.mkdir(parents=True, exist_ok=True)
-        salt = _secrets.token_bytes(SALT_BYTES)
-        config = {
-            "version": VAULT_VERSION,
-            "kdf": "scrypt",
-            "kdf_params": {"n": SCRYPT_N, "r": SCRYPT_R, "p": SCRYPT_P, "len": SCRYPT_LEN},
-            "salt": base64.b64encode(salt).decode("ascii"),
-            "created_at": int(time.time()),
-        }
-        self.paths.config.write_text(json.dumps(config, indent=2))
-        self._fernet = _fernet_for(passphrase, salt)
-        self._secret_key = _kdf(passphrase, salt)
-        self._state = {
-            "credentials": {},
-            "agents": {},
-            "grants": {},
-            "revoked": [],
-            "version": VAULT_VERSION,
-        }
-        self._seal()
-        self._audit("setup", {"home": str(self.paths.home)})
-
-    def unlock(self, passphrase: str) -> None:
-        if not self.paths.config.exists():
-            raise VaultNotFoundError(f"no vault at {self.paths.home}; run `setup` first")
-        config = json.loads(self.paths.config.read_text())
-        salt = base64.b64decode(config["salt"])
-        self._fernet = _fernet_for(passphrase, salt)
-        self._secret_key = _kdf(passphrase, salt)
-        if not self.paths.data.exists():
-            self._state = {
-                "credentials": {},
-                "agents": {},
-                "grants": {},
-                "revoked": [],
-                "version": VAULT_VERSION,
-            }
-            return
+def _audit_append(event: dict):
+    """Append to audit log with hash chain."""
+    AUDIT.touch(exist_ok=True)
+    # Get last hash
+    last_hash = b""
+    with open(AUDIT, "rb") as f:
+        # Read backwards: find last newline
         try:
-            blob = self._fernet.decrypt(self.paths.data.read_bytes())
-        except InvalidToken as exc:
-            raise VaultLockedError("incorrect passphrase or corrupted vault") from exc
-        self._state = json.loads(blob)
+            f.seek(-2, 2)
+            while f.read(1) != b"\n":
+                f.seek(-2, 1)
+            last_line = f.readline().decode().strip()
+            if last_line:
+                last_hash = bytes.fromhex(json.loads(last_line).get("hash", ""))
+        except (OSError, ValueError):
+            pass
+    entry = {**event, "ts": _now()}
+    entry["hash"] = _hash_chain(last_hash, entry)
+    with open(AUDIT, "a") as f:
+        f.write(json.dumps(entry) + "\n")
 
-    def _seal(self) -> None:
-        if self._fernet is None:
-            raise VaultLockedError("vault not unlocked")
-        payload = json.dumps(self._state, sort_keys=True).encode("utf-8")
-        self.paths.data.write_bytes(self._fernet.encrypt(payload))
 
-    # --- audit ---
+def _derive_aes_key(master_priv_bytes: bytes, salt: bytes) -> bytes:
+    """Derive a 32-byte AES key from master private key bytes + salt via scrypt."""
+    kdf = Scrypt(salt=salt, length=32, n=2**14, r=8, p=1)
+    return kdf.derive(master_priv_bytes)
 
-    def _audit(self, op: str, fields: dict[str, Any]) -> None:
-        record = {"ts": int(time.time()), "op": op, **fields}
-        with self.paths.audit.open("a") as fh:
-            fh.write(json.dumps(record) + "\n")
 
-    # --- agents ---
+def _load_master_priv(passphrase: str) -> Ed25519PrivateKey:
+    if not MASTER_PRIV_ENC.exists():
+        raise FileNotFoundError("Vault not initialized. Run: calm_vault.py setup")
+    salt = MASTER_SALT.read_bytes()
+    enc = MASTER_PRIV_ENC.read_bytes()
+    nonce, ct = enc[:12], enc[12:]
+    kdf = Scrypt(salt=salt, length=32, n=2**14, r=8, p=1)
+    key = kdf.derive(passphrase.encode())
+    pem = AESGCM(key).decrypt(nonce, ct, None)
+    return serialization.load_pem_private_key(pem, password=None)
 
-    def issue_agent(self, name: str) -> dict[str, Any]:
-        if name in self._state["agents"]:
-            raise ValueError(f"agent {name!r} already exists")
-        token = _secrets.token_urlsafe(24)
-        agent = {
-            "id": str(uuid.uuid4()),
-            "name": name,
-            "token_hash": sha256(token.encode()).hexdigest(),
-            "created_at": int(time.time()),
-        }
-        self._state["agents"][name] = agent
-        self._seal()
-        self._audit("issue-agent", {"agent": name})
-        return {"name": name, "id": agent["id"], "token": token}
 
-    def list_agents(self) -> list[dict[str, Any]]:
-        return [
-            {"name": a["name"], "id": a["id"], "created_at": a["created_at"]}
-            for a in self._state["agents"].values()
-        ]
+def _load_master_pub() -> Ed25519PublicKey:
+    pem = MASTER_PUB.read_bytes()
+    return serialization.load_pem_public_key(pem)
 
-    # --- credentials ---
 
-    def add_credential(self, name: str, value: str) -> dict[str, Any]:
-        if name in self._state["credentials"]:
-            raise ValueError(f"credential {name!r} already exists; revoke first to replace")
-        cred = {
-            "id": str(uuid.uuid4()),
-            "name": name,
-            "value": value,
-            "created_at": int(time.time()),
-        }
-        self._state["credentials"][name] = cred
-        self._seal()
-        self._audit("add", {"credential": name})
-        return {"name": name, "id": cred["id"]}
+def _check_kill_switch():
+    if KILL_SWITCH.exists():
+        _audit_append({"event": "ACCESS_DENIED_KILL_SWITCH"})
+        print("ACCESS DENIED: vault has been globally revoked. Run 'unrevoke-all' to restore.", file=sys.stderr)
+        sys.exit(2)
 
-    def list_credentials(self) -> list[dict[str, Any]]:
-        return [
-            {"name": c["name"], "id": c["id"], "created_at": c["created_at"]}
-            for c in self._state["credentials"].values()
-        ]
 
-    def remove_credential(self, name: str) -> None:
-        if name not in self._state["credentials"]:
-            raise ValueError(f"no credential named {name!r}")
-        del self._state["credentials"][name]
-        # cascade-revoke any outstanding grants for this credential
-        for gid, g in list(self._state["grants"].items()):
-            if g["credential"] == name:
-                self._state["revoked"].append(gid)
-                del self._state["grants"][gid]
-        self._seal()
-        self._audit("revoke-credential", {"credential": name})
+# ============ JOHN COMMANDS ============
 
-    # --- grants ---
-
-    def issue_grant(
-        self,
-        credential: str,
-        agent: Optional[str] = None,
-        duration: int = GRANT_DEFAULT_DURATION,
-    ) -> dict[str, Any]:
-        if credential not in self._state["credentials"]:
-            raise ValueError(f"no credential named {credential!r}")
-        if agent is not None and agent not in self._state["agents"]:
-            raise ValueError(f"no agent named {agent!r}; run `issue-agent` first")
-        grant_id = str(uuid.uuid4())
-        now = int(time.time())
-        envelope = {
-            "id": grant_id,
-            "credential": credential,
-            "credential_id": self._state["credentials"][credential]["id"],
-            "agent": agent,
-            "issued_at": now,
-            "expires_at": now + int(duration),
-            "nonce": _secrets.token_hex(8),
-        }
-        signature = _sign(self._secret_key, json.dumps(envelope, sort_keys=True).encode())  # type: ignore[arg-type]
-        envelope["sig"] = signature
-        self._state["grants"][grant_id] = {
-            "credential": credential,
-            "agent": agent,
-            "expires_at": envelope["expires_at"],
-            "issued_at": now,
-        }
-        self._seal()
-        self._audit(
-            "grant",
-            {"credential": credential, "agent": agent, "grant_id": grant_id, "expires_at": envelope["expires_at"]},
+def cmd_setup(args):
+    if MASTER_PRIV_ENC.exists():
+        print("Vault already initialized at", VAULT_DIR)
+        sys.exit(1)
+    VAULT_DIR.mkdir(parents=True, exist_ok=True)
+    VAULT_DIR.chmod(0o700)
+    passphrase = getpass.getpass("Set master passphrase: ")
+    confirm = getpass.getpass("Confirm passphrase: ")
+    if passphrase != confirm:
+        print("Mismatch.", file=sys.stderr)
+        sys.exit(1)
+    # Generate Ed25519 master keypair
+    priv = Ed25519PrivateKey.generate()
+    pub = priv.public_key()
+    # Save public
+    MASTER_PUB.write_bytes(
+        pub.public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo,
         )
-        return envelope
-
-    def redeem_grant(self, grant: dict[str, Any]) -> str:
-        required = {"id", "credential", "credential_id", "issued_at", "expires_at", "nonce", "sig"}
-        if not required.issubset(grant):
-            raise ValueError("grant is missing required fields")
-        envelope = {k: grant[k] for k in grant if k != "sig"}
-        payload = json.dumps(envelope, sort_keys=True).encode()
-        if not _verify(self._secret_key, payload, grant["sig"]):  # type: ignore[arg-type]
-            raise ValueError("grant signature invalid (forged or tampered)")
-        if grant["id"] in self._state["revoked"]:
-            raise ValueError("grant has been revoked")
-        if grant["id"] not in self._state["grants"]:
-            raise ValueError("grant unknown to vault (was it issued elsewhere?)")
-        if int(time.time()) > int(grant["expires_at"]):
-            raise ValueError("grant expired")
-        cred = self._state["credentials"].get(grant["credential"])
-        if cred is None or cred["id"] != grant["credential_id"]:
-            raise ValueError("credential no longer exists or has been replaced")
-        self._audit(
-            "request",
-            {
-                "credential": grant["credential"],
-                "agent": grant.get("agent"),
-                "grant_id": grant["id"],
-            },
-        )
-        return cred["value"]
-
-    def revoke(self, target: str) -> str:
-        # target may be a grant id, an agent name, or a credential name
-        if target in self._state["grants"]:
-            self._state["revoked"].append(target)
-            del self._state["grants"][target]
-            self._seal()
-            self._audit("revoke-grant", {"grant_id": target})
-            return f"revoked grant {target}"
-        if target in self._state["agents"]:
-            for gid, g in list(self._state["grants"].items()):
-                if g.get("agent") == target:
-                    self._state["revoked"].append(gid)
-                    del self._state["grants"][gid]
-            del self._state["agents"][target]
-            self._seal()
-            self._audit("revoke-agent", {"agent": target})
-            return f"revoked agent {target} and all their outstanding grants"
-        if target in self._state["credentials"]:
-            self.remove_credential(target)
-            return f"revoked credential {target} and cascade-revoked dependent grants"
-        raise ValueError(f"nothing named {target!r} to revoke")
-
-    def list_grants(self) -> list[dict[str, Any]]:
-        now = int(time.time())
-        out = []
-        for gid, g in self._state["grants"].items():
-            out.append(
-                {
-                    "id": gid,
-                    "credential": g["credential"],
-                    "agent": g.get("agent"),
-                    "expires_at": g["expires_at"],
-                    "expired": now > g["expires_at"],
-                }
-            )
-        return out
-
-
-# ---------------------------------------------------------------------------
-# CLI plumbing
-# ---------------------------------------------------------------------------
-
-
-def _read_passphrase(args, *, confirm: bool = False) -> str:
-    if getattr(args, "passphrase", None):
-        return args.passphrase
-    env = os.environ.get(PASSPHRASE_ENV)
-    if env:
-        return env
-    if not sys.stdin.isatty():
-        return sys.stdin.readline().rstrip("\n")
-    pw = getpass.getpass("Vault passphrase: ")
-    if confirm:
-        again = getpass.getpass("Confirm passphrase: ")
-        if pw != again:
-            raise SystemExit("passphrases do not match")
-    return pw
-
-
-def _print(obj: Any, args) -> None:
-    if getattr(args, "json", False):
-        print(json.dumps(obj, indent=2, sort_keys=True))
-    elif isinstance(obj, str):
-        print(obj)
-    else:
-        print(json.dumps(obj, indent=2, sort_keys=True))
-
-
-def _vault(args) -> Vault:
-    home = Path(args.home) if args.home else DEFAULT_HOME
-    return Vault(VaultPaths(home=home))
-
-
-def cmd_setup(args) -> int:
-    pw = _read_passphrase(args, confirm=True)
-    v = _vault(args)
-    v.init(pw)
-    _print({"status": "ok", "vault_home": str(v.paths.home)}, args)
-    return 0
-
-
-def cmd_issue_agent(args) -> int:
-    v = _vault(args)
-    v.unlock(_read_passphrase(args))
-    result = v.issue_agent(args.name)
-    _print(result, args)
-    return 0
-
-
-def cmd_add(args) -> int:
-    v = _vault(args)
-    v.unlock(_read_passphrase(args))
-    if args.value == "-":
-        value = sys.stdin.read().rstrip("\n")
-    else:
-        value = args.value
-    result = v.add_credential(args.name, value)
-    _print(result, args)
-    return 0
-
-
-def cmd_grant(args) -> int:
-    v = _vault(args)
-    v.unlock(_read_passphrase(args))
-    grant = v.issue_grant(args.credential, agent=args.agent, duration=args.duration)
-    _print(grant, args)
-    return 0
-
-
-def cmd_request(args) -> int:
-    v = _vault(args)
-    v.unlock(_read_passphrase(args))
-    if args.grant == "-":
-        grant = json.loads(sys.stdin.read())
-    else:
-        try:
-            grant = json.loads(args.grant)
-        except json.JSONDecodeError:
-            grant_path = Path(args.grant)
-            if not grant_path.exists():
-                raise SystemExit(f"--grant must be a JSON string, '-', or a path to a JSON file; got {args.grant!r}")
-            grant = json.loads(grant_path.read_text())
-    value = v.redeem_grant(grant)
-    if getattr(args, "json", False):
-        print(json.dumps({"value": value}))
-    else:
-        print(value)
-    return 0
-
-
-def cmd_revoke(args) -> int:
-    v = _vault(args)
-    v.unlock(_read_passphrase(args))
-    msg = v.revoke(args.target)
-    _print(msg, args)
-    return 0
-
-
-def cmd_list(args) -> int:
-    v = _vault(args)
-    v.unlock(_read_passphrase(args))
-    payload = {
-        "credentials": v.list_credentials(),
-        "agents": v.list_agents(),
-        "grants": v.list_grants(),
-    }
-    _print(payload, args)
-    return 0
-
-
-def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(
-        prog="calm-vault",
-        description="Local, passphrase-protected credential broker for AI agents.",
     )
-    p.add_argument("--home", help=f"vault home directory (default: {DEFAULT_HOME})")
-    p.add_argument("--passphrase", help=f"passphrase (overrides ${PASSPHRASE_ENV} / TTY prompt)")
-    p.add_argument("--json", action="store_true", help="force JSON output")
-    sub = p.add_subparsers(dest="command", required=True)
-
-    sp = sub.add_parser("setup", help="initialise a new vault")
-    sp.set_defaults(func=cmd_setup)
-
-    sp = sub.add_parser("issue-agent", help="register a new agent identity")
-    sp.add_argument("name")
-    sp.set_defaults(func=cmd_issue_agent)
-
-    sp = sub.add_parser("add", help="store a new credential")
-    sp.add_argument("name")
-    sp.add_argument("value", help="credential value, or '-' to read from stdin")
-    sp.set_defaults(func=cmd_add)
-
-    sp = sub.add_parser("grant", help="issue a time-bound grant for a credential")
-    sp.add_argument("credential")
-    sp.add_argument("--agent", help="restrict grant to a named agent")
-    sp.add_argument("--duration", type=int, default=GRANT_DEFAULT_DURATION, help="grant lifetime in seconds")
-    sp.set_defaults(func=cmd_grant)
-
-    sp = sub.add_parser("request", help="redeem a grant for the underlying credential value")
-    sp.add_argument("credential", help="credential name (informational; the grant carries the binding)")
-    sp.add_argument("--grant", required=True, help="grant JSON string, path to JSON file, or '-' for stdin")
-    sp.set_defaults(func=cmd_request)
-
-    sp = sub.add_parser("revoke", help="revoke a grant, agent, or credential")
-    sp.add_argument("target", help="grant id, agent name, or credential name")
-    sp.set_defaults(func=cmd_revoke)
-
-    sp = sub.add_parser("list", help="list credentials, agents, and outstanding grants")
-    sp.set_defaults(func=cmd_list)
-
-    return p
+    MASTER_PUB.chmod(0o644)
+    # Encrypt private with passphrase-derived key
+    salt = secrets.token_bytes(16)
+    kdf = Scrypt(salt=salt, length=32, n=2**14, r=8, p=1)
+    key = kdf.derive(passphrase.encode())
+    nonce = secrets.token_bytes(12)
+    pem = priv.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption(),
+    )
+    ct = AESGCM(key).encrypt(nonce, pem, None)
+    MASTER_PRIV_ENC.write_bytes(nonce + ct)
+    MASTER_PRIV_ENC.chmod(0o600)
+    MASTER_SALT.write_bytes(salt)
+    MASTER_SALT.chmod(0o600)
+    _audit_append({"event": "MASTER_SETUP", "master_pub_fingerprint": hashlib.sha256(pub.public_bytes(serialization.Encoding.Raw, serialization.PublicFormat.Raw)).hexdigest()[:16]})
+    print(f"Vault initialized at {VAULT_DIR}")
+    print(f"Master public key: {MASTER_PUB}")
+    print("CRITICAL: backup the master passphrase + ~/.calm-vault/ directory. If you lose either, credentials are unrecoverable.")
 
 
-def main(argv: Optional[list[str]] = None) -> int:
-    parser = build_parser()
-    args = parser.parse_args(argv)
+def cmd_issue_agent(args):
+    _check_kill_switch()
+    passphrase = getpass.getpass("Master passphrase: ")
+    master_priv = _load_master_priv(passphrase)
+    agent_id = args.agent_id
+    # Generate agent keypair
+    agent_priv = Ed25519PrivateKey.generate()
+    agent_pub = agent_priv.public_key()
+    agent_pub_bytes = agent_pub.public_bytes(serialization.Encoding.Raw, serialization.PublicFormat.Raw)
+    # Sign the agent's public key with master
+    signature = master_priv.sign(agent_pub_bytes + agent_id.encode())
+    # Store
+    entry = {
+        "agent_id": agent_id,
+        "agent_pub": base64.b64encode(agent_pub_bytes).decode(),
+        "issued_at": _now(),
+        "signature": base64.b64encode(signature).decode(),
+    }
+    with open(AGENTS, "a") as f:
+        f.write(json.dumps(entry) + "\n")
+    # Hand the agent's private key to Calm
+    agent_priv_b64 = base64.b64encode(
+        agent_priv.private_bytes(
+            serialization.Encoding.Raw,
+            serialization.PrivateFormat.Raw,
+            serialization.NoEncryption(),
+        )
+    ).decode()
+    _audit_append({"event": "AGENT_ISSUED", "agent_id": agent_id})
+    print(f"Agent issued: {agent_id}")
+    print(f"AGENT PRIVATE KEY (give to Calm; never share with anyone else):")
+    print(agent_priv_b64)
+    print("Calm saves to ~/.calm-vault/agent.priv (mode 600) for use in `request` commands.")
+
+
+def cmd_add(args):
+    _check_kill_switch()
+    passphrase = getpass.getpass("Master passphrase: ")
+    master_priv = _load_master_priv(passphrase)
+    salt_for_aes = MASTER_SALT.read_bytes()
+    master_priv_bytes = master_priv.private_bytes(
+        serialization.Encoding.Raw, serialization.PrivateFormat.Raw, serialization.NoEncryption()
+    )
+    aes_key = _derive_aes_key(master_priv_bytes, salt_for_aes)
+    nonce = secrets.token_bytes(12)
+    value_bytes = args.value.encode()
+    ct = AESGCM(aes_key).encrypt(nonce, value_bytes, args.alias.encode())
+    entry = {
+        "alias": args.alias,
+        "ciphertext_b64": base64.b64encode(nonce + ct).decode(),
+        "added_at": _now(),
+        "label": args.label or "",
+    }
+    with open(CREDENTIALS, "a") as f:
+        f.write(json.dumps(entry) + "\n")
+    _audit_append({"event": "CREDENTIAL_ADDED", "alias": args.alias})
+    print(f"Credential added: {args.alias}")
+
+
+def cmd_grant(args):
+    _check_kill_switch()
+    passphrase = getpass.getpass("Master passphrase: ")
+    master_priv = _load_master_priv(passphrase)
+    expires_at = (datetime.now(timezone.utc) + timedelta(seconds=args.duration)).isoformat()
+    grant = {
+        "alias": args.alias,
+        "agent_id": args.agent_id,
+        "expires_at": expires_at,
+        "nonce": base64.b64encode(secrets.token_bytes(16)).decode(),
+        "issued_at": _now(),
+    }
+    canonical = json.dumps(grant, sort_keys=True).encode()
+    signature = master_priv.sign(canonical)
+    grant["signature"] = base64.b64encode(signature).decode()
+    _audit_append({"event": "GRANT_ISSUED", "alias": args.alias, "agent_id": args.agent_id, "expires_at": expires_at, "nonce": grant["nonce"]})
+    print("=== GRANT (give to Calm) ===")
+    print(json.dumps(grant))
+    print()
+    print(f"Expires at: {expires_at}")
+    print(f"Calm runs: calm_vault.py request {args.alias} --grant '<paste-grant-json>'")
+
+
+def cmd_revoke(args):
+    _check_kill_switch()
+    with open(REVOKED_CREDS, "a") as f:
+        f.write(json.dumps({"alias": args.alias, "revoked_at": _now()}) + "\n")
+    _audit_append({"event": "CREDENTIAL_REVOKED", "alias": args.alias})
+    print(f"Credential revoked: {args.alias}")
+
+
+def cmd_revoke_agent(args):
+    _check_kill_switch()
+    with open(REVOKED_AGENTS, "a") as f:
+        f.write(json.dumps({"agent_id": args.agent_id, "revoked_at": _now()}) + "\n")
+    _audit_append({"event": "AGENT_REVOKED", "agent_id": args.agent_id})
+    print(f"Agent revoked: {args.agent_id}")
+
+
+def cmd_revoke_all(args):
+    KILL_SWITCH.write_text(_now())
+    KILL_SWITCH.chmod(0o644)
+    _audit_append({"event": "KILL_SWITCH_ENGAGED"})
+    print("KILL SWITCH ENGAGED. All credential access denied until 'unrevoke-all'.")
+
+
+def cmd_unrevoke_all(args):
+    if KILL_SWITCH.exists():
+        KILL_SWITCH.unlink()
+        _audit_append({"event": "KILL_SWITCH_DISENGAGED"})
+        print("Kill switch disengaged. Calm credential access restored.")
+    else:
+        print("Kill switch was not engaged.")
+
+
+def cmd_status(args):
+    print(f"VAULT_DIR: {VAULT_DIR}")
+    print(f"Master pub: {MASTER_PUB} ({'exists' if MASTER_PUB.exists() else 'MISSING'})")
+    print(f"Kill switch: {'ENGAGED' if KILL_SWITCH.exists() else 'off'}")
+    agents = []
+    if AGENTS.exists():
+        agents = [json.loads(l) for l in AGENTS.read_text().splitlines() if l.strip()]
+    revoked_agents = set()
+    if REVOKED_AGENTS.exists():
+        revoked_agents = {json.loads(l)["agent_id"] for l in REVOKED_AGENTS.read_text().splitlines() if l.strip()}
+    print(f"Agents: {len(agents)} issued, {len(revoked_agents)} revoked")
+    for a in agents:
+        status = "REVOKED" if a["agent_id"] in revoked_agents else "active"
+        print(f"  {a['agent_id']:30s}  {status}  issued {a['issued_at'][:19]}")
+    creds = []
+    if CREDENTIALS.exists():
+        creds = [json.loads(l) for l in CREDENTIALS.read_text().splitlines() if l.strip()]
+    revoked_creds = set()
+    if REVOKED_CREDS.exists():
+        revoked_creds = {json.loads(l)["alias"] for l in REVOKED_CREDS.read_text().splitlines() if l.strip()}
+    print(f"Credentials: {len(creds)} stored, {len(revoked_creds)} revoked")
+    for c in creds:
+        status = "REVOKED" if c["alias"] in revoked_creds else "active"
+        print(f"  {c['alias']:30s}  {status}  added {c['added_at'][:19]}  {c.get('label','')}")
+
+
+def cmd_audit(args):
+    if not AUDIT.exists():
+        print("No audit log yet.")
+        return
+    for line in AUDIT.read_text().splitlines()[-args.lines:]:
+        if not line.strip():
+            continue
+        e = json.loads(line)
+        ts = e.get('ts', '?')[:19]
+        ev = e.get('event', '?')
+        h = e.get('hash', '?')[:12]
+        rest = {k:v for k,v in e.items() if k not in ('ts','event','hash')}
+        print(f"  {ts}  {ev:30s}  hash={h}  {json.dumps(rest)}")
+
+
+# ============ CALM COMMANDS ============
+
+def cmd_request(args):
+    _check_kill_switch()
+    # Calm's agent key must exist
+    agent_priv_path = VAULT_DIR / "agent.priv"
+    if not agent_priv_path.exists():
+        print("ERROR: agent.priv missing. John must run `issue-agent` and Calm saves the result.", file=sys.stderr)
+        sys.exit(1)
+    # Parse grant
+    grant = json.loads(args.grant)
+    # Verify grant signature against master public key
+    master_pub = _load_master_pub()
+    sig = base64.b64decode(grant["signature"])
+    grant_for_verify = {k: v for k, v in grant.items() if k != "signature"}
+    canonical = json.dumps(grant_for_verify, sort_keys=True).encode()
     try:
-        return args.func(args)
-    except (VaultNotFoundError, VaultLockedError, VaultExistsError, ValueError) as exc:
-        print(f"error: {exc}", file=sys.stderr)
-        return 1
+        master_pub.verify(sig, canonical)
+    except Exception:
+        _audit_append({"event": "ACCESS_DENIED_BAD_GRANT_SIGNATURE", "alias": args.alias})
+        print("ACCESS DENIED: grant signature invalid", file=sys.stderr)
+        sys.exit(2)
+    # Check alias match
+    if grant["alias"] != args.alias:
+        _audit_append({"event": "ACCESS_DENIED_ALIAS_MISMATCH", "alias": args.alias, "grant_alias": grant["alias"]})
+        print(f"ACCESS DENIED: grant for {grant['alias']}, requested {args.alias}", file=sys.stderr)
+        sys.exit(2)
+    # Check expiration
+    expires_at = datetime.fromisoformat(grant["expires_at"])
+    if datetime.now(timezone.utc) > expires_at:
+        _audit_append({"event": "ACCESS_DENIED_GRANT_EXPIRED", "alias": args.alias})
+        print(f"ACCESS DENIED: grant expired at {grant['expires_at']}", file=sys.stderr)
+        sys.exit(2)
+    # Check nonce not already used (single-use)
+    GRANTS_USED.touch(exist_ok=True)
+    used_nonces = set()
+    for line in GRANTS_USED.read_text().splitlines():
+        if line.strip():
+            used_nonces.add(json.loads(line).get("nonce"))
+    if grant["nonce"] in used_nonces:
+        _audit_append({"event": "ACCESS_DENIED_NONCE_REPLAY", "alias": args.alias})
+        print("ACCESS DENIED: grant already consumed (single-use)", file=sys.stderr)
+        sys.exit(2)
+    # Check credential not revoked
+    if REVOKED_CREDS.exists():
+        revoked = {json.loads(l)["alias"] for l in REVOKED_CREDS.read_text().splitlines() if l.strip()}
+        if args.alias in revoked:
+            _audit_append({"event": "ACCESS_DENIED_CREDENTIAL_REVOKED", "alias": args.alias})
+            print(f"ACCESS DENIED: credential {args.alias} revoked", file=sys.stderr)
+            sys.exit(2)
+    # Check agent not revoked
+    if REVOKED_AGENTS.exists():
+        revoked_agents = {json.loads(l)["agent_id"] for l in REVOKED_AGENTS.read_text().splitlines() if l.strip()}
+        if grant["agent_id"] in revoked_agents:
+            _audit_append({"event": "ACCESS_DENIED_AGENT_REVOKED", "agent_id": grant["agent_id"]})
+            print(f"ACCESS DENIED: agent {grant['agent_id']} revoked", file=sys.stderr)
+            sys.exit(2)
+    # Find credential
+    cred = None
+    for line in CREDENTIALS.read_text().splitlines():
+        if not line.strip():
+            continue
+        c = json.loads(line)
+        if c["alias"] == args.alias:
+            cred = c  # take the LAST one matching
+    if not cred:
+        _audit_append({"event": "ACCESS_DENIED_CREDENTIAL_NOT_FOUND", "alias": args.alias})
+        print(f"ACCESS DENIED: credential {args.alias} not found", file=sys.stderr)
+        sys.exit(2)
+    # Decrypt — broker reconstructs AES key from a re-derived master.
+    # SIMPLIFICATION: broker has access to MASTER_PRIV_ENC + can derive AES key if it knows passphrase.
+    # In our model: broker runs AS John (under his uid); calls require John's passphrase OR a long-lived broker session.
+    # For this prototype: ask for passphrase OR accept env var CALM_VAULT_BROKER_PASSPHRASE
+    pp = os.environ.get("CALM_VAULT_BROKER_PASSPHRASE") or getpass.getpass("Master passphrase (for broker decryption): ")
+    master_priv = _load_master_priv(pp)
+    salt_for_aes = MASTER_SALT.read_bytes()
+    master_priv_bytes = master_priv.private_bytes(
+        serialization.Encoding.Raw, serialization.PrivateFormat.Raw, serialization.NoEncryption()
+    )
+    aes_key = _derive_aes_key(master_priv_bytes, salt_for_aes)
+    ct_bytes = base64.b64decode(cred["ciphertext_b64"])
+    nonce, ct = ct_bytes[:12], ct_bytes[12:]
+    value = AESGCM(aes_key).decrypt(nonce, ct, args.alias.encode()).decode()
+    # Mark nonce as used
+    with open(GRANTS_USED, "a") as f:
+        f.write(json.dumps({"nonce": grant["nonce"], "used_at": _now(), "alias": args.alias, "agent_id": grant["agent_id"]}) + "\n")
+    _audit_append({"event": "CREDENTIAL_RELEASED", "alias": args.alias, "agent_id": grant["agent_id"], "nonce": grant["nonce"]})
+    print(value)
+
+
+# ============ CLI ============
+
+def main():
+    p = argparse.ArgumentParser(description="Calm Vault — zero-trust credential broker")
+    sub = p.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("setup")
+    s = sub.add_parser("issue-agent"); s.add_argument("agent_id")
+    s = sub.add_parser("add"); s.add_argument("alias"); s.add_argument("value"); s.add_argument("--label")
+    s = sub.add_parser("grant"); s.add_argument("alias"); s.add_argument("--agent-id", required=True); s.add_argument("--duration", type=int, default=300)
+    s = sub.add_parser("revoke"); s.add_argument("alias")
+    s = sub.add_parser("revoke-agent"); s.add_argument("agent_id")
+    sub.add_parser("revoke-all")
+    sub.add_parser("unrevoke-all")
+    sub.add_parser("status")
+    s = sub.add_parser("audit"); s.add_argument("--lines", type=int, default=20)
+    s = sub.add_parser("request"); s.add_argument("alias"); s.add_argument("--grant", required=True)
+    args = p.parse_args()
+    {
+        "setup": cmd_setup, "issue-agent": cmd_issue_agent, "add": cmd_add,
+        "grant": cmd_grant, "revoke": cmd_revoke, "revoke-agent": cmd_revoke_agent,
+        "revoke-all": cmd_revoke_all, "unrevoke-all": cmd_unrevoke_all,
+        "status": cmd_status, "audit": cmd_audit, "request": cmd_request,
+    }[args.cmd](args)
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

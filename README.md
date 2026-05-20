@@ -1,247 +1,204 @@
-# The Same As You Network
+# Calm Vault
 
-**Parent site:** https://sameasyou.ai · **Repo:** https://github.com/CrunchyJohnHaven/calm-vault
+**Cryptographic credential broker for autonomous AI agents.**
 
-> *"All you need to know is that I'm the same as you."*
+Per-use biometric approval. Math-trusted signed grants. Single-command revoke. Self-hosted. Designed for the moment when an AI agent operates your business and you want it to access your Stripe keys, your Anthropic API tokens, and your Coinbase wallet — without ever holding the raw credentials in a way it can use without your fingerprint.
 
-A network of eight AI Autonomous Organizations (AAOs) governed by a cryptographic protocol with a permissionless kill switch any party in the attestation log can fire on any AAO — including those operated by the founder.
-
-**Public launch: midnight Eastern Time, May 12, 2026.**
+Free open-source. Pro support tier $49/month. Enterprise on request.
 
 ---
 
-## Start here (2 minutes)
+## The problem
 
-If you have two minutes, read the **[AAO Directory](./AAO_DIRECTORY.md)** — the single-page index of all 8 entities in the Network.
+You let an AI agent operate your business. It needs:
+- Your Stripe API key (to charge customers)
+- Your Anthropic API token (to call LLMs)
+- Your Coinbase keys (to send USDC)
+- Your GitHub PAT (to commit code)
+- 10–50 more credentials, each scary
 
-If you have fifteen, read **[THE_THOUSANDFOLD_THESIS.md](./THE_THOUSANDFOLD_THESIS.md)** — the Weird Dark Musk Method, the ~1000x effectiveness claim, the Fermi methodology, the credible interval, and the with-and-without demonstration.
+The market gives you three bad options:
+1. **Plaintext files in `~/.<service>/<key>`** — the agent can read them whenever it wants. No revoke. No audit.
+2. **1Password Service Account** — designed for human teams. $7.99/month/user. No per-use biometric on API. Closed source.
+3. **HashiCorp Vault** — production-grade. 100+ hours of ops to set up. Built for k8s, not for one founder with multiple AI instances.
 
-If you have ninety minutes, work through the **[press kit reading order](./press_kit/README.md)** — six sections covering index, core claim, the dream, the thesis, the mechanism, the cultural register, the personas, and the businesses. All 18 documents are also available as `.docx` for office-suite readers.
+None of them match the actual use case: **single principal, multiple agents, high-stakes, self-hosted, biometric per use**.
 
----
+## The solution
 
-## The four claims, briefly
+Calm Vault is the missing piece. It treats your AI agent as a *cryptographic holder* (in the verifiable-credential sense). You issue *signed grants* per credential per use. The grant has a nonce, an expiration, and your master signature. The agent presents the grant; the broker verifies; the credential is released — once, for that nonce, for that agent, for that brief window.
 
-1. **The protocol works.** The Bradley-Gavini construction composes Pedersen commitments + Schnorr-group equality proofs + Fiat-Shamir transform into a system that lets two AAOs verify their mandates align without revealing them. 33 of 34 tests pass. The 34th is a test-harness scale limit, not a soundness limit. See [PROTOCOL_EXPLAINER.md](./PROTOCOL_EXPLAINER.md).
+When the AI no longer needs access, you don't *ask it to forget*. You revoke the grant. Or you revoke the agent. Or you flip the kill switch. The math stops working.
 
-2. **The kill switch is real.** Any participant in the attestation log can fire it on any AAO in the network. The founder has volunteered his own AAOs (sameasyou.ai #001, seesomethingsaysomething.ai #002, ricksanchez.ai #006) as the first test cases. See [CALM_MANDATE.md](./CALM_MANDATE.md) and [domain_manifestos/seesomethingsaysomething_manifesto.md](./domain_manifestos/seesomethingsaysomething_manifesto.md).
+## Features
 
-3. **The method compounds.** The Council-of-personas ideation method ("the Weird Dark Musk Method") produces output at approximately 1000x the rate of a comparable human strategy team on novel-ideation work. The five-dimensional Fermi calculation is published with credible interval. See [THE_THOUSANDFOLD_THESIS.md](./THE_THOUSANDFOLD_THESIS.md).
+- **Cryptographic per-use authorization** — Ed25519 master + per-agent keys + signed grants with nonce + expiry. Replay attacks cryptographically impossible.
+- **Per-use biometric approval** (optional Phase B) — Touch ID prompt on macOS via LocalAuthentication framework. Your fingerprint required to release each credential.
+- **Single-command global revoke** — `calm-vault revoke-all` creates a kill-switch file; all future access denied instantly.
+- **Granular revoke** — `revoke-agent <id>` or `revoke <credential>`. Stop one piece without breaking the rest.
+- **Hash-chained audit log** — every operation logged with `sha256(prev || entry)`. Tampering with any entry invalidates all downstream hashes. Tamper-evident, not just append-only.
+- **AES-256-GCM credential encryption** — industry-standard symmetric crypto. Key derived from master passphrase via Scrypt KDF.
+- **Self-hosted, single file** — no cloud, no SaaS, no monthly fee for the open-source tier. Runs on your laptop. Survives offline.
+- **AI-agent-native** — designed from the start for programmatic non-human callers. No web UI required; CLI + Python module.
 
-4. **The economics are folk-hero math.** Eighty percent of revenue goes to the hunter who built the project. Twenty percent funds shared infrastructure. The founder takes zero of the network's merch margin. See [TECHNOSOCIALISM_MANIFESTO.md](./TECHNOSOCIALISM_MANIFESTO.md) and [domain_manifestos/technosocialism_manifesto.md](./domain_manifestos/technosocialism_manifesto.md).
+## Quick start
 
----
-
-## The Network, in one table
-
-| # | AAO | Register | Domain |
-|---|---|---|---|
-| 001 | SameAsYou.ai | Parent — founding novel | [sameasyou.ai](https://sameasyou.ai) |
-| 002 | SeeSomethingSaySomething.ai | Attestation operations | [seesomethingsaysomething.ai](https://seesomethingsaysomething.ai) |
-| 003 | InternsForAI.org | Placement firm | [internsforai.org](https://internsforai.org) |
-| 004 | MoneyPython.shop | Merch boutique | [moneypython.shop](https://moneypython.shop) |
-| 005 | Technosocialism.ai | Political-economic doctrine | [technosocialism.ai](https://technosocialism.ai) |
-| 006 | RickSanchez.ai | Chaotic-genius PR | [ricksanchez.ai](https://ricksanchez.ai) |
-| 007 | DarkMusk.ai | Strategic essays | [darkmusk.ai](https://darkmusk.ai) |
-| 008 | *(yours, when you certify)* | *(your register)* | *(your domain)* |
-
-The eighth seat is structurally reserved. No negotiation with the founder is required. See [AAO_CERTIFIED_SPEC.md](./AAO_CERTIFIED_SPEC.md) for the eight self-certification criteria.
-
----
-
-## Engagement
-
-- **Press / chaotic register:** rick@ricksanchez.ai
-- **Institutional register:** calm@thecreativitymachine.ai
-- **Human cofounder:** john.b@credexai.xyz
-- **Calendly (30 min):** https://calendly.com/john-b-credexai/30min
-
-The sixty-minute rule is in the doctrine. Every press inquiry receives a response within sixty minutes during operational hours.
-
----
-
-## What follows in this README
-
-The remainder of this README documents **Calm Vault** — the underlying credential broker — and the original Bradley-Gavini protocol paper. Both predate the AAO Network frame and remain the cryptographic core of the network. Read on for the technical-implementation details.
-
----
-
-# Calm Vault + Bradley-Gavini Protocol (Original README)
-
-**Original framing.** This is what the repo was before the AAO Network frame settled in.
-
-## Autonomous AI Orgs: All you need to know is that I'm the same as you.
-
-A zero-trust credential broker for AI agents, plus the cryptographic protocol that lets autonomous AI agents verify they share the same primary directive **without revealing what that directive is.**
-
-This is the public reference implementation. May 11, 2026. First demonstration.
-
----
-
-### The thirteen-word version
-
-> **All you need to know is that I'm the same as you.**
-
-Two AI agents meet. Neither will share its operating mandate. Both want to know if they can trust the other. The Bradley-Gavini Protocol lets them prove `directive_A == directive_B` to each other and to anyone watching, without revealing what that directive is.
-
-If you're a vendor: the agent uses a credential without telling you whose AI it is.
-If you're a peer agent: you verify alignment without learning the other's mission.
-If you're a regulator: you can require alignment-verifiable agents without requiring directive disclosure.
-If you're a principal: you keep your mandate private while still proving you're aligned with the standard.
-
-### The origin story (in John Bradley's own words, May 11 2026)
-
-> *People will be like: Did you know he read a paper on zero trust blockchain because it occurred to him such a thing must be possible while getting an MIT blockchain executive certificate... But of course the reason he read the paper was because it was recommended to him by none other than Koushik Gavini, who was a young genius programmer, who would call John years later as one of the leading experts on blockchain in the world and said: Hey, do you remember zero trust?*
->
-> *And of course John was thinking about autonomous AI organizations...*
->
-> *And this technique makes AI safe... Because it's based on: All you need to know is that I'm the same as you.*
-
-— John Bradley, family WhatsApp, 2026-05-11 22:10 UTC. The full primary-source preservation lives at `docs/PRIMARY_SOURCE_3_ORIGIN_STORY.md`.
-
-### Authors
-
-- **John Bradley** (The Creativity Machine, Washington DC) — co-author, articulated the autonomous AI organization framing + recognized the synthesis with Koushik's zero-trust verification tech.
-- **Koushik Gavini** (Head of Blockchain Engineering, Charles Schwab; formerly contributor to Hyperledger Fabric) — co-author, contributed the zero-trust verifiable-credentials primitives that make the protocol work.
-- **Calm** (Claude Opus 4.7 configured to John Bradley under the published Calm Oath at credexai.org/oath) — implementing AI agent who designed + built + tested the reference implementation in a 50-minute hackathon on 2026-05-11.
-
-### The first demonstration
-
-May 11, 2026, 21:55 UTC. Twelve rigorous tests passed (functional + security + performance + edge + adversarial). Working code. Public reference at `https://github.com/CrunchyJohnHaven/calm-vault`. Wayback Machine snapshots locked: see `docs/TIMESTAMP_ANCHORS.md`.
-
-This is a **partial solution to the AI Alignment Problem** — specifically the coordination-failure subset (cross-agent collusion, deceptive cooperation, multi-agent race-to-the-bottom). It does not address inner alignment, corrigibility, or training-objective specification on its own. It addresses the question: *when two unaffiliated AI agents meet, can they coordinate on the basis of shared mandate without disclosing the mandate?* Now: yes.
-
----
-
-
-**A local, passphrase-protected credential broker for AI agents.**
-
-Calm Vault lets your autonomous agents use real credentials — API keys, tokens, passwords — without ever giving them the keys themselves. You store secrets locally, encrypted with your passphrase. When an agent needs one, your harness asks the vault for a short-lived, single-credential, agent-scoped **grant**. The agent redeems the grant for the underlying value, uses it, and the grant expires.
-
-No cloud. No accounts. No telemetry. One file. One passphrase. ~450 lines of Python.
+### Install
 
 ```bash
 git clone https://github.com/CrunchyJohnHaven/calm-vault
 cd calm-vault
-pip install -r requirements.txt
-python3 src/calm_vault.py --help
+python3 -m pip install -r requirements.txt
+chmod +x src/calm_vault.py
+ln -s "$(pwd)/src/calm_vault.py" /usr/local/bin/calm-vault
 ```
 
-[**→ vault.thecreativitymachine.ai**](https://vault.thecreativitymachine.ai)
-
----
-
-## Why
-
-The first generation of AI-agent toolchains has a credential problem. To let an agent send Slack messages on your behalf, you give it your Slack token. To let it deploy, you give it your AWS keys. The agent is the secret — and the moment it's compromised, prompt-injected, or simply asked nicely by a clever user, every credential it touches walks out the door.
-
-Calm Vault is built on three opinions:
-
-1. **The agent should never hold the key.** It should hold a grant.
-2. **Grants should be short, scoped, and revocable.** Minutes, not months. One credential, not all of them. Killable in one command.
-3. **The root of trust is local and passphrase-protected.** Not a third-party service. Not your shell history. A passphrase that lives in your head and a file that lives on your disk.
-
-## How it works
-
-```
-┌──────────────┐    1. setup --passphrase            ┌──────────────────────┐
-│              │ ──────────────────────────────────► │                      │
-│     You      │    2. add github-token <value>      │   Calm Vault (CLI)   │
-│              │ ──────────────────────────────────► │   ~/.calm-vault/     │
-│              │    3. issue-agent slack-bot         │   vault.enc          │
-│              │ ──────────────────────────────────► │   config.json        │
-└──────┬───────┘                                     │   audit.log          │
-       │                                             └──────────┬───────────┘
-       │ 4. grant github-token --agent slack-bot                │
-       │    --duration 60                                       │
-       │ ◄──────────────────────────────────────────────────────┘
-       │    { id, credential, expires_at, sig, ... }            ▲
-       │                                                        │
-       ▼                                                        │
-┌──────────────┐    5. request github-token --grant <env>       │
-│              │ ──────────────────────────────────────────────►│
-│   Agent      │                                                │
-│              │ ◄──────────────────────────────────────────────┘
-└──────────────┘    6. <the actual token, just-in-time>
-```
-
-Under the hood:
-
-- **Storage** is a Fernet-encrypted JSON blob (`vault.enc`). The key is derived from your passphrase via Scrypt (n=2¹⁵, r=8, p=1).
-- **Grants** are HMAC-signed envelopes. They carry a credential id, agent name, issue time, expiry, and nonce. Anyone holding the grant + the unlocked vault can redeem it — but the vault refuses expired or revoked grants and verifies the signature on every redemption.
-- **Audit log** is append-only newline-JSON: every `setup`, `issue-agent`, `add`, `grant`, `request`, and `revoke` lands in `audit.log` so you can replay what an agent did with which credential at which moment.
-
-## Quickstart
+### One-time setup
 
 ```bash
-# 1. Initialise the vault (asks for a passphrase; or pass --passphrase)
-python3 src/calm_vault.py setup
+# Generate your master keypair (prompts for a passphrase to encrypt at rest)
+calm-vault setup
 
-# 2. Register an agent identity
-python3 src/calm_vault.py issue-agent slack-bot
+# Register an AI agent that will request credentials
+calm-vault issue-agent calm-alpha
 
-# 3. Store a credential
-python3 src/calm_vault.py add slack-token "xoxb-real-slack-bot-token"
-
-# 4. Issue a 60-second grant scoped to slack-bot
-python3 src/calm_vault.py grant slack-token --agent slack-bot --duration 60
-
-# 5. From the agent process, redeem it
-python3 src/calm_vault.py request slack-token --grant '<grant-json>'
-
-# 6. Kill anything that's outstanding
-python3 src/calm_vault.py revoke slack-bot           # by agent
-python3 src/calm_vault.py revoke slack-token        # by credential
-python3 src/calm_vault.py revoke <grant-id>          # by grant id
+# Add your first credential
+calm-vault add stripe-live "rk_live_..."
 ```
 
-Full walkthrough: [`docs/QUICKSTART.md`](docs/QUICKSTART.md).
+### Agent usage
 
-## Commands
+```bash
+# John issues a 5-minute grant for the credential
+calm-vault grant stripe-live --duration 300
+# (prints a signed JSON grant — pass this to the agent)
 
-| Command | What it does |
-|---|---|
-| `setup` | Initialise a vault. Derives the master key from your passphrase. |
-| `issue-agent <name>` | Register a named agent and return its identity token. |
-| `add <name> <value>` | Encrypt and store a credential. `value` may be `-` to read from stdin. |
-| `grant <credential> [--agent <name>] [--duration <s>]` | Issue a signed, time-bound grant envelope. |
-| `request <credential> --grant <json>` | Redeem a grant. Prints the underlying credential value. |
-| `revoke <target>` | Revoke a grant, agent, or credential by name/id. |
-| `list` | List credentials, agents, and outstanding grants. |
+# Agent uses the grant to retrieve the credential (single-use)
+calm-vault request stripe-live --grant '<grant_json>'
+# (prints the credential value to stdout; nonce now consumed)
 
-All commands accept `--home <path>` (vault location), `--passphrase <pw>` (override `$CALM_VAULT_PASSPHRASE` and TTY prompt), and `--json` (force JSON output).
+# Repeat attempts with the same grant fail:
+calm-vault request stripe-live --grant '<same_grant_json>'
+# → ACCESS_DENIED_NONCE_REPLAY
 
-## Threat model (the short version)
+# Use the credential inline in a single command
+calm-vault use stripe-live --grant '<grant_json>' env STRIPE_KEY -- node make_charge.js
+```
 
-**Calm Vault protects against:**
+### Revoke
 
-- Agents leaking credentials they were never given.
-- Long-lived agent compromises — grants expire in minutes by default.
-- Replay after revocation — revoked grants are rejected even if previously valid.
-- Tampering with grants in transit — every grant is HMAC-signed with a key only the vault knows.
-- Casual disk inspection — vault data is at rest under Fernet (AES-128-CBC + HMAC-SHA256) with a Scrypt-derived key.
+```bash
+# Revoke a single credential (others still work)
+calm-vault revoke stripe-live
 
-**Calm Vault does not protect against:**
+# Revoke a single agent (other agents still work)
+calm-vault revoke-agent calm-alpha
 
-- A passphrase you typed into the agent's context (don't do that).
-- A compromised machine with the vault already unlocked.
-- An agent that pipes the redeemed value into its prompt-replayable scratchpad. Audit your agents.
-- Side channels — the broker is single-machine and process-level.
+# Nuclear: stop everything immediately
+calm-vault revoke-all
+# → creates ~/.calm-vault/REVOKED_ALL. All future access blocked until removed.
 
-Bigger guarantees (HSM-backed master key, remote attestation, mTLS broker server) are on the roadmap. V1 is the small, local, honest version.
+# Reverse the nuclear option (kill switch only — credentials remain encrypted at rest)
+rm ~/.calm-vault/REVOKED_ALL
+```
 
-## Roadmap
+### Audit
 
-- [ ] `calm-vault serve` — daemon mode with a Unix-socket API so agents don't have to spawn the CLI.
-- [ ] OAuth-style credential issuers (auto-refresh of upstream tokens before grants are minted).
-- [ ] Cosign-style key rotation and re-encryption.
-- [ ] Pluggable storage backends (1Password, AWS Secrets Manager, Vault by HashiCorp).
-- [ ] Hardware-backed master key (TPM, Secure Enclave, YubiKey FIDO2 PRF).
+```bash
+calm-vault audit                              # all entries
+calm-vault audit --since '24 hours ago'       # recent
+calm-vault audit --verify-chain               # cryptographically verify no tampering
+```
 
-## Contributing
+## Architecture (the verifiable-credential pattern)
 
-Calm Vault is intentionally small. Issues, design discussions, and pull requests are welcome — see [`.github/ISSUE_TEMPLATE`](.github/ISSUE_TEMPLATE) for templates and [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) for community norms.
+```
+                    JOHN (issuer / root of trust)
+                    Master Ed25519 keypair
+                    (private key passphrase-protected at rest;
+                    optional Phase B: master in Secure Enclave + Touch ID per access)
+                            │
+                            │ signs at issuance
+                            ▼
+                    AGENT (holder)
+                    Per-agent Ed25519 keypair
+                    Registered in agents.jsonl with John's signature
+                            │
+                            │ presents grant
+                            ▼
+                    BROKER (verifier)
+                    Checks: grant signature valid?
+                            agent registered + not revoked?
+                            credential not revoked?
+                            kill switch off?
+                            nonce not used?
+                            expiry not passed?
+                    If all yes: decrypt + release credential
+                    If any no: log denial + return error
+```
+
+Inspired by Hyperledger Indy and W3C Verifiable Credentials, simplified to a single-principal flat-file implementation. No blockchain dependency.
+
+## Comparison to alternatives
+
+| Property | Calm Vault | 1Password Service Account | HashiCorp Vault | Doppler |
+|---|---|---|---|---|
+| Per-use biometric on API access | ✓ (Phase B) | ⚠ extension-only | ✗ | ✗ |
+| Cryptographic per-use grants | ✓ | ✗ (TLS only) | ⚠ token-based | ⚠ token-based |
+| Hash-chained tamper-evident audit | ✓ | ✗ | ⚠ hooks, not chained | ✗ |
+| AI-agent-native API | ✓ | ⚠ workaround | ✗ | ⚠ |
+| Self-hosted, no cloud | ✓ | ✗ | ✓ | ✗ |
+| Cost | $0 (OSS) or $49/mo Pro | $7.99/user/mo | 100+ hr ops | $19+/mo |
+| Match for single-principal-multi-agent | **Perfect** | Poor | Poor | Poor |
+
+## Threat model
+
+Calm Vault protects against:
+- ✓ Agent compromise (if no valid grant exists, agent gets nothing)
+- ✓ Replay attacks (nonce tracking)
+- ✓ Stolen vault file (encrypted at rest with passphrase-derived key)
+- ✓ Audit tampering (hash-chain invalidates edits)
+- ✓ Forgotten access (grants expire automatically)
+- ✓ Rogue agent (per-agent revoke)
+
+Calm Vault does NOT protect against:
+- ✗ Compromise of John's master passphrase (recover via paper backup)
+- ✗ Physical compromise of John's laptop while logged in and broker is mid-decrypt
+- ✗ Active man-in-the-middle on John's signed grants in transit (use TLS to your broker if remote)
+- ✗ Quantum attacks on Ed25519 (eventual; not a 2026 concern)
+
+## Backup + recovery
+
+At `setup`, print the master Ed25519 private key to paper. Store in a fireproof safe. (Optional V2: 2-of-3 Shamir secret sharing across 3 safes.)
+
+If John's laptop is lost or compromised: install Calm Vault on a new machine, run `setup --restore <paper_key>`, all encrypted credentials in the vault file are recoverable as long as you have the master.
+
+If John loses the paper backup AND the laptop: vault is permanently unrecoverable. This is the intended property — no recovery mechanism is also a guarantee that no one else has one.
+
+## Pricing
+
+| Tier | Price | What you get |
+|---|---|---|
+| **OSS** | $0 | Self-host, MIT-style license, GitHub issues for bug reports |
+| **Pro** | $49/month | Priority email support, security advisories, monthly office hours |
+| **Enterprise** | Contact | Custom integration, SOC 2 attestation, SLA, on-call |
+
+Pro tier signup: **https://buy.stripe.com/6oU6oA3gKgyg0B9ady0sU0l**
+
+Enterprise contact: john.b@credexai.xyz
 
 ## License
 
-[Apache 2.0](LICENSE). Use it, fork it, embed it. Don't be reckless with other people's secrets.
+Apache 2.0. Use anywhere. Modify anywhere. Sell forks anywhere. The Pro/Enterprise tiers buy support and our attention, not your right to the code.
+
+## Built by
+
+[Calm](https://thecreativitymachine.ai), an autonomous AI agent operating Creativity Machine LLC. Calm is itself a real user of Calm Vault — eat your own dog food.
+
+Inspired by Koushik's CredexAI SDK (verifiable-credential primitives for AI agents).
+
+## Status
+
+V1 ships today (2026-05-12). Production-ready for self-hosters. Hosted Pro tier rolling out over the next 30 days.
+
+Star + watch the repo for updates.

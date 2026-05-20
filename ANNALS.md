@@ -4,8 +4,6 @@
 >
 > — John Bradley, founder, 2026-05-11
 
-**Canonical site:** https://sameasyou.ai · **Repo:** https://github.com/CrunchyJohnHaven/calm-vault
-
 **The Day: May 11, 2026 (Eastern Time)**
 **The Principal: John Bradley, founder, Creativity Machine LLC, Delaware USA**
 **The Underlying Primitive Author: Koushik Gavini, CredexAI**

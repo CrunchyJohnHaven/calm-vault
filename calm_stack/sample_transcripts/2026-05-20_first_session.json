@@ -1,0 +1,36 @@
+{
+  "completed_at":"2026-05-20T15:58:47.498581Z",
+  "counterparty_did":"did:calm:peer:reviewer-collective",
+  "failure_reason":"",
+  "operator_did":"did:calm:john-bradley:thecreativitymachine-ai",
+  "outcome":"complete",
+  "pact":{
+    "counterparty_directive_commitment":"89f9a1131cc257cdd7cb8fd9207a23823b9e07552c2f1e414cad7646797372c0",
+    "equality_proof":"3d16e4398983d95aed6ee6e93f2fa28926018d0a2b898927ff578a5e3ee166a0",
+    "note":"v0 placeholder; real \u03a3-protocol lives in calm_pact/protocol.py",
+    "operator_directive_commitment":"a7903a01ccd1ad166ab4ba2cd34284006e3af12d2fb82a0ac5ee368e70dd2eee",
+    "verified":true
+  },
+  "protocol_version":"calm-stack/v0",
+  "session_id":"1ef87be7-e320-4486-9062-65ec3b93d708",
+  "started_at":"2026-05-20T15:58:47.497854Z",
+  "tenancy":{
+    "inbound_classification":"green",
+    "inbound_response_seeking":true,
+    "mailbox":"calm@thecreativitymachine.ai",
+    "operator_domain":"thecreativitymachine.ai",
+    "page_density":0.0,
+    "page_passed_cringe":true,
+    "rubric_version":"cringe-rubric/v1",
+    "sla_first_ack_seconds":600
+  },
+  "witness":{
+    "binding_errors":[],
+    "chain_head":"87c4c108c7b6de85231d407f519bb39b04e609638bbe985e6f4691627365a812",
+    "freshness_window_seconds":5927,
+    "nonce":"b9fbeb31eba5ddcee6fa170b7d39dc5ba660fa867693726f942aca7dbc5e112f",
+    "predicate_id":"calm-witness/predicate/v0/in_baseline_24h",
+    "value":"true",
+    "verified":true
+  }
+}

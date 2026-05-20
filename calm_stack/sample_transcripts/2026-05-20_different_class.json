@@ -1,0 +1,36 @@
+{
+  "completed_at":"2026-05-20T16:01:59.039684Z",
+  "counterparty_did":"did:calm:unauthorised:cold-prospector",
+  "failure_reason":"",
+  "operator_did":"did:calm:john-bradley:thecreativitymachine-ai",
+  "outcome":"complete",
+  "pact":{
+    "counterparty_directive_commitment":"89f9a1131cc257cdd7cb8fd9207a23823b9e07552c2f1e414cad7646797372c0",
+    "equality_proof":"3d16e4398983d95aed6ee6e93f2fa28926018d0a2b898927ff578a5e3ee166a0",
+    "note":"v0 placeholder; real \u03a3-protocol lives in calm_pact/protocol.py",
+    "operator_directive_commitment":"a7903a01ccd1ad166ab4ba2cd34284006e3af12d2fb82a0ac5ee368e70dd2eee",
+    "verified":true
+  },
+  "protocol_version":"calm-stack/v0",
+  "session_id":"1f1720e2-5027-4e81-b0e0-5d67f4aa19f7",
+  "started_at":"2026-05-20T16:01:59.039464Z",
+  "tenancy":{
+    "inbound_classification":"green",
+    "inbound_response_seeking":true,
+    "mailbox":"calm@thecreativitymachine.ai",
+    "operator_domain":"thecreativitymachine.ai",
+    "page_density":0.0,
+    "page_passed_cringe":true,
+    "rubric_version":"cringe-rubric/v1",
+    "sla_first_ack_seconds":600
+  },
+  "witness":{
+    "binding_errors":[],
+    "chain_head":"ad0916b35ef35bc3bb39e56c5df544cab270dce1331c6a74414f0fe8b469edb0",
+    "freshness_window_seconds":6119,
+    "nonce":"96d4573b4d2fbca41eb06e517694d9c60af6efe3bfb7c9c384f378dbcda85453",
+    "predicate_id":"calm-witness/predicate/v0/in_baseline_24h",
+    "value":"true",
+    "verified":true
+  }
+}

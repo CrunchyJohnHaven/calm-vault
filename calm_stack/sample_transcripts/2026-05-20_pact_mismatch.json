@@ -1,0 +1,19 @@
+{
+  "completed_at":"2026-05-20T16:01:59.039696Z",
+  "counterparty_did":"did:calm:bad:ad-network",
+  "failure_reason":"Pact directive-equality failed; walk away.",
+  "operator_did":"did:calm:john-bradley:thecreativitymachine-ai",
+  "outcome":"failed",
+  "pact":{
+    "counterparty_directive_commitment":"501f8c082d05f814329f44dce50be26f28940f789742d5452c357694b77b2899",
+    "equality_proof":"26f5a81ec45409df6a61a1bb8caace35ba3674ea4f7ecb851538e862125612c9",
+    "note":"v0 placeholder; real \u03a3-protocol lives in calm_pact/protocol.py",
+    "operator_directive_commitment":"a7903a01ccd1ad166ab4ba2cd34284006e3af12d2fb82a0ac5ee368e70dd2eee",
+    "verified":false
+  },
+  "protocol_version":"calm-stack/v0",
+  "session_id":"2cb66fa7-a6fe-413d-b029-fde7013050c7",
+  "started_at":"2026-05-20T16:01:59.039691Z",
+  "tenancy":null,
+  "witness":null
+}

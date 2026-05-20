@@ -4,11 +4,13 @@
 >
 > — John Bradley, May 11, 2026
 
-**Draft v0 · 2026-05-12 · Calm (operating for John Bradley, Creativity Machine LLC, with primitives by Koushik Gavini, CredexAI)**
+**Draft v0 · 2026-05-12 · v0.1 amendment 2026-05-20 · Calm (operating for John Bradley, Creativity Machine LLC, with primitives by Koushik Gavini, CredexAI)**
 
 **For US AI labs, US policy researchers, US foundations, US standards bodies. American first.**
 
-That epigraph IS the protocol's one-line spec. Two autonomous AI organizations meet to transact. Each runs Calm Pact. Each commits to its primary mandate via a Pedersen commitment on a 2048-bit Schnorr group. They exchange commitments + a Σ-protocol equality proof. If their mandates are categorically equivalent — *"I'm the same as you"* — the proof verifies. They proceed to transact under cryptographic guarantee. If the mandates differ, the proof fails. They walk away. **No information about the mandate is exchanged beyond the equality bit.** That is all you need to know. That is all you DO know.
+> **v0.1 amendment (2026-05-20):** Cryptographic-group choice locked to **Ristretto255 over Curve25519** per John Bradley ratification of Path B in [`CALM_PACT_SPEC_INCONSISTENCY_OPEN_ISSUE.md`](CALM_PACT_SPEC_INCONSISTENCY_OPEN_ISSUE.md). The original v0 prose at §0 (epigraph paragraph) and §4.1 (Setup) is amended below to match the v0 reference-impl choice at §5 (Curve25519 / X25519). Calm Witness Everest 44 (MODP-14 Pedersen) will be replaced by an Everest 44b (Pedersen on Ristretto255); the existing MODP-14 implementation is preserved as a v0-historical reference and is not deprecated retrospectively.
+
+That epigraph IS the protocol's one-line spec. Two autonomous AI organizations meet to transact. Each runs Calm Pact. Each commits to its primary mandate via a **Pedersen commitment on the Ristretto255 group (a prime-order group derived from Curve25519)**. They exchange commitments + a Σ-protocol equality proof. If their mandates are categorically equivalent — *"I'm the same as you"* — the proof verifies. They proceed to transact under cryptographic guarantee. If the mandates differ, the proof fails. They walk away. **No information about the mandate is exchanged beyond the equality bit.** That is all you need to know. That is all you DO know.
 
 ---
 
@@ -86,7 +88,7 @@ We build on Pedersen commitments + Σ-protocols + CredexAI's identity-attestatio
 
 ### 4.1 Setup
 
-- Public parameters: a group `G` of prime order `q` with two independent generators `g`, `h` such that `log_g(h)` is unknown to all parties (standard Pedersen setup; can use secp256r1, Ed25519, or BLS12-381).
+- Public parameters: a group `G` of prime order `q` with two independent generators `g`, `h` such that `log_g(h)` is unknown to all parties. **v0.1 lock:** `G` is **Ristretto255** over Curve25519 (prime-order group of order `ℓ = 2²⁵² + 27742317777372353535851937790883648493`). Alternative groups (secp256r1, BLS12-381, RFC 3526 MODP-14) are out of scope for v0.1; post-quantum migration is tracked at Calm Witness Everest 89.
 - A shared *directive vocabulary* `V`: a publicly known taxonomy of categorical missions, e.g., `["malaria-vaccine-logistics", "alzheimers-research-funding", "early-childhood-literacy-rural-india", ...]`. Hierarchical (each entry is a path in a tree).
 - Each AI agent has a CredexAI-issued identity credential proving the agent operates a registered legal entity (LLC or 501(c)(3)).
 
